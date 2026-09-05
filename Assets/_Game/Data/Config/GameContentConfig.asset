@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dfef6a8a7fe81440b7d36d6355feff5, type: 3}
+  m_Name: GameContentConfig
+  m_EditorClassIdentifier: 
+  finalMessage: {fileID: 11400000, guid: eb0ace23d861c0a47b6ba817ba22faf6, type: 2}
+  quests:
+  - {fileID: 11400000, guid: a6fea6d3ed4328b4aba6b3370956a0cb, type: 2}
+  - {fileID: 11400000, guid: 56819c934dee8da46998e23693886998, type: 2}
+  - {fileID: 11400000, guid: 5088d5c6f2757ef468ea6a33442994a2, type: 2}
+  - {fileID: 11400000, guid: 781bbcc66e472a142bac5c835adffbb1, type: 2}
+  memories:
+  - {fileID: 11400000, guid: e1ca32028aeaf3246b3ce4ce24b1107a, type: 2}
+  - {fileID: 11400000, guid: 0eaa79c78f0a3624a94fa76d768cd296, type: 2}
+  - {fileID: 11400000, guid: 87dac1ac2375c674e8b0dad92b1c5353, type: 2}
+  - {fileID: 11400000, guid: 92e3c3caea3e2b94baefa5a62853437e, type: 2}
+  - {fileID: 11400000, guid: 0701a1fb5543d6443bf8446503e9d978, type: 2}
+  dialogues:
+  - {fileID: 11400000, guid: 3e99e1c20389111419d5c8e0f6eaaa7a, type: 2}

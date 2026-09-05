@@ -1,0 +1,49 @@
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Unity generated files
+*.csproj
+*.sln
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+
+# Unity crash and memory captures
+memoryCaptures/
+Recordings/
+
+# Asset Store tools
+[Aa]ssets/AssetStoreTools*
+
+# IDE and OS noise
+.vs/
+.vscode/
+.idea/
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Local builds and exports
+ExportedObj/
+*.apk
+*.aab
+*.unitypackage
+
