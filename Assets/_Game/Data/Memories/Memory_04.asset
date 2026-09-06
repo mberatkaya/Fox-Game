@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Memory_04
   m_EditorClassIdentifier: 
   id: memory_04
-  displayName: Ani 4
-  shortText: Sprint 1'de gercek icerikle degistirilecek sicak ama ozel bilgi icermeyen
-    placeholder metin.
+  displayName: Yolculuk
+  shortText: "Yol uzundu ama izler kaybolmad\u0131."
   icon: {fileID: 0}
-  worldPrefab: {fileID: 0}
+  worldPrefab: {fileID: 5958105457107828176, guid: 7b6cfae5bf095834e8d6efe484425d53, type: 3}

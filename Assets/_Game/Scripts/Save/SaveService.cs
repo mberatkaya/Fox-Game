@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -39,6 +40,7 @@ namespace TilkiOyunu.Foundation
             {
                 string json = File.ReadAllText(savePath);
                 SaveGameData data = JsonUtility.FromJson<SaveGameData>(json);
+                Normalize(data);
                 return data ?? CreateNewSave();
             }
             catch (Exception exception)
@@ -58,6 +60,7 @@ namespace TilkiOyunu.Foundation
 
             try
             {
+                Normalize(data);
                 data.saveVersion = CurrentSaveVersion;
                 string directory = Path.GetDirectoryName(savePath);
                 if (!string.IsNullOrWhiteSpace(directory))
@@ -95,10 +98,55 @@ namespace TilkiOyunu.Foundation
 
         public SaveGameData CreateNewSave()
         {
-            return new SaveGameData
+            SaveGameData data = new SaveGameData
             {
                 saveVersion = CurrentSaveVersion
             };
+            Normalize(data);
+            return data;
+        }
+
+        public static void Normalize(SaveGameData data)
+        {
+            if (data == null)
+            {
+                return;
+            }
+
+            data.quests ??= new System.Collections.Generic.List<QuestProgress>();
+            data.collectedMemoryIds ??= new System.Collections.Generic.List<string>();
+
+            for (int i = data.quests.Count - 1; i >= 0; i--)
+            {
+                QuestProgress progress = data.quests[i];
+                if (progress == null || string.IsNullOrWhiteSpace(progress.questId))
+                {
+                    data.quests.RemoveAt(i);
+                    continue;
+                }
+
+                if (progress.completed)
+                {
+                    progress.status = QuestStatus.Completed;
+                }
+
+                if (progress.status == QuestStatus.Completed)
+                {
+                    progress.completed = true;
+                }
+
+                progress.currentAmount = Math.Max(0, progress.currentAmount);
+            }
+
+            HashSet<string> seenMemoryIds = new();
+            for (int i = data.collectedMemoryIds.Count - 1; i >= 0; i--)
+            {
+                string memoryId = data.collectedMemoryIds[i];
+                if (string.IsNullOrWhiteSpace(memoryId) || !seenMemoryIds.Add(memoryId))
+                {
+                    data.collectedMemoryIds.RemoveAt(i);
+                }
+            }
         }
     }
 }

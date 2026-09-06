@@ -17,6 +17,7 @@ namespace TilkiOyunu.Foundation
         private InputAction interactAction;
         private IInteractable focused;
         private string bindingLabel = "Interact";
+        private bool inputLocked;
 
         public IInteractable Focused => focused;
 
@@ -41,6 +42,13 @@ namespace TilkiOyunu.Foundation
 
         private void Update()
         {
+            if (inputLocked)
+            {
+                focused = null;
+                promptUI?.Clear();
+                return;
+            }
+
             focused = FindFocusedInteractable();
             UpdatePrompt();
 
@@ -140,6 +148,16 @@ namespace TilkiOyunu.Foundation
                 InputBinding.DisplayStringOptions.DontIncludeInteractions);
 
             return string.IsNullOrWhiteSpace(display) ? InputActionIds.Interact : display;
+        }
+
+        public void SetInputLocked(bool locked)
+        {
+            inputLocked = locked;
+            if (locked)
+            {
+                focused = null;
+                promptUI?.Clear();
+            }
         }
     }
 }
