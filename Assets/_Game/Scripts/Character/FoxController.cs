@@ -19,6 +19,7 @@ namespace TilkiOyunu.Foundation
         private InputAction sprintAction;
         private Vector3 horizontalVelocity;
         private float verticalVelocity;
+        private bool inputLocked;
 
         public Vector3 Velocity => horizontalVelocity + Vector3.up * verticalVelocity;
         public Vector2 MoveInput { get; private set; }
@@ -52,7 +53,7 @@ namespace TilkiOyunu.Foundation
         {
             float deltaTime = Time.deltaTime;
             IsGrounded = CheckGrounded();
-            MoveInput = moveAction?.ReadValue<Vector2>() ?? Vector2.zero;
+            MoveInput = inputLocked ? Vector2.zero : moveAction?.ReadValue<Vector2>() ?? Vector2.zero;
             IsSprinting = IsGrounded && sprintAction != null && sprintAction.IsPressed() && MoveInput.sqrMagnitude > 0.01f;
 
             if (IsGrounded && verticalVelocity < 0f)
@@ -60,7 +61,7 @@ namespace TilkiOyunu.Foundation
                 verticalVelocity = movement.groundedStickVelocity;
             }
 
-            if (IsGrounded && jumpAction != null && jumpAction.WasPressedThisFrame())
+            if (!inputLocked && IsGrounded && jumpAction != null && jumpAction.WasPressedThisFrame())
             {
                 verticalVelocity = Mathf.Sqrt(movement.jumpHeight * -2f * movement.gravity);
                 IsGrounded = false;
@@ -96,6 +97,17 @@ namespace TilkiOyunu.Foundation
             characterController.enabled = true;
             horizontalVelocity = Vector3.zero;
             verticalVelocity = movement.groundedStickVelocity;
+        }
+
+        public void SetInputLocked(bool locked)
+        {
+            inputLocked = locked;
+            if (locked)
+            {
+                MoveInput = Vector2.zero;
+                IsSprinting = false;
+                horizontalVelocity = Vector3.zero;
+            }
         }
 
         private void ResolveInputActions()

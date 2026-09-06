@@ -25,7 +25,8 @@ namespace TilkiOyunu.Foundation
                 DontDestroyOnLoad(gameObject);
             }
 
-            GameServices.Initialize(new SaveService(), new SceneService(), new AudioService(audioMixer));
+            SaveService saveService = new();
+            GameServices.Initialize(saveService, new SceneService(), new AudioService(audioMixer), new QuestService(saveService, contentConfig));
             GameServices.Current.Owner = this;
             AppLog.Info(LogCategory.Boot, "Game services initialized.");
         }
