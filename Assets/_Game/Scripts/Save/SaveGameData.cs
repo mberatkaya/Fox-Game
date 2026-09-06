@@ -24,6 +24,7 @@ namespace TilkiOyunu.Foundation
     {
         public string questId;
         public int currentAmount;
+        public QuestStatus status = QuestStatus.NotStarted;
         public bool completed;
     }
 
