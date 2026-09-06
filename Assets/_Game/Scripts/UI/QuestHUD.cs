@@ -6,6 +6,7 @@ namespace TilkiOyunu.Foundation
     public sealed class QuestHUD : MonoBehaviour
     {
         [SerializeField] private QuestDefinition quest;
+        [SerializeField] private QuestDefinition[] quests;
         [SerializeField] private CanvasGroup panel;
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Text objectiveText;
@@ -51,21 +52,24 @@ namespace TilkiOyunu.Foundation
 
         private void HandleQuestChanged(QuestState state)
         {
-            if (quest != null && state.QuestId == quest.Id)
-            {
-                Refresh(state);
-            }
+            Refresh();
         }
 
         private void Refresh()
         {
-            if (!GameServices.HasCurrent || quest == null)
+            if (!GameServices.HasCurrent)
             {
                 SetVisible(false);
                 return;
             }
 
-            Refresh(GameServices.Current.Quest.GetQuestState(quest));
+            if (!TryGetVisibleQuestState(out QuestState state))
+            {
+                SetVisible(false);
+                return;
+            }
+
+            Refresh(state);
         }
 
         private void Refresh(QuestState state)
@@ -84,9 +88,7 @@ namespace TilkiOyunu.Foundation
 
             if (objectiveText != null)
             {
-                objectiveText.text = state.Status == QuestStatus.ReadyToTurnIn
-                    ? "NPC'ye geri dön"
-                    : $"Anıları bul: {state.CurrentAmount} / {state.RequiredAmount}";
+                objectiveText.text = FormatObjective(state);
             }
         }
 
@@ -100,6 +102,70 @@ namespace TilkiOyunu.Foundation
             panel.alpha = visible ? 1f : 0f;
             panel.interactable = false;
             panel.blocksRaycasts = false;
+        }
+
+        private bool TryGetVisibleQuestState(out QuestState visibleState)
+        {
+            QuestDefinition[] visibleQuests = GetQuestList();
+            QuestService questService = GameServices.Current.Quest;
+
+            for (int i = 0; i < visibleQuests.Length; i++)
+            {
+                QuestDefinition candidate = visibleQuests[i];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                QuestState state = questService.GetQuestState(candidate);
+                if (state.Status == QuestStatus.ReadyToTurnIn)
+                {
+                    visibleState = state;
+                    return true;
+                }
+            }
+
+            for (int i = 0; i < visibleQuests.Length; i++)
+            {
+                QuestDefinition candidate = visibleQuests[i];
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                QuestState state = questService.GetQuestState(candidate);
+                if (state.Status == QuestStatus.Active)
+                {
+                    visibleState = state;
+                    return true;
+                }
+            }
+
+            visibleState = default;
+            return false;
+        }
+
+        private QuestDefinition[] GetQuestList()
+        {
+            if (quests != null && quests.Length > 0)
+            {
+                return quests;
+            }
+
+            return quest != null ? new[] { quest } : System.Array.Empty<QuestDefinition>();
+        }
+
+        private string FormatObjective(QuestState state)
+        {
+            if (state.Status == QuestStatus.ReadyToTurnIn)
+            {
+                return "NPC'ye geri dön";
+            }
+
+            QuestDefinition definition = GameServices.Current.Quest.FindQuest(state.QuestId);
+            return definition != null && definition.ObjectiveType == QuestObjectiveType.CompleteLightPath
+                ? $"Işıkları takip et: {state.CurrentAmount} / {state.RequiredAmount}"
+                : $"Anıları bul: {state.CurrentAmount} / {state.RequiredAmount}";
         }
     }
 }

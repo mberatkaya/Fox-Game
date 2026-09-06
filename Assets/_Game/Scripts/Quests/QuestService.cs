@@ -6,6 +6,7 @@ namespace TilkiOyunu.Foundation
     public sealed class QuestService
     {
         public const string CollectMemoriesQuestId = "collect_memories";
+        public const string LightPathQuestId = "light_path";
 
         private readonly SaveService saveService;
         private SaveGameData saveData;
@@ -68,6 +69,52 @@ namespace TilkiOyunu.Foundation
             return GetQuestState(quest).Status;
         }
 
+        public QuestStatus GetQuestStatus(string questId)
+        {
+            QuestProgress progress = FindQuestProgress(questId);
+            return progress != null ? progress.status : QuestStatus.NotStarted;
+        }
+
+        public bool IsQuestCompleted(string questId)
+        {
+            return GetQuestStatus(questId) == QuestStatus.Completed;
+        }
+
+        public bool ArePrerequisitesMet(QuestDefinition quest)
+        {
+            if (quest == null)
+            {
+                return false;
+            }
+
+            if (quest.PrerequisiteQuestIds == null)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < quest.PrerequisiteQuestIds.Count; i++)
+            {
+                string prerequisiteId = quest.PrerequisiteQuestIds[i];
+                if (!string.IsNullOrWhiteSpace(prerequisiteId) && !IsQuestCompleted(prerequisiteId))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool CanStartQuest(QuestDefinition quest)
+        {
+            if (quest == null || !ArePrerequisitesMet(quest))
+            {
+                return false;
+            }
+
+            QuestProgress progress = FindQuestProgress(quest.Id);
+            return progress == null || progress.status == QuestStatus.NotStarted;
+        }
+
         public bool HasCollectedMemory(MemoryDefinition memory)
         {
             return memory != null && HasCollectedMemory(memory.Id);
@@ -80,7 +127,7 @@ namespace TilkiOyunu.Foundation
 
         public bool StartQuest(QuestDefinition quest)
         {
-            if (quest == null)
+            if (!CanStartQuest(quest))
             {
                 return false;
             }
@@ -97,6 +144,31 @@ namespace TilkiOyunu.Foundation
             Persist();
             QuestStarted?.Invoke(GetQuestState(quest));
             QuestProgressChanged?.Invoke(GetQuestState(quest));
+            return true;
+        }
+
+        public bool RecordLightPathCompleted(QuestDefinition quest)
+        {
+            if (quest == null || quest.ObjectiveType != QuestObjectiveType.CompleteLightPath)
+            {
+                return false;
+            }
+
+            QuestProgress progress = GetOrCreateQuestProgress(quest.Id);
+            if (progress.status != QuestStatus.Active)
+            {
+                Persist();
+                return false;
+            }
+
+            progress.currentAmount = Math.Max(progress.currentAmount, quest.RequiredAmount);
+            progress.status = QuestStatus.ReadyToTurnIn;
+            saveData.lightPathCompleted = true;
+
+            QuestState state = GetQuestState(quest);
+            QuestProgressChanged?.Invoke(state);
+            QuestReadyToTurnIn?.Invoke(state);
+            Persist();
             return true;
         }
 
@@ -172,6 +244,11 @@ namespace TilkiOyunu.Foundation
 
             progress.status = QuestStatus.Completed;
             progress.completed = true;
+            if (quest.Id == LightPathQuestId)
+            {
+                saveData.lightPathCompleted = true;
+            }
+
             Persist();
             QuestCompleted?.Invoke(GetQuestState(quest));
             return true;
