@@ -8,6 +8,7 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private GameContentConfig contentConfig;
         [SerializeField] private AudioMixer audioMixer;
         [SerializeField] private bool persistAcrossScenes = true;
+        [SerializeField] private bool loadForestOnStart = true;
 
         public GameContentConfig ContentConfig => contentConfig;
 
@@ -27,6 +28,14 @@ namespace TilkiOyunu.Foundation
             GameServices.Initialize(new SaveService(), new SceneService(), new AudioService(audioMixer));
             GameServices.Current.Owner = this;
             AppLog.Info(LogCategory.Boot, "Game services initialized.");
+        }
+
+        private void Start()
+        {
+            if (loadForestOnStart && GameServices.HasCurrent && GameServices.Current.Owner == this && GameServices.Current.Scenes.ActiveSceneName == SceneIds.Bootstrap)
+            {
+                GameServices.Current.Scenes.LoadForest();
+            }
         }
 
         private void OnDestroy()

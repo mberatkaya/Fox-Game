@@ -1,10 +1,9 @@
 {
-  "name": "TilkiOyunu.Foundation",
-  "rootNamespace": "TilkiOyunu.Foundation",
+  "name": "TilkiOyunu.Foundation.PlayModeTests",
+  "rootNamespace": "TilkiOyunu.Foundation.PlayModeTests",
   "references": [
-    "Unity.InputSystem",
-    "Unity.TextMeshPro",
-    "UnityEngine.UI"
+    "TilkiOyunu.Foundation",
+    "UnityEngine.TestRunner"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
