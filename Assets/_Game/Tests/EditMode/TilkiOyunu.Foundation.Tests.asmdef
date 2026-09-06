@@ -3,6 +3,7 @@
   "rootNamespace": "TilkiOyunu.Foundation.Tests",
   "references": [
     "TilkiOyunu.Foundation",
+    "Unity.InputSystem",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],
