@@ -243,6 +243,7 @@ MonoBehaviour:
   contentConfig: {fileID: 11400000, guid: 621103cb3cad97c4e9ef914a65ba209e, type: 2}
   audioMixer: {fileID: 24100000, guid: 21a46e69d71a1854aacd353734755207, type: 2}
   persistAcrossScenes: 1
+  loadForestOnStart: 1
 --- !u!4 &456762330
 Transform:
   m_ObjectHideFlags: 0
