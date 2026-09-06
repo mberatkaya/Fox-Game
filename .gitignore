@@ -47,3 +47,8 @@ ExportedObj/
 *.aab
 *.unitypackage
 
+# Root-level Unity validation/test artifacts
+/sprint*-*.log
+/sprint*-*.logs
+/*-results.xml
+/tmp-import*.log
