@@ -11,14 +11,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4dfef6a8a7fe81440b7d36d6355feff5, type: 3}
   m_Name: GameContentConfig
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   finalMessage: {fileID: 11400000, guid: eb0ace23d861c0a47b6ba817ba22faf6, type: 2}
   quests:
   - {fileID: 11400000, guid: a6fea6d3ed4328b4aba6b3370956a0cb, type: 2}
   - {fileID: 11400000, guid: 56819c934dee8da46998e23693886998, type: 2}
-  - {fileID: 11400000, guid: 5088d5c6f2757ef468ea6a33442994a2, type: 2}
   - {fileID: 11400000, guid: 781bbcc66e472a142bac5c835adffbb1, type: 2}
   - {fileID: 11400000, guid: 2d135de0772721f4b8f19a5711c1552b, type: 2}
+  - {fileID: 11400000, guid: 5088d5c6f2757ef468ea6a33442994a2, type: 2}
   memories:
   - {fileID: 11400000, guid: e1ca32028aeaf3246b3ce4ce24b1107a, type: 2}
   - {fileID: 11400000, guid: 0eaa79c78f0a3624a94fa76d768cd296, type: 2}
@@ -34,3 +34,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cafabc6fa27198a4eb08ce55353d8bec, type: 2}
   - {fileID: 11400000, guid: a326216187375144798bffc9167edcf7, type: 2}
   - {fileID: 11400000, guid: 9ab45be0b2eade248a892c29a7b19d74, type: 2}
+  - {fileID: 11400000, guid: f3c25ce133d92de469418fde82e78475, type: 2}
+  - {fileID: 11400000, guid: 7e4060582525ca145a1c554fea6ff29c, type: 2}
+  - {fileID: 11400000, guid: 12faca623b79e2a419b69ea90a322b84, type: 2}
+  - {fileID: 11400000, guid: bcfa28a9e2983454baca93b1ecb5c592, type: 2}

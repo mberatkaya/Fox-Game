@@ -7,10 +7,19 @@ namespace TilkiOyunu.Foundation
     {
         public const string CollectMemoriesQuestId = "collect_memories";
         public const string LightPathQuestId = "light_path";
+        public const string CardMatchingQuestId = "card_matching";
+
+        public static readonly string[] FinalCampRequiredQuestIds =
+        {
+            CollectMemoriesQuestId,
+            LightPathQuestId,
+            CardMatchingQuestId
+        };
 
         private readonly SaveService saveService;
         private SaveGameData saveData;
         private GameContentConfig contentConfig;
+        private bool finalCampUnlocked;
 
         public QuestService(SaveService saveService, GameContentConfig contentConfig)
         {
@@ -18,15 +27,19 @@ namespace TilkiOyunu.Foundation
             this.contentConfig = contentConfig;
             saveData = saveService.Load();
             SaveService.Normalize(saveData);
+            finalCampUnlocked = AreFinalCampRequirementsMet();
+            saveData.finalUnlocked = finalCampUnlocked;
         }
 
         public event Action<QuestState> QuestStarted;
         public event Action<QuestState> QuestProgressChanged;
         public event Action<QuestState> QuestReadyToTurnIn;
         public event Action<QuestState> QuestCompleted;
+        public event Action<bool> FinalCampUnlockChanged;
 
         public SaveGameData SaveData => saveData;
         public IReadOnlyList<string> CollectedMemoryIds => saveData.collectedMemoryIds;
+        public bool IsFinalCampUnlocked => finalCampUnlocked;
 
         public void ConfigureContent(GameContentConfig config)
         {
@@ -172,6 +185,70 @@ namespace TilkiOyunu.Foundation
             return true;
         }
 
+        public bool RecordCardMatchingPairMatched(QuestDefinition quest)
+        {
+            if (quest == null || quest.ObjectiveType != QuestObjectiveType.CompleteCardMatch)
+            {
+                return false;
+            }
+
+            QuestProgress progress = GetOrCreateQuestProgress(quest.Id);
+            if (progress.status != QuestStatus.Active)
+            {
+                Persist();
+                return false;
+            }
+
+            int previousAmount = progress.currentAmount;
+            progress.currentAmount = Math.Min(quest.RequiredAmount, progress.currentAmount + 1);
+            if (progress.currentAmount != previousAmount)
+            {
+                QuestProgressChanged?.Invoke(GetQuestState(quest));
+            }
+
+            if (progress.currentAmount >= quest.RequiredAmount)
+            {
+                progress.status = QuestStatus.ReadyToTurnIn;
+                saveData.cardMatchingCompleted = true;
+                QuestReadyToTurnIn?.Invoke(GetQuestState(quest));
+            }
+
+            Persist();
+            return progress.currentAmount != previousAmount;
+        }
+
+        public bool RecordCardMatchingCompleted(QuestDefinition quest)
+        {
+            if (quest == null || quest.ObjectiveType != QuestObjectiveType.CompleteCardMatch)
+            {
+                return false;
+            }
+
+            QuestProgress progress = GetOrCreateQuestProgress(quest.Id);
+            if (progress.status != QuestStatus.Active && progress.status != QuestStatus.ReadyToTurnIn)
+            {
+                Persist();
+                return false;
+            }
+
+            if (progress.status == QuestStatus.ReadyToTurnIn && progress.currentAmount >= quest.RequiredAmount)
+            {
+                saveData.cardMatchingCompleted = true;
+                Persist();
+                return false;
+            }
+
+            progress.currentAmount = Math.Max(progress.currentAmount, quest.RequiredAmount);
+            progress.status = QuestStatus.ReadyToTurnIn;
+            saveData.cardMatchingCompleted = true;
+
+            QuestState state = GetQuestState(quest);
+            QuestProgressChanged?.Invoke(state);
+            QuestReadyToTurnIn?.Invoke(state);
+            Persist();
+            return true;
+        }
+
         public bool RecordMemoryCollected(MemoryDefinition memory, QuestDefinition quest = null)
         {
             if (memory == null || string.IsNullOrWhiteSpace(memory.Id))
@@ -248,10 +325,46 @@ namespace TilkiOyunu.Foundation
             {
                 saveData.lightPathCompleted = true;
             }
+            else if (quest.Id == CardMatchingQuestId)
+            {
+                saveData.cardMatchingCompleted = true;
+            }
 
             Persist();
             QuestCompleted?.Invoke(GetQuestState(quest));
+            RefreshFinalCampUnlockState();
             return true;
+        }
+
+        public bool AreFinalCampRequirementsMet()
+        {
+            for (int i = 0; i < FinalCampRequiredQuestIds.Length; i++)
+            {
+                if (!IsQuestCompleted(FinalCampRequiredQuestIds[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public void RefreshFinalCampUnlockState()
+        {
+            bool unlocked = AreFinalCampRequirementsMet();
+            if (saveData.finalUnlocked != unlocked)
+            {
+                saveData.finalUnlocked = unlocked;
+                Persist();
+            }
+
+            if (finalCampUnlocked == unlocked)
+            {
+                return;
+            }
+
+            finalCampUnlocked = unlocked;
+            FinalCampUnlockChanged?.Invoke(finalCampUnlocked);
         }
 
         private QuestProgress GetOrCreateQuestProgress(string questId)

@@ -6,6 +6,7 @@ namespace TilkiOyunu.Foundation
     {
         [SerializeField] private QuestDefinition collectMemoriesQuest;
         [SerializeField] private QuestDefinition lightPathQuest;
+        [SerializeField] private QuestDefinition cardMatchingQuest;
         [SerializeField] private DialogueDefinition introDialogue;
         [SerializeField] private DialogueDefinition activeDialogue;
         [SerializeField] private DialogueDefinition readyToTurnInDialogue;
@@ -14,6 +15,10 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private DialogueDefinition lightPathActiveDialogue;
         [SerializeField] private DialogueDefinition lightPathTurnInDialogue;
         [SerializeField] private DialogueDefinition lightPathCompletedDialogue;
+        [SerializeField] private DialogueDefinition cardMatchingIntroDialogue;
+        [SerializeField] private DialogueDefinition cardMatchingActiveDialogue;
+        [SerializeField] private DialogueDefinition cardMatchingTurnInDialogue;
+        [SerializeField] private DialogueDefinition cardMatchingCompletedDialogue;
         [SerializeField] private DialoguePanelUI dialogueUI;
 
         public string InteractionLabel => GetInteractionLabel();
@@ -41,7 +46,14 @@ namespace TilkiOyunu.Foundation
                 return;
             }
 
-            ShowLightPathDialogue(GameServices.Current.Quest.GetQuestStatus(lightPathQuest));
+            QuestStatus lightPathStatus = GameServices.Current.Quest.GetQuestStatus(lightPathQuest);
+            if (lightPathStatus != QuestStatus.Completed || cardMatchingQuest == null)
+            {
+                ShowLightPathDialogue(lightPathStatus);
+                return;
+            }
+
+            ShowCardMatchingDialogue(GameServices.Current.Quest.GetQuestStatus(cardMatchingQuest));
         }
 
         private string GetInteractionLabel()
@@ -57,7 +69,12 @@ namespace TilkiOyunu.Foundation
                 return "Görevi teslim et";
             }
 
-            return lightPathQuest != null && quests.GetQuestStatus(lightPathQuest) == QuestStatus.ReadyToTurnIn
+            if (lightPathQuest != null && quests.GetQuestStatus(lightPathQuest) == QuestStatus.ReadyToTurnIn)
+            {
+                return "Görevi teslim et";
+            }
+
+            return cardMatchingQuest != null && quests.GetQuestStatus(cardMatchingQuest) == QuestStatus.ReadyToTurnIn
                 ? "Görevi teslim et"
                 : "Konuş";
         }
@@ -96,6 +113,25 @@ namespace TilkiOyunu.Foundation
                     break;
                 case QuestStatus.Completed:
                     dialogueUI.Show(lightPathCompletedDialogue != null ? lightPathCompletedDialogue : completedDialogue);
+                    break;
+            }
+        }
+
+        private void ShowCardMatchingDialogue(QuestStatus status)
+        {
+            switch (status)
+            {
+                case QuestStatus.NotStarted:
+                    dialogueUI.Show(cardMatchingIntroDialogue, () => GameServices.Current.Quest.StartQuest(cardMatchingQuest));
+                    break;
+                case QuestStatus.Active:
+                    dialogueUI.Show(cardMatchingActiveDialogue);
+                    break;
+                case QuestStatus.ReadyToTurnIn:
+                    dialogueUI.Show(cardMatchingTurnInDialogue, () => GameServices.Current.Quest.TurnInQuest(cardMatchingQuest));
+                    break;
+                case QuestStatus.Completed:
+                    dialogueUI.Show(cardMatchingCompletedDialogue != null ? cardMatchingCompletedDialogue : completedDialogue);
                     break;
             }
         }

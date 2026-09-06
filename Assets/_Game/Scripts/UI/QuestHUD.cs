@@ -163,9 +163,19 @@ namespace TilkiOyunu.Foundation
             }
 
             QuestDefinition definition = GameServices.Current.Quest.FindQuest(state.QuestId);
-            return definition != null && definition.ObjectiveType == QuestObjectiveType.CompleteLightPath
-                ? $"Işıkları takip et: {state.CurrentAmount} / {state.RequiredAmount}"
-                : $"Anıları bul: {state.CurrentAmount} / {state.RequiredAmount}";
+            return definition != null
+                ? FormatTypedObjective(definition, state)
+                : $"İlerleme: {state.CurrentAmount} / {state.RequiredAmount}";
+        }
+
+        private static string FormatTypedObjective(QuestDefinition definition, QuestState state)
+        {
+            return definition.ObjectiveType switch
+            {
+                QuestObjectiveType.CompleteLightPath => $"Işıkları takip et: {state.CurrentAmount} / {state.RequiredAmount}",
+                QuestObjectiveType.CompleteCardMatch => $"Eşleri bul: {state.CurrentAmount} / {state.RequiredAmount}",
+                _ => $"Anıları bul: {state.CurrentAmount} / {state.RequiredAmount}"
+            };
         }
     }
 }
