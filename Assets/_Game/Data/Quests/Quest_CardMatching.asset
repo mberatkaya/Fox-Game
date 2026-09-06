@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1f503b76cf68b84d89c9207948ab39c, type: 3}
-  m_Name: 03_KalpBahcesi
-  m_EditorClassIdentifier: 
-  id: complete_card_match
-  title: Kalp Bahcesi
-  description: Kart eslestirme oyununu tamamla.
+  m_Name: Quest_CardMatching
+  m_EditorClassIdentifier:
+  id: card_matching
+  title: "Kalp Bah\xE7esi"
+  description: "Bah\xE7edeki kartlar\u0131n e\u015Flerini bul."
   objectiveType: 2
   targetId: heart_garden
-  requiredAmount: 1
-  prerequisiteQuestIds: []
+  requiredAmount: 4
+  prerequisiteQuestIds:
+  - light_path
