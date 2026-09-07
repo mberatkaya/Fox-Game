@@ -156,14 +156,31 @@ namespace TilkiOyunu.Foundation.Editor
                 errors.Add("Card Matching is missing CardMatchingAudioFeedback.");
             }
 
+            ValidateCardMatchingPanel(errors);
+
             FinalCampController camp = Object.FindFirstObjectByType<FinalCampController>(FindObjectsInactive.Include);
             if (camp == null)
             {
                 errors.Add("Forest scene is missing FinalCampController.");
             }
-            else if (camp.GetComponent<FinalSequenceController>() == null)
+            else
             {
-                errors.Add("Final camp is missing FinalSequenceController.");
+                FinalSequenceController sequence = camp.GetComponent<FinalSequenceController>();
+                if (sequence == null)
+                {
+                    errors.Add("Final camp is missing FinalSequenceController.");
+                }
+                else
+                {
+                    ValidateFinalSequence(sequence, errors);
+                }
+            }
+
+            ValidateEnvironmentVisuals(errors);
+
+            if (Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>(FindObjectsInactive.Include) == null)
+            {
+                errors.Add("Forest scene is missing an EventSystem for modal UI focus.");
             }
 
             foreach (GameObject root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
@@ -181,6 +198,94 @@ namespace TilkiOyunu.Foundation.Editor
             if (!File.Exists("ASSET_NOTES.md"))
             {
                 errors.Add("ASSET_NOTES.md is missing.");
+                return;
+            }
+
+            string assetNotes = File.ReadAllText("ASSET_NOTES.md");
+            if (!assetNotes.Contains("Asset Name: Bell dings/chimes") || !assetNotes.Contains("Author: PWL"))
+            {
+                errors.Add("ASSET_NOTES.md must list Bell dings/chimes author as PWL.");
+            }
+        }
+
+        private static void ValidateFinalSequence(FinalSequenceController sequence, List<string> errors)
+        {
+            SerializedObject serialized = new(sequence);
+            if (serialized.FindProperty("gameplayCamera")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference the gameplay camera.");
+            }
+
+            if (serialized.FindProperty("cameraController")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference the ThirdPersonCameraController.");
+            }
+
+            if (serialized.FindProperty("cameraFocus")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference a camera focus transform.");
+            }
+
+            if (serialized.FindProperty("finalPanel")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference the final message panel.");
+            }
+        }
+
+        private static void ValidateCardMatchingPanel(List<string> errors)
+        {
+            CardMatchingPanelUI panel = Object.FindFirstObjectByType<CardMatchingPanelUI>(FindObjectsInactive.Include);
+            if (panel == null)
+            {
+                errors.Add("Forest scene is missing CardMatchingPanelUI.");
+                return;
+            }
+
+            SerializedObject serialized = new(panel);
+            if (serialized.FindProperty("panel")?.objectReferenceValue == null)
+            {
+                errors.Add("CardMatchingPanelUI must reference its CanvasGroup.");
+            }
+
+            if (serialized.FindProperty("inputActions")?.objectReferenceValue == null)
+            {
+                errors.Add("CardMatchingPanelUI must reference the InputActionAsset.");
+            }
+
+            if (serialized.FindProperty("cameraController")?.objectReferenceValue == null)
+            {
+                errors.Add("CardMatchingPanelUI must reference the ThirdPersonCameraController.");
+            }
+
+            SerializedProperty cardButtons = serialized.FindProperty("cardButtons");
+            if (cardButtons == null || !cardButtons.isArray || cardButtons.arraySize == 0)
+            {
+                errors.Add("CardMatchingPanelUI must reference card buttons.");
+            }
+            else
+            {
+                for (int i = 0; i < cardButtons.arraySize; i++)
+                {
+                    if (cardButtons.GetArrayElementAtIndex(i).objectReferenceValue == null)
+                    {
+                        errors.Add($"CardMatchingPanelUI cardButtons[{i}] is missing.");
+                    }
+                }
+            }
+        }
+
+        private static void ValidateEnvironmentVisuals(List<string> errors)
+        {
+            GameObject environmentVisuals = GameObject.Find("Environment_Visuals");
+            if (environmentVisuals == null)
+            {
+                return;
+            }
+
+            Collider[] visualColliders = environmentVisuals.GetComponentsInChildren<Collider>(true);
+            if (visualColliders.Length > 0)
+            {
+                errors.Add("Environment_Visuals must remain visual-only and contain no colliders.");
             }
         }
 
