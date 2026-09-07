@@ -297,6 +297,7 @@ MonoBehaviour:
   finalPanel: {fileID: 382348635}
   inputLock: {fileID: 1115247102}
   gameplayCamera: {fileID: 724572439}
+  cameraController: {fileID: 724572437}
   cameraFocus: {fileID: 945686069}
   campLight: {fileID: 1678807887}
   audioSource: {fileID: 9081063}
@@ -5934,6 +5935,7 @@ MonoBehaviour:
   closeButton: {fileID: 1767894320}
   inputLock: {fileID: 1115247102}
   inputActions: {fileID: -944628639613478452, guid: a816b161fcee99e4f8bf9d63bcec50f0, type: 3}
+  cameraController: {fileID: 724572437}
 --- !u!224 &638357973
 RectTransform:
   m_ObjectHideFlags: 0

@@ -19,6 +19,10 @@ namespace TilkiOyunu.Foundation
         private int index = -1;
         private Vector3 baseScale;
 
+        public int Index => index;
+        public GameObject SelectionObject => button != null ? button.gameObject : gameObject;
+        public bool IsInteractable => button != null && button.IsInteractable();
+
         private void Awake()
         {
             CacheReferences();

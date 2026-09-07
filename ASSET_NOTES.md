@@ -92,7 +92,7 @@ Modified: No source asset edits
 ## OpenGameArt - Bell dings/chimes
 
 Asset Name: Bell dings/chimes
-Author: artisticdude
+Author: PWL
 Official Source: OpenGameArt
 Source Page: https://opengameart.org/content/bell-dingschimes
 License: CC0

@@ -9,6 +9,7 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private FinalMessagePanelUI finalPanel;
         [SerializeField] private GameplayInputLock inputLock;
         [SerializeField] private Camera gameplayCamera;
+        [SerializeField] private ThirdPersonCameraController cameraController;
         [SerializeField] private Transform cameraFocus;
         [SerializeField] private Light campLight;
         [SerializeField] private AudioSource audioSource;
@@ -19,9 +20,14 @@ namespace TilkiOyunu.Foundation
 
         private Coroutine sequence;
         private bool inputLocked;
+        private bool cameraControlAcquired;
 
         public bool IsRunning => sequence != null;
         public FinalMessageDefinition FinalMessage => finalMessage;
+        public Camera GameplayCamera => gameplayCamera;
+        public ThirdPersonCameraController CameraController => cameraController;
+        public Transform CameraFocus => cameraFocus;
+        public bool HasCameraControl => cameraControlAcquired;
 
         public bool CanBegin
         {
@@ -36,8 +42,9 @@ namespace TilkiOyunu.Foundation
 
         private void OnDisable()
         {
+            StopSequenceCoroutine();
+            ReleaseCameraControl();
             ReleaseInput();
-            sequence = null;
         }
 
         public bool Begin()
@@ -47,39 +54,41 @@ namespace TilkiOyunu.Foundation
                 return false;
             }
 
+            ResolveCameraController();
             sequence = StartCoroutine(RunSequence());
             return true;
         }
 
         public void CompleteAndClose()
         {
+            StopSequenceCoroutine();
             PersistCompletion();
             finalPanel?.Hide();
+            ReleaseCameraControl();
             ReleaseInput();
-            sequence = null;
         }
 
         private IEnumerator RunSequence()
         {
             AcquireInput();
+            AcquireCameraControl();
 
             Vector3 cameraStartPosition = gameplayCamera != null ? gameplayCamera.transform.position : Vector3.zero;
             Quaternion cameraStartRotation = gameplayCamera != null ? gameplayCamera.transform.rotation : Quaternion.identity;
             Vector3 targetPosition = cameraStartPosition;
             Quaternion targetRotation = cameraStartRotation;
 
-            if (gameplayCamera != null && cameraFocus != null)
+            if (TryGetPresentationCameraPose(out Vector3 presentationPosition, out Quaternion presentationRotation))
             {
-                Vector3 focus = cameraFocus.position + Vector3.up * 0.65f;
-                targetPosition = focus + new Vector3(0f, 1.15f, -3.2f);
-                targetRotation = Quaternion.LookRotation(focus - targetPosition, Vector3.up);
+                targetPosition = presentationPosition;
+                targetRotation = presentationRotation;
             }
 
             float initialIntensity = campLight != null ? campLight.intensity : 0f;
             float elapsed = 0f;
             while (elapsed < cameraTransitionSeconds || elapsed < lightTransitionSeconds)
             {
-                elapsed += Time.deltaTime;
+                elapsed += Time.unscaledDeltaTime;
                 if (gameplayCamera != null)
                 {
                     float cameraT = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / cameraTransitionSeconds));
@@ -118,6 +127,21 @@ namespace TilkiOyunu.Foundation
             GameServices.Current.Save.Save(saveData);
         }
 
+        public bool TryGetPresentationCameraPose(out Vector3 position, out Quaternion rotation)
+        {
+            position = Vector3.zero;
+            rotation = Quaternion.identity;
+            if (gameplayCamera == null || cameraFocus == null)
+            {
+                return false;
+            }
+
+            Vector3 focus = cameraFocus.position + Vector3.up * 0.65f;
+            position = focus + new Vector3(0f, 1.15f, -3.2f);
+            rotation = Quaternion.LookRotation(focus - position, Vector3.up);
+            return true;
+        }
+
         private void AcquireInput()
         {
             if (inputLock != null && !inputLocked)
@@ -133,6 +157,42 @@ namespace TilkiOyunu.Foundation
             {
                 inputLock.Release();
                 inputLocked = false;
+            }
+        }
+
+        private void StopSequenceCoroutine()
+        {
+            if (sequence != null)
+            {
+                StopCoroutine(sequence);
+                sequence = null;
+            }
+        }
+
+        private void ResolveCameraController()
+        {
+            if (cameraController == null && gameplayCamera != null)
+            {
+                cameraController = gameplayCamera.GetComponent<ThirdPersonCameraController>();
+            }
+        }
+
+        private void AcquireCameraControl()
+        {
+            ResolveCameraController();
+            if (cameraController != null && !cameraControlAcquired)
+            {
+                cameraController.SetExternalControl(true);
+                cameraControlAcquired = true;
+            }
+        }
+
+        private void ReleaseCameraControl()
+        {
+            if (cameraController != null && cameraControlAcquired)
+            {
+                cameraController.SetExternalControl(false);
+                cameraControlAcquired = false;
             }
         }
     }

@@ -201,16 +201,17 @@ namespace TilkiOyunu.Foundation.Editor
             Canvas canvas = Object.FindFirstObjectByType<Canvas>();
             GameplayInputLock inputLock = Object.FindFirstObjectByType<GameplayInputLock>();
             Camera camera = Object.FindFirstObjectByType<Camera>();
+            ThirdPersonCameraController cameraController = camera != null ? camera.GetComponent<ThirdPersonCameraController>() : null;
 
             EnsureSceneAudio();
             AddNatureVisuals();
             PolishQuestHud(theme);
             PolishDialoguePanel(theme);
             PolishMemoryFeedback(theme);
-            PolishCardMatching(theme);
+            PolishCardMatching(theme, cameraController);
             PolishLightPath();
             WireMemoryAudio();
-            WireFinalCamp(canvas, inputLock, camera, theme);
+            WireFinalCamp(canvas, inputLock, camera, cameraController, theme);
 
             EditorSceneManager.SaveScene(scene);
         }
@@ -347,7 +348,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
-        private static void PolishCardMatching(GameUITheme theme)
+        private static void PolishCardMatching(GameUITheme theme, ThirdPersonCameraController cameraController)
         {
             CardMatchingPanelUI panel = Object.FindFirstObjectByType<CardMatchingPanelUI>(FindObjectsInactive.Include);
             if (panel != null)
@@ -359,6 +360,7 @@ namespace TilkiOyunu.Foundation.Editor
                 }
 
                 SetObject(panel, "inputActions", AssetDatabase.LoadAssetAtPath<UnityEngine.InputSystem.InputActionAsset>(InputActionsPath));
+                SetObject(panel, "cameraController", cameraController);
                 foreach (TMP_Text text in panel.GetComponentsInChildren<TMP_Text>(true))
                 {
                     text.color = theme.Cream;
@@ -426,7 +428,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
-        private static void WireFinalCamp(Canvas canvas, GameplayInputLock inputLock, Camera camera, GameUITheme theme)
+        private static void WireFinalCamp(Canvas canvas, GameplayInputLock inputLock, Camera camera, ThirdPersonCameraController cameraController, GameUITheme theme)
         {
             GameObject camp = GameObject.Find("Camp Placeholder");
             if (camp == null)
@@ -448,6 +450,7 @@ namespace TilkiOyunu.Foundation.Editor
             SetObject(sequence, "finalPanel", panel);
             SetObject(sequence, "inputLock", inputLock);
             SetObject(sequence, "gameplayCamera", camera);
+            SetObject(sequence, "cameraController", cameraController);
             SetObject(sequence, "cameraFocus", focus);
             SetObject(sequence, "campLight", campLight);
             SetObject(sequence, "audioSource", source);

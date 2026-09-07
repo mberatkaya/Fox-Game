@@ -24,6 +24,11 @@ namespace TilkiOyunu.Foundation
         private Vector3 smoothedTargetPosition;
         private float yaw;
         private float pitch = 18f;
+        private bool externalControl;
+        private bool lookInputLocked;
+
+        public bool IsExternalControlActive => externalControl;
+        public bool IsLookInputLocked => lookInputLocked;
 
         private void Awake()
         {
@@ -56,13 +61,13 @@ namespace TilkiOyunu.Foundation
 
         private void LateUpdate()
         {
-            if (target == null)
+            if (target == null || externalControl)
             {
                 return;
             }
 
             float deltaTime = Time.deltaTime;
-            Vector2 look = lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
+            Vector2 look = lookInputLocked ? Vector2.zero : lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
             bool mouseLook = lookAction?.activeControl?.device is Mouse;
             float sensitivity = mouseLook ? mouseSensitivity : gamepadSensitivity * deltaTime;
 
@@ -92,6 +97,43 @@ namespace TilkiOyunu.Foundation
 
             playerMap = inputActions.FindActionMap(InputActionIds.MapPlayer, false);
             lookAction = playerMap?.FindAction(InputActionIds.Look, false);
+        }
+
+        public void SetExternalControl(bool enabled)
+        {
+            if (externalControl == enabled)
+            {
+                return;
+            }
+
+            externalControl = enabled;
+            if (!externalControl)
+            {
+                ResumeFromCurrentTransform();
+            }
+        }
+
+        public void SetLookInputLocked(bool locked)
+        {
+            lookInputLocked = locked;
+        }
+
+        public void ResumeFromCurrentTransform()
+        {
+            if (target != null)
+            {
+                smoothedTargetPosition = target.position + targetOffset;
+            }
+
+            Vector3 eulerAngles = transform.rotation.eulerAngles;
+            yaw = eulerAngles.y;
+            pitch = NormalizePitch(eulerAngles.x);
+        }
+
+        private float NormalizePitch(float rawPitch)
+        {
+            float normalized = rawPitch > 180f ? rawPitch - 360f : rawPitch;
+            return Mathf.Clamp(normalized, minPitch, maxPitch);
         }
 
         private float ResolveCameraDistance(Vector3 origin, Vector3 direction)
