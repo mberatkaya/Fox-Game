@@ -20,6 +20,7 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private Vector3 completedScale = Vector3.one;
 
         private LightPathVisualState visualState;
+        private MaterialPropertyBlock propertyBlock;
 
         public int SequenceIndex => sequenceIndex;
         public LightPathVisualState VisualState => visualState;
@@ -59,8 +60,12 @@ namespace TilkiOyunu.Foundation
                 Renderer renderer = renderers[i];
                 if (renderer != null)
                 {
-                    renderer.material.color = color;
-                    renderer.material.SetColor("_EmissionColor", color * intensity);
+                    propertyBlock ??= new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(propertyBlock);
+                    propertyBlock.SetColor("_BaseColor", color);
+                    propertyBlock.SetColor("_Color", color);
+                    propertyBlock.SetColor("_EmissionColor", color * intensity);
+                    renderer.SetPropertyBlock(propertyBlock);
                 }
             }
 

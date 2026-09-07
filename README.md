@@ -1,78 +1,74 @@
 # Tilki Oyunu
 
-## Concept
+Tilki Oyunu is a short, warm, stylized 3D fox adventure built as a small personal gift experience. The current flow is an offline single-player Windows PC game:
 
-Tilki Oyunu is a short, warm, stylized 3D fox adventure intended as a small personal gift. The first playable target is an offline, single-player Windows PC experience lasting roughly 8-15 minutes.
+`Bootstrap -> Forest -> NPC -> Memory Quest -> Light Path -> Card Matching / Kalp Bahcesi -> Final Camp`
 
-Sprint 0 focuses on project foundation only. The existing `Assets/Scenes/Main.unity` prototype is preserved, but new production-facing work should grow under `Assets/_Game`.
+## Tech
 
-## Target Platform
-
-Windows PC.
-
-## Unity Version
-
-Unity `6000.0.23f1`.
-
-## Render Pipeline
-
-Universal Render Pipeline package `17.0.3` is installed. Run `Tools > Tilki Oyunu > Sprint 0 > Apply Project Foundation` once in Unity to create and assign the project URP asset under `Assets/_Game/Settings`.
-
-## Project Structure
-
-- `Assets/_Game/Art`: first-party visual assets, grouped by domain.
-- `Assets/_Game/Audio`: music, SFX, and mixer assets.
-- `Assets/_Game/Data`: editable ScriptableObject content for quests, dialogues, memories, and config.
-- `Assets/_Game/Prefabs`: first-party prefabs.
-- `Assets/_Game/Scenes`: Bootstrap, Gameplay, and Testing scenes.
-- `Assets/_Game/Scripts`: foundation and future gameplay code.
-- `Assets/_Game/Tests`: Unity Test Framework tests.
-- `Assets/Scenes/Main.unity`: preserved prototype scene.
-- `Assets/Scripts` and `Assets/Editor`: preserved prototype runtime/editor code.
-- `ThirdParty`: imported external packages or assets only.
-- `Documentation`: architecture and development notes.
-
-## Scenes
-
-- `Bootstrap`: initializes project services and content references.
-- `Forest`: placeholder gameplay scene for future forest work.
-- `SystemsTest`: lightweight systems validation scene.
-- `Main`: legacy prototype scene, kept for reference and manual playtesting.
-
-Scene names and paths are centralized in `TilkiOyunu.Foundation.SceneIds`.
+- Unity `6000.0.23f1`
+- Universal Render Pipeline `17.0.3`
+- Input System package with keyboard/mouse and gamepad bindings
+- Target platform: Windows PC
 
 ## Controls
 
-Planned input actions:
+- Move: `WASD` / left stick
+- Look: mouse / right stick
+- Jump: `Space` / gamepad south
+- Sprint: `Left Shift` / left stick press
+- Interact: `F` / gamepad west
+- Cancel/Pause: `Escape` / gamepad start
 
-- Move
-- Look
-- Jump
-- Sprint
-- Interact
-- Pause
+## Gameplay Loop
 
-The initial action asset is `Assets/_Game/Settings/TilkiInputActions.inputactions`. The existing prototype still uses the legacy input API, so project input handling is set to Both during the transition.
+The player controls the fox in the Forest scene. A guide NPC introduces the quest chain, then the player completes three small activities:
 
-## Development
+1. Collect five memories.
+2. Follow the Light Path nodes in order.
+3. Match all card pairs in Kalp Bahcesi.
 
-1. Open this folder in Unity `6000.0.23f1`.
-2. Run `Tools > Tilki Oyunu > Sprint 0 > Apply Project Foundation`.
-3. Use `Assets/_Game/Scenes/Bootstrap/Bootstrap.unity` as the startup scene for new work.
-4. Keep feature development on branches. Do not merge directly into `main`.
+Completing all three quests unlocks the Final Camp. The final interaction opens a small message sequence with warm camera/light/audio presentation and persists `finalCompleted` in the save data.
+
+## Key Content
+
+- `Assets/_Game/Prefabs/Characters/PlayerFox.prefab` contains the gameplay root, `CharacterController`, interaction origin, camera target, and the Quaternius fox visual under `VisualRoot`.
+- `Assets/_Game/Data` contains editable quest, memory, dialogue, config, and final message ScriptableObjects.
+- `Assets/_Game/Scenes/Gameplay/Forest.unity` contains the current playable forest, quest/minigame objects, production visual layer, scene audio, UI, and final camp.
+- `Assets/ThirdParty` contains the narrow imported subset of approved CC0 assets used by Sprint 5.
+
+## Save/Load
+
+`SaveService` writes `tilki-oyunu-save.json` under `Application.persistentDataPath`. The save tracks quest progress, collected memories, Light Path/Card Matching completion, final unlock, final completion, and player position support.
+
+## Assets
+
+Third-party assets are CC0 and documented in `ASSET_NOTES.md`:
+
+- Quaternius Ultimate Animated Animal Pack: fox FBX
+- Quaternius Ultimate Stylized Nature Pack: selected trees, rocks, bushes, grass, flowers, textures
+- Kenney UI Pack: selected UI sprites
+- Kenney Interface Sounds: selected UI sounds
+- OpenGameArt: Sunset Walk music, Forest Ambience, leaf footsteps, chimes, playing-card sounds, fireplace loop
+
+## Run
+
+1. Open the repository in Unity `6000.0.23f1`.
+2. Open `Assets/_Game/Scenes/Bootstrap/Bootstrap.unity`.
+3. Press Play. Bootstrap loads the Forest scene automatically.
 
 ## Build
 
-The intended release target is Windows PC. After running the Sprint 0 setup command, build settings should include Bootstrap first, Forest second, SystemsTest disabled, and the legacy Main scene disabled.
+Use Windows PC as the target. Build settings should include:
 
-## Asset Licensing
+- `Assets/_Game/Scenes/Bootstrap/Bootstrap.unity`
+- `Assets/_Game/Scenes/Gameplay/Forest.unity`
 
-External assets must be tracked in `ASSET_NOTES.md` before they are used in a committed scene, prefab, material, or build.
+`SystemsTest` and legacy prototype scenes are for development/reference and should not ship in the release build.
 
-## Git Workflow
+## Development Workflow
 
-Sprint branches should use the format `feature/<sprint-or-topic>`. Sprint 0 work is on:
-
-`feature/sprint-0-project-foundation`
-
-Open a pull request into `main`; do not merge the PR until it has been reviewed.
+- Work on feature branches, not directly on `main`.
+- Use the menu item `Tilki Oyunu/Sprint 5/Apply Production Polish` only when intentionally refreshing Sprint 5 scene/prefab wiring.
+- Run `Tilki Oyunu/Sprint 5/Validate` before release-oriented changes.
+- Do not commit raw downloaded archives or unused full asset packs.

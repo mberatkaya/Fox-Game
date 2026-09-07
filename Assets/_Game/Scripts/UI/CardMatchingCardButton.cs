@@ -12,14 +12,21 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private TMP_Text label;
         [SerializeField] private Color hiddenColor = new(0.22f, 0.25f, 0.28f);
         [SerializeField] private Color revealedColor = new(0.95f, 0.86f, 0.72f);
-        [SerializeField] private Color matchedColor = new(0.48f, 0.78f, 0.56f);
+        [SerializeField] private Color matchedColor = new(1f, 0.72f, 0.36f);
+        [SerializeField] private float matchedScale = 1.05f;
 
         private CardMatchingController controller;
         private int index = -1;
+        private Vector3 baseScale;
+
+        public int Index => index;
+        public GameObject SelectionObject => button != null ? button.gameObject : gameObject;
+        public bool IsInteractable => button != null && button.IsInteractable();
 
         private void Awake()
         {
             CacheReferences();
+            baseScale = transform.localScale;
         }
 
         private void OnEnable()
@@ -61,6 +68,8 @@ namespace TilkiOyunu.Foundation
                     _ => hiddenColor
                 };
             }
+
+            transform.localScale = view.State == CardMatchingCardState.Matched ? baseScale * matchedScale : baseScale;
 
             if (button != null)
             {

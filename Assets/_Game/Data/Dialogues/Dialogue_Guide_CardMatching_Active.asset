@@ -11,8 +11,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2888a799cf82927409cd7f4a2ea97f16, type: 3}
   m_Name: Dialogue_Guide_CardMatching_Active
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: guide_card_matching_active
   speaker: Rehber
   lines:
-  - "Bah\xE7edeki kartlar\u0131n e\u015Flerini bul."
+  - "Kartlar\u0131n e\u015Flerini bul. Sakince, birer birer."

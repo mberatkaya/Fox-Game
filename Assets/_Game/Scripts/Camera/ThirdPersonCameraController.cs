@@ -24,6 +24,12 @@ namespace TilkiOyunu.Foundation
         private Vector3 smoothedTargetPosition;
         private float yaw;
         private float pitch = 18f;
+        private bool externalControl;
+        private bool lookInputLocked;
+
+        public Transform Target => target;
+        public bool IsExternalControlActive => externalControl;
+        public bool IsLookInputLocked => lookInputLocked;
 
         private void Awake()
         {
@@ -56,24 +62,43 @@ namespace TilkiOyunu.Foundation
 
         private void LateUpdate()
         {
-            if (target == null)
+            if (target == null || externalControl)
             {
                 return;
             }
 
             float deltaTime = Time.deltaTime;
-            Vector2 look = lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
+            Vector2 look = lookInputLocked ? Vector2.zero : lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
             bool mouseLook = lookAction?.activeControl?.device is Mouse;
             float sensitivity = mouseLook ? mouseSensitivity : gamepadSensitivity * deltaTime;
 
             yaw += look.x * sensitivity;
             pitch = Mathf.Clamp(pitch - look.y * sensitivity, minPitch, maxPitch);
 
+            ApplyFollow(deltaTime, false);
+        }
+
+        public void SnapToTarget()
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            yaw = target.eulerAngles.y;
+            pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+            ApplyFollow(0f, true);
+        }
+
+        private void ApplyFollow(float deltaTime, bool snap)
+        {
             Vector3 targetPosition = target.position + targetOffset;
-            smoothedTargetPosition = Vector3.Lerp(
-                smoothedTargetPosition,
-                targetPosition,
-                1f - Mathf.Exp(-followSharpness * deltaTime));
+            smoothedTargetPosition = snap
+                ? targetPosition
+                : Vector3.Lerp(
+                    smoothedTargetPosition,
+                    targetPosition,
+                    1f - Mathf.Exp(-followSharpness * deltaTime));
 
             Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
             Vector3 desiredDirection = rotation * Vector3.back;
@@ -94,21 +119,78 @@ namespace TilkiOyunu.Foundation
             lookAction = playerMap?.FindAction(InputActionIds.Look, false);
         }
 
+        public void SetExternalControl(bool enabled)
+        {
+            if (externalControl == enabled)
+            {
+                return;
+            }
+
+            externalControl = enabled;
+            if (!externalControl)
+            {
+                ResumeFromCurrentTransform();
+            }
+        }
+
+        public void SetLookInputLocked(bool locked)
+        {
+            lookInputLocked = locked;
+        }
+
+        public void ResumeFromCurrentTransform()
+        {
+            if (target != null)
+            {
+                smoothedTargetPosition = target.position + targetOffset;
+            }
+
+            Vector3 eulerAngles = transform.rotation.eulerAngles;
+            yaw = eulerAngles.y;
+            pitch = NormalizePitch(eulerAngles.x);
+        }
+
+        private float NormalizePitch(float rawPitch)
+        {
+            float normalized = rawPitch > 180f ? rawPitch - 360f : rawPitch;
+            return Mathf.Clamp(normalized, minPitch, maxPitch);
+        }
+
         private float ResolveCameraDistance(Vector3 origin, Vector3 direction)
         {
-            if (Physics.SphereCast(
-                    origin,
-                    collisionRadius,
-                    direction,
-                    out RaycastHit hit,
-                    distance,
-                    obstructionLayers,
-                    QueryTriggerInteraction.Ignore))
+            RaycastHit[] hits = Physics.SphereCastAll(
+                origin,
+                collisionRadius,
+                direction,
+                distance,
+                obstructionLayers,
+                QueryTriggerInteraction.Ignore);
+
+            float closestDistance = float.PositiveInfinity;
+            for (int i = 0; i < hits.Length; i++)
             {
-                return Mathf.Clamp(hit.distance - collisionRadius, minDistance, distance);
+                RaycastHit hit = hits[i];
+                if (hit.collider == null || IsTargetCollider(hit.collider))
+                {
+                    continue;
+                }
+
+                closestDistance = Mathf.Min(closestDistance, hit.distance);
+            }
+
+            if (!float.IsPositiveInfinity(closestDistance))
+            {
+                return Mathf.Clamp(closestDistance - collisionRadius, minDistance, distance);
             }
 
             return distance;
+        }
+
+        private bool IsTargetCollider(Collider candidate)
+        {
+            return target != null
+                && candidate != null
+                && candidate.transform.root == target.root;
         }
     }
 }

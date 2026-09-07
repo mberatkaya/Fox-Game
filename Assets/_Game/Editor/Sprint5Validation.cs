@@ -1,0 +1,495 @@
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.Audio;
+
+namespace TilkiOyunu.Foundation.Editor
+{
+    public static class Sprint5Validation
+    {
+        private const string MixerPath = "Assets/_Game/Audio/Mixers/TilkiAudioMixer.mixer";
+
+        [MenuItem("Tilki Oyunu/Sprint 5/Validate")]
+        public static void ValidateFromMenu()
+        {
+            if (ValidateProject(out List<string> errors))
+            {
+                Debug.Log("Sprint 5 validation passed.");
+                return;
+            }
+
+            foreach (string error in errors)
+            {
+                Debug.LogError(error);
+            }
+        }
+
+        public static void ValidateFromCommandLine()
+        {
+            if (ValidateProject(out List<string> errors))
+            {
+                Debug.Log("Sprint 5 validation passed.");
+                EditorApplication.Exit(0);
+                return;
+            }
+
+            foreach (string error in errors)
+            {
+                Debug.LogError(error);
+            }
+
+            EditorApplication.Exit(1);
+        }
+
+        public static bool ValidateProject(out List<string> errors)
+        {
+            errors = new List<string>();
+            ValidateImportedAssets(errors);
+            ValidatePlayerPrefab(errors);
+            ValidateBuildSettings(errors);
+            ValidateForestScene(errors);
+            ValidateDocumentation(errors);
+            return errors.Count == 0;
+        }
+
+        private static void ValidateImportedAssets(List<string> errors)
+        {
+            RequireAsset<GameObject>("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx", "Quaternius fox FBX", errors);
+            RequireAsset<RuntimeAnimatorController>("Assets/_Game/Art/Characters/FoxAnimatorController.controller", "Fox animator controller", errors);
+            RequireClip(errors, "idle", "idle");
+            RequireClip(errors, "walk", "walk");
+            RequireClip(errors, "run/gallop", "run", "gallop");
+            RequireClip(errors, "jump", "jump");
+
+            string[] nature =
+            {
+                "BirchTree_1.fbx", "MapleTree_1.fbx", "NormalTree_1.fbx", "PineTree_1.fbx",
+                "Bush.fbx", "Grass_Small.fbx", "Flower_1_Clump.fbx", "Rock_1.fbx"
+            };
+            for (int i = 0; i < nature.Length; i++)
+            {
+                RequireAsset<GameObject>($"Assets/ThirdParty/Quaternius/UltimateStylizedNature/{nature[i]}", nature[i], errors);
+            }
+
+            RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/Music/SunsetWalk.ogg", "background music", errors);
+            RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/Ambience/Forest_Ambience.mp3", "forest ambience", errors);
+            RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/SFX/Footsteps/leaves01.ogg", "footstep SFX", errors);
+            RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/SFX/Chimes/bell_ding1.wav", "memory/light chime", errors);
+            RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/SFX/Cards/contact1.wav", "card contact SFX", errors);
+            RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/SFX/Campfire/fire.wav", "campfire loop", errors);
+            RequireAsset<AudioClip>("Assets/ThirdParty/Kenney/InterfaceSounds/click_001.ogg", "UI click", errors);
+            ValidateAudioMixer(errors);
+            RequireAsset<GameUITheme>("Assets/_Game/Art/UI/GameUITheme.asset", "UI theme", errors);
+            RequireAsset<FinalMessageDefinition>("Assets/_Game/Data/Config/FinalMessage.asset", "final message", errors);
+        }
+
+        private static void ValidatePlayerPrefab(List<string> errors)
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Game/Prefabs/Characters/PlayerFox.prefab");
+            if (prefab == null)
+            {
+                errors.Add("PlayerFox prefab is missing.");
+                return;
+            }
+
+            if (prefab.transform.Find("VisualRoot/QuaterniusFox/FoxModel") == null)
+            {
+                errors.Add("PlayerFox prefab must contain VisualRoot/QuaterniusFox/FoxModel.");
+            }
+
+            if (prefab.GetComponentInChildren<FoxAnimationDriver>(true) == null)
+            {
+                errors.Add("PlayerFox prefab is missing FoxAnimationDriver.");
+            }
+
+            Animator animator = prefab.GetComponentInChildren<Animator>(true);
+            if (animator == null || animator.runtimeAnimatorController == null)
+            {
+                errors.Add("PlayerFox prefab is missing a bound AnimatorController.");
+            }
+            else if (animator.applyRootMotion)
+            {
+                errors.Add("Fox Animator must have root motion disabled.");
+            }
+
+            if (prefab.GetComponent<FootstepAudio>() == null)
+            {
+                errors.Add("PlayerFox prefab is missing FootstepAudio.");
+            }
+
+            AudioSource source = prefab.GetComponent<AudioSource>();
+            if (source == null || source.outputAudioMixerGroup == null || source.outputAudioMixerGroup.name != "SFX")
+            {
+                errors.Add("PlayerFox footstep AudioSource must route to the SFX mixer group.");
+            }
+        }
+
+        private static void ValidateForestScene(List<string> errors)
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+            RequireSceneObject("Environment_Visuals", errors);
+            RequireSceneObject("Sprint 5 Scene Audio", errors);
+            RequireSceneObject("Final Message Panel", errors);
+
+            if (Object.FindFirstObjectByType<SceneLoopAudio>(FindObjectsInactive.Include) == null)
+            {
+                errors.Add("Forest scene is missing SceneLoopAudio.");
+            }
+
+            RequireAudioRoute("Music Loop", "Music", errors);
+            RequireAudioRoute("Forest Ambience Loop", "Ambience", errors);
+            RequireAudioRoute("Campfire Loop", "Ambience", errors);
+
+            if (Object.FindFirstObjectByType<MemoryAudioFeedback>(FindObjectsInactive.Include) == null)
+            {
+                errors.Add("Forest memories are missing MemoryAudioFeedback.");
+            }
+
+            if (Object.FindFirstObjectByType<LightPathAudioFeedback>(FindObjectsInactive.Include) == null)
+            {
+                errors.Add("Light Path is missing LightPathAudioFeedback.");
+            }
+
+            if (Object.FindFirstObjectByType<CardMatchingAudioFeedback>(FindObjectsInactive.Include) == null)
+            {
+                errors.Add("Card Matching is missing CardMatchingAudioFeedback.");
+            }
+
+            ValidateCardMatchingPanel(errors);
+            ValidateInitialPresentation(errors);
+
+            FinalCampController camp = Object.FindFirstObjectByType<FinalCampController>(FindObjectsInactive.Include);
+            if (camp == null)
+            {
+                errors.Add("Forest scene is missing FinalCampController.");
+            }
+            else
+            {
+                FinalSequenceController sequence = camp.GetComponent<FinalSequenceController>();
+                if (sequence == null)
+                {
+                    errors.Add("Final camp is missing FinalSequenceController.");
+                }
+                else
+                {
+                    ValidateFinalSequence(sequence, errors);
+                }
+            }
+
+            ValidateEnvironmentVisuals(errors);
+
+            if (Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>(FindObjectsInactive.Include) == null)
+            {
+                errors.Add("Forest scene is missing an EventSystem for modal UI focus.");
+            }
+
+            foreach (GameObject root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                int missingCount = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(root);
+                if (missingCount > 0)
+                {
+                    errors.Add($"Scene root '{root.name}' has {missingCount} missing script reference(s).");
+                }
+            }
+        }
+
+        private static void ValidateBuildSettings(List<string> errors)
+        {
+            EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
+            if (scenes.Length < 2)
+            {
+                errors.Add("Build Settings must include Bootstrap and Forest scenes.");
+                return;
+            }
+
+            if (!scenes[0].enabled || scenes[0].path != SceneIds.BootstrapPath)
+            {
+                errors.Add("Build Settings scene 0 must be the enabled Bootstrap scene.");
+            }
+
+            if (!scenes[1].enabled || scenes[1].path != SceneIds.ForestPath)
+            {
+                errors.Add("Build Settings scene 1 must be the enabled Forest scene.");
+            }
+        }
+
+        private static void ValidateDocumentation(List<string> errors)
+        {
+            if (!File.Exists("ASSET_NOTES.md"))
+            {
+                errors.Add("ASSET_NOTES.md is missing.");
+                return;
+            }
+
+            string assetNotes = File.ReadAllText("ASSET_NOTES.md");
+            if (!assetNotes.Contains("Asset Name: Bell dings/chimes") || !assetNotes.Contains("Author: PWL"))
+            {
+                errors.Add("ASSET_NOTES.md must list Bell dings/chimes author as PWL.");
+            }
+        }
+
+        private static void ValidateFinalSequence(FinalSequenceController sequence, List<string> errors)
+        {
+            SerializedObject serialized = new(sequence);
+            if (serialized.FindProperty("gameplayCamera")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference the gameplay camera.");
+            }
+
+            if (serialized.FindProperty("cameraController")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference the ThirdPersonCameraController.");
+            }
+
+            if (serialized.FindProperty("cameraFocus")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference a camera focus transform.");
+            }
+
+            if (serialized.FindProperty("finalPanel")?.objectReferenceValue == null)
+            {
+                errors.Add("FinalSequenceController must reference the final message panel.");
+            }
+        }
+
+        private static void ValidateCardMatchingPanel(List<string> errors)
+        {
+            CardMatchingPanelUI panel = Object.FindFirstObjectByType<CardMatchingPanelUI>(FindObjectsInactive.Include);
+            if (panel == null)
+            {
+                errors.Add("Forest scene is missing CardMatchingPanelUI.");
+                return;
+            }
+
+            SerializedObject serialized = new(panel);
+            if (serialized.FindProperty("panel")?.objectReferenceValue == null)
+            {
+                errors.Add("CardMatchingPanelUI must reference its CanvasGroup.");
+            }
+
+            if (serialized.FindProperty("inputActions")?.objectReferenceValue == null)
+            {
+                errors.Add("CardMatchingPanelUI must reference the InputActionAsset.");
+            }
+
+            if (serialized.FindProperty("cameraController")?.objectReferenceValue == null)
+            {
+                errors.Add("CardMatchingPanelUI must reference the ThirdPersonCameraController.");
+            }
+
+            SerializedProperty cardButtons = serialized.FindProperty("cardButtons");
+            if (cardButtons == null || !cardButtons.isArray || cardButtons.arraySize == 0)
+            {
+                errors.Add("CardMatchingPanelUI must reference card buttons.");
+            }
+            else
+            {
+                for (int i = 0; i < cardButtons.arraySize; i++)
+                {
+                    if (cardButtons.GetArrayElementAtIndex(i).objectReferenceValue == null)
+                    {
+                        errors.Add($"CardMatchingPanelUI cardButtons[{i}] is missing.");
+                    }
+                }
+            }
+        }
+
+        private static void ValidateInitialPresentation(List<string> errors)
+        {
+            Camera camera = Camera.main;
+            if (camera == null)
+            {
+                errors.Add("Forest scene is missing an active Main Camera.");
+            }
+            else
+            {
+                if (!camera.isActiveAndEnabled)
+                {
+                    errors.Add("Main Camera must be active and enabled for the initial Game View.");
+                }
+
+                if (camera.targetDisplay != 0)
+                {
+                    errors.Add("Main Camera target display must be Display 1.");
+                }
+
+                if (camera.targetTexture != null)
+                {
+                    errors.Add("Main Camera target texture must be None.");
+                }
+
+                if (camera.cullingMask == 0)
+                {
+                    errors.Add("Main Camera culling mask must render gameplay layers.");
+                }
+
+                ThirdPersonCameraController cameraController = camera.GetComponent<ThirdPersonCameraController>();
+                if (cameraController == null || !cameraController.isActiveAndEnabled)
+                {
+                    errors.Add("Main Camera must have an enabled ThirdPersonCameraController.");
+                }
+                else
+                {
+                    SerializedObject serializedCamera = new(cameraController);
+                    if (serializedCamera.FindProperty("target")?.objectReferenceValue == null)
+                    {
+                        errors.Add("ThirdPersonCameraController must reference the player Camera Target.");
+                    }
+
+                    if (cameraController.IsExternalControlActive)
+                    {
+                        errors.Add("ThirdPersonCameraController external control must be false at initial gameplay.");
+                    }
+                }
+            }
+
+            GameObject player = GameObject.Find("PlayerFox");
+            if (player == null || !player.activeInHierarchy)
+            {
+                errors.Add("PlayerFox must be active for the initial Game View.");
+            }
+            else if (player.transform.Find("VisualRoot") == null || !player.transform.Find("VisualRoot").gameObject.activeInHierarchy)
+            {
+                errors.Add("PlayerFox VisualRoot must be active for the initial Game View.");
+            }
+
+            ValidateHiddenPanel<DialoguePanelUI>("Dialogue panel", errors);
+            ValidateHiddenPanel<CardMatchingPanelUI>("Card Matching panel", errors);
+            ValidateHiddenPanel<FinalMessagePanelUI>("Final message panel", errors);
+            ValidateHiddenPanel<MemoryFeedbackUI>("Memory feedback panel", errors);
+            ValidateHiddenPanel<LightPathHUD>("Light Path HUD panel", errors);
+            ValidateHiddenPanel<QuestHUD>("Quest HUD panel", errors);
+        }
+
+        private static void ValidateHiddenPanel<T>(string label, List<string> errors) where T : Component
+        {
+            T component = Object.FindFirstObjectByType<T>(FindObjectsInactive.Include);
+            if (component == null)
+            {
+                errors.Add($"Forest scene is missing {label}.");
+                return;
+            }
+
+            SerializedObject serialized = new(component);
+            CanvasGroup panel = serialized.FindProperty("panel")?.objectReferenceValue as CanvasGroup;
+            if (panel == null)
+            {
+                panel = component.GetComponent<CanvasGroup>();
+            }
+
+            if (panel == null)
+            {
+                errors.Add($"{label} must reference a CanvasGroup.");
+                return;
+            }
+
+            if (panel.alpha > 0.001f || panel.interactable || panel.blocksRaycasts)
+            {
+                errors.Add($"{label} must be hidden in the serialized Forest scene default state.");
+            }
+        }
+
+        private static void ValidateEnvironmentVisuals(List<string> errors)
+        {
+            GameObject environmentVisuals = GameObject.Find("Environment_Visuals");
+            if (environmentVisuals == null)
+            {
+                return;
+            }
+
+            Collider[] visualColliders = environmentVisuals.GetComponentsInChildren<Collider>(true);
+            if (visualColliders.Length > 0)
+            {
+                errors.Add("Environment_Visuals must remain visual-only and contain no colliders.");
+            }
+        }
+
+        private static void ValidateAudioMixer(List<string> errors)
+        {
+            AudioMixer mixer = AssetDatabase.LoadAssetAtPath<AudioMixer>(MixerPath);
+            if (mixer == null)
+            {
+                errors.Add($"Audio mixer is missing at {MixerPath}.");
+                return;
+            }
+
+            RequireMixerGroup(mixer, "Master", errors);
+            RequireMixerGroup(mixer, "Music", errors);
+            RequireMixerGroup(mixer, "Ambience", errors);
+            RequireMixerGroup(mixer, "SFX", errors);
+
+            string mixerText = File.ReadAllText(MixerPath);
+            RequireMixerParameter(mixerText, "MasterVolume", errors);
+            RequireMixerParameter(mixerText, "MusicVolume", errors);
+            RequireMixerParameter(mixerText, "AmbienceVolume", errors);
+            RequireMixerParameter(mixerText, "SFXVolume", errors);
+        }
+
+        private static void RequireMixerGroup(AudioMixer mixer, string groupName, List<string> errors)
+        {
+            if (mixer.FindMatchingGroups(groupName).Length == 0)
+            {
+                errors.Add($"Audio mixer is missing the {groupName} group.");
+            }
+        }
+
+        private static void RequireMixerParameter(string mixerText, string parameterName, List<string> errors)
+        {
+            if (!mixerText.Contains($"name: {parameterName}"))
+            {
+                errors.Add($"Audio mixer is missing exposed parameter {parameterName}.");
+            }
+        }
+
+        private static void RequireAsset<T>(string path, string label, List<string> errors) where T : Object
+        {
+            if (AssetDatabase.LoadAssetAtPath<T>(path) == null)
+            {
+                errors.Add($"{label} is missing at {path}.");
+            }
+        }
+
+        private static void RequireClip(List<string> errors, string label, params string[] tokens)
+        {
+            Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            for (int i = 0; i < assets.Length; i++)
+            {
+                if (assets[i] is not AnimationClip clip)
+                {
+                    continue;
+                }
+
+                string clipName = clip.name.ToLowerInvariant();
+                for (int tokenIndex = 0; tokenIndex < tokens.Length; tokenIndex++)
+                {
+                    if (clipName.Contains(tokens[tokenIndex]))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            errors.Add($"Fox FBX is missing an animation clip containing '{label}'.");
+        }
+
+        private static void RequireSceneObject(string name, List<string> errors)
+        {
+            if (GameObject.Find(name) == null)
+            {
+                errors.Add($"Forest scene is missing {name}.");
+            }
+        }
+
+        private static void RequireAudioRoute(string objectName, string groupName, List<string> errors)
+        {
+            GameObject gameObject = GameObject.Find(objectName);
+            AudioSource source = gameObject == null ? null : gameObject.GetComponent<AudioSource>();
+            if (source == null || source.outputAudioMixerGroup == null || source.outputAudioMixerGroup.name != groupName)
+            {
+                errors.Add($"{objectName} must route to the {groupName} mixer group.");
+            }
+        }
+    }
+}

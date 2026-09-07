@@ -15,6 +15,5 @@ MonoBehaviour:
   id: guide_intro
   speaker: Rehber
   lines:
-  - "Buralarda birka\xE7 k\xFC\xE7\xFCk \u015Fey kaybolmu\u015F."
-  - "Belki de kaybolmad\u0131lar... sadece bulunmay\u0131 bekliyorlar."
-  - "Ormanda be\u015F k\xFC\xE7\xFCk an\u0131 var. Hepsini bulabilir misin?"
+  - "Birka\xE7 an\u0131 ormana da\u011F\u0131lm\u0131\u015F."
+  - "Onlar\u0131 bulursan yol biraz daha ayd\u0131nlanacak."

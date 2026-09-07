@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -14,12 +15,22 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private CardMatchingCardButton[] cardButtons;
         [SerializeField] private Button closeButton;
         [SerializeField] private GameplayInputLock inputLock;
+        [SerializeField] private InputActionAsset inputActions;
+        [SerializeField] private ThirdPersonCameraController cameraController;
 
         private CardMatchingController controller;
+        private InputActionMap playerMap;
+        private InputAction cancelAction;
         private bool isOpen;
         private bool hasInputLock;
+        private bool enabledPlayerMap;
+        private bool hasCursorOverride;
+        private CursorLockMode previousCursorLockState;
+        private bool previousCursorVisible;
+        private bool cameraLookLocked;
 
         public bool IsOpen => isOpen;
+        public bool HasCursorOverride => hasCursorOverride;
 
         private void Awake()
         {
@@ -28,6 +39,13 @@ namespace TilkiOyunu.Foundation
 
         private void OnEnable()
         {
+            ResolveInputActions();
+            if (playerMap != null && !playerMap.enabled)
+            {
+                playerMap.Enable();
+                enabledPlayerMap = true;
+            }
+
             if (closeButton != null)
             {
                 closeButton.onClick.AddListener(Close);
@@ -41,13 +59,23 @@ namespace TilkiOyunu.Foundation
                 closeButton.onClick.RemoveListener(Close);
             }
 
+            isOpen = false;
+            SetVisible(false);
+            ClearSelection();
             ReleaseInputLock();
+            ReleaseCameraLookLock();
+            RestoreCursorState();
             Unsubscribe();
+            if (enabledPlayerMap)
+            {
+                playerMap?.Disable();
+                enabledPlayerMap = false;
+            }
         }
 
         private void Update()
         {
-            if (isOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (isOpen && WasCancelPressed())
             {
                 Close();
             }
@@ -61,8 +89,11 @@ namespace TilkiOyunu.Foundation
 
             isOpen = true;
             AcquireInputLock();
+            AcquireCameraLookLock();
+            StoreAndUnlockCursor();
             SetVisible(true);
             RefreshAll();
+            EnsureValidSelection();
         }
 
         public void Close()
@@ -75,6 +106,9 @@ namespace TilkiOyunu.Foundation
             bool completed = controller != null && controller.IsComplete;
             isOpen = false;
             SetVisible(false);
+            ClearSelection();
+            RestoreCursorState();
+            ReleaseCameraLookLock();
             ReleaseInputLock();
             if (!completed)
             {
@@ -96,6 +130,7 @@ namespace TilkiOyunu.Foundation
 
             cardButtons[index].Refresh(view, controller != null && controller.CanReveal(index));
             RefreshInteractivity();
+            EnsureValidSelection();
         }
 
         private void HandleProgressChanged(int matched, int total)
@@ -115,6 +150,7 @@ namespace TilkiOyunu.Foundation
             }
 
             RefreshInteractivity();
+            EnsureValidSelection();
         }
 
         private void RefreshAll()
@@ -147,6 +183,8 @@ namespace TilkiOyunu.Foundation
             {
                 HandleProgressChanged(controller.MatchedPairs, controller.PairCount);
             }
+
+            EnsureValidSelection();
         }
 
         private void RefreshInteractivity()
@@ -163,6 +201,8 @@ namespace TilkiOyunu.Foundation
                     cardButtons[i].Refresh(controller.GetCard(i), controller.CanReveal(i));
                 }
             }
+
+            EnsureValidSelection();
         }
 
         private void Subscribe()
@@ -226,6 +266,135 @@ namespace TilkiOyunu.Foundation
                 inputLock.Release();
                 hasInputLock = false;
             }
+        }
+
+        private void StoreAndUnlockCursor()
+        {
+            if (!hasCursorOverride)
+            {
+                previousCursorLockState = Cursor.lockState;
+                previousCursorVisible = Cursor.visible;
+                hasCursorOverride = true;
+            }
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        private void RestoreCursorState()
+        {
+            if (!hasCursorOverride)
+            {
+                return;
+            }
+
+            Cursor.lockState = previousCursorLockState;
+            Cursor.visible = previousCursorVisible;
+            hasCursorOverride = false;
+        }
+
+        private void AcquireCameraLookLock()
+        {
+            ResolveCameraController();
+            if (cameraController != null && !cameraLookLocked)
+            {
+                cameraController.SetLookInputLocked(true);
+                cameraLookLocked = true;
+            }
+        }
+
+        private void ReleaseCameraLookLock()
+        {
+            if (cameraController != null && cameraLookLocked)
+            {
+                cameraController.SetLookInputLocked(false);
+                cameraLookLocked = false;
+            }
+        }
+
+        private void EnsureValidSelection()
+        {
+            if (!isOpen || EventSystem.current == null)
+            {
+                return;
+            }
+
+            GameObject selected = EventSystem.current.currentSelectedGameObject;
+            if (selected != null && selected.activeInHierarchy)
+            {
+                Selectable selectable = selected.GetComponent<Selectable>();
+                if (selectable != null && selectable.IsInteractable())
+                {
+                    return;
+                }
+            }
+
+            CardMatchingCardButton nextCard = FindFirstInteractableCard();
+            if (nextCard != null)
+            {
+                EventSystem.current.SetSelectedGameObject(nextCard.SelectionObject);
+            }
+            else if (closeButton != null && closeButton.gameObject.activeInHierarchy && closeButton.IsInteractable())
+            {
+                EventSystem.current.SetSelectedGameObject(closeButton.gameObject);
+            }
+        }
+
+        private void ClearSelection()
+        {
+            if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+            }
+        }
+
+        private CardMatchingCardButton FindFirstInteractableCard()
+        {
+            if (cardButtons == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < cardButtons.Length; i++)
+            {
+                CardMatchingCardButton cardButton = cardButtons[i];
+                if (cardButton != null && cardButton.SelectionObject.activeInHierarchy && cardButton.IsInteractable)
+                {
+                    return cardButton;
+                }
+            }
+
+            return null;
+        }
+
+        private void ResolveInputActions()
+        {
+            if (inputActions == null)
+            {
+                return;
+            }
+
+            playerMap = inputActions.FindActionMap(InputActionIds.MapPlayer, false);
+            cancelAction = playerMap?.FindAction(InputActionIds.Pause, false);
+        }
+
+        private void ResolveCameraController()
+        {
+            if (cameraController == null)
+            {
+                cameraController = Object.FindFirstObjectByType<ThirdPersonCameraController>(FindObjectsInactive.Include);
+            }
+        }
+
+        private bool WasCancelPressed()
+        {
+            if (cancelAction != null)
+            {
+                return cancelAction.WasPressedThisFrame();
+            }
+
+            return (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+                || (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame);
         }
     }
 }

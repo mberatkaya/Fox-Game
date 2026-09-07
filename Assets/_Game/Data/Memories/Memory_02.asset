@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Memory_02
   m_EditorClassIdentifier: 
   id: memory_02
-  displayName: "Birlikte g\xFClmek"
-  shortText: "S\u0131cak bir g\xFCl\xFC\u015F yapraklar\u0131n aras\u0131ndan geri
-    geldi."
+  displayName: "G\xFCzel Yol"
+  shortText: "Birlikte g\xFClmek yolu biraz daha g\xFCzel yap\u0131yor."
   icon: {fileID: 0}
   worldPrefab: {fileID: 5958105457107828176, guid: 7b6cfae5bf095834e8d6efe484425d53, type: 3}

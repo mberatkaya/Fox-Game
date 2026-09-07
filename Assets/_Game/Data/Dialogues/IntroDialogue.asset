@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: IntroDialogue
   m_EditorClassIdentifier: 
   id: intro
-  speaker: Anlatici
+  speaker: Rehber
   lines:
-  - Orman bugun sessiz ama yolunu biliyor.
-  - Kucuk tilki, ilk isigi bulmak icin hazir.
+  - "Ho\u015F geldin."
+  - "Orman bug\xFCn sakin. Tilki, seni k\xFC\xE7\xFCk an\u0131lar\u0131n pe\u015Fine
+    \xE7a\u011F\u0131r\u0131yor."
