@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Memory_01
   m_EditorClassIdentifier: 
   id: memory_01
-  displayName: "K\xFC\xE7\xFCk bir macera"
-  shortText: "K\xFC\xE7\xFCk bir ad\u0131m, b\xFCy\xFCk bir ke\u015Fif gibi parlad\u0131."
+  displayName: "K\xFC\xE7\xFCk An"
+  shortText: "Bazen en k\xFC\xE7\xFCk anlar en uzun s\xFCre kal\u0131yor."
   icon: {fileID: 0}
   worldPrefab: {fileID: 5958105457107828176, guid: 7b6cfae5bf095834e8d6efe484425d53, type: 3}

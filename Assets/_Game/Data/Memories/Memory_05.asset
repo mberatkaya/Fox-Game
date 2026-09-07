@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Memory_05
   m_EditorClassIdentifier: 
   id: memory_05
-  displayName: "G\xFCzel bir g\xFCn"
-  shortText: "G\xFCne\u015F k\u0131sa bir an i\xE7in her \u015Feyi yumu\u015Fatt\u0131."
+  displayName: "S\u0131cak \u0130z"
+  shortText: "Hat\u0131rlamak, i\xE7inden k\xFC\xE7\xFCk bir \u0131\u015F\u0131k
+    ge\xE7irmek gibi."
   icon: {fileID: 0}
   worldPrefab: {fileID: 5958105457107828176, guid: 7b6cfae5bf095834e8d6efe484425d53, type: 3}

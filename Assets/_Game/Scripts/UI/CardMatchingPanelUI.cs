@@ -14,8 +14,11 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private CardMatchingCardButton[] cardButtons;
         [SerializeField] private Button closeButton;
         [SerializeField] private GameplayInputLock inputLock;
+        [SerializeField] private InputActionAsset inputActions;
 
         private CardMatchingController controller;
+        private InputActionMap playerMap;
+        private InputAction cancelAction;
         private bool isOpen;
         private bool hasInputLock;
 
@@ -28,6 +31,8 @@ namespace TilkiOyunu.Foundation
 
         private void OnEnable()
         {
+            ResolveInputActions();
+            playerMap?.Enable();
             if (closeButton != null)
             {
                 closeButton.onClick.AddListener(Close);
@@ -43,11 +48,12 @@ namespace TilkiOyunu.Foundation
 
             ReleaseInputLock();
             Unsubscribe();
+            playerMap?.Disable();
         }
 
         private void Update()
         {
-            if (isOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (isOpen && WasCancelPressed())
             {
                 Close();
             }
@@ -226,6 +232,28 @@ namespace TilkiOyunu.Foundation
                 inputLock.Release();
                 hasInputLock = false;
             }
+        }
+
+        private void ResolveInputActions()
+        {
+            if (inputActions == null)
+            {
+                return;
+            }
+
+            playerMap = inputActions.FindActionMap(InputActionIds.MapPlayer, false);
+            cancelAction = playerMap?.FindAction(InputActionIds.Pause, false);
+        }
+
+        private bool WasCancelPressed()
+        {
+            if (cancelAction != null)
+            {
+                return cancelAction.WasPressedThisFrame();
+            }
+
+            return (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+                || (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame);
         }
     }
 }

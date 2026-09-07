@@ -7,6 +7,7 @@ namespace TilkiOyunu.Foundation
     {
         private const string MasterVolumeParameter = "MasterVolume";
         private const string MusicVolumeParameter = "MusicVolume";
+        private const string AmbienceVolumeParameter = "AmbienceVolume";
         private const string SfxVolumeParameter = "SFXVolume";
 
         private readonly AudioMixer mixer;
@@ -24,6 +25,11 @@ namespace TilkiOyunu.Foundation
         public void SetMusicVolume(float normalizedVolume)
         {
             SetVolume(MusicVolumeParameter, normalizedVolume);
+        }
+
+        public void SetAmbienceVolume(float normalizedVolume)
+        {
+            SetVolume(AmbienceVolumeParameter, normalizedVolume);
         }
 
         public void SetSfxVolume(float normalizedVolume)

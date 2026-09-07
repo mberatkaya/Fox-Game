@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Memory_04
   m_EditorClassIdentifier: 
   id: memory_04
-  displayName: Yolculuk
-  shortText: "Yol uzundu ama izler kaybolmad\u0131."
+  displayName: "Sakl\u0131 S\xF6z"
+  shortText: "\u0130yi gelen \u015Feyler bazen usulca yan\u0131nda y\xFCr\xFCr."
   icon: {fileID: 0}
   worldPrefab: {fileID: 5958105457107828176, guid: 7b6cfae5bf095834e8d6efe484425d53, type: 3}

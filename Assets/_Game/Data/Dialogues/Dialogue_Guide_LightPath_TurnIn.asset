@@ -15,6 +15,5 @@ MonoBehaviour:
   id: guide_light_path_turn_in
   speaker: Rehber
   lines:
-  - "Yolu bulmu\u015Fsun."
-  - "Bazen do\u011Fru yere varmak i\xE7in yaln\u0131zca k\xFC\xE7\xFCk bir \u0131\u015F\u0131\u011F\u0131
-    takip etmek yeter."
+  - "Yolu kaybetmeden ge\xE7tin."
+  - "G\xFCzel. Orman bunu hat\u0131rlayacak."

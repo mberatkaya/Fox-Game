@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Memory_03
   m_EditorClassIdentifier: 
   id: memory_03
-  displayName: Sessiz bir an
-  shortText: "Sessizlik bile bazen yan\u0131nda biri varm\u0131\u015F gibi hissettirir."
+  displayName: "Sessiz I\u015F\u0131k"
+  shortText: "Baz\u0131 sessizlikler bile g\xFCzel bir an\u0131ya d\xF6n\xFC\u015F\xFCyor."
   icon: {fileID: 0}
   worldPrefab: {fileID: 5958105457107828176, guid: 7b6cfae5bf095834e8d6efe484425d53, type: 3}

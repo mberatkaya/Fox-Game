@@ -11,10 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2888a799cf82927409cd7f4a2ea97f16, type: 3}
   m_Name: Dialogue_Guide_CardMatching_Intro
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: guide_card_matching_intro
   speaker: Rehber
   lines:
-  - "I\u015F\u0131klar\u0131n sonuna kadar gittin."
-  - "\u015Eimdi bah\xE7ede seni k\xFC\xE7\xFCk bir oyun bekliyor."
-  - "Baz\u0131 \u015Feyler ancak e\u015Fini buldu\u011Funda tamamlan\u0131yor."
+  - "Bah\xE7ede k\xFC\xE7\xFCk bir oyun var."
+  - "E\u015Fini bulan kartlar gibi, baz\u0131 anlar da yerini bulur."
