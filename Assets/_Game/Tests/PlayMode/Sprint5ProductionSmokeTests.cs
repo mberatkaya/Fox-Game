@@ -44,6 +44,50 @@ namespace TilkiOyunu.Foundation.PlayModeTests
         }
 
         [UnityTest]
+        public IEnumerator InitialGameplayPresentationStateIsRenderable()
+        {
+            yield return LoadBootstrapToForest();
+            yield return WaitFrames(3);
+
+            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(SceneIds.Forest));
+
+            Camera camera = Camera.main;
+            Assert.That(camera, Is.Not.Null);
+            Assert.That(camera.isActiveAndEnabled, Is.True);
+            Assert.That(camera.targetDisplay, Is.EqualTo(0));
+            Assert.That(camera.targetTexture, Is.Null);
+            Assert.That(camera.cullingMask, Is.Not.EqualTo(0));
+            Assert.That(IsFinite(camera.transform.position), Is.True);
+            Assert.That(IsFinite(camera.transform.rotation), Is.True);
+
+            ThirdPersonCameraController cameraController = camera.GetComponent<ThirdPersonCameraController>();
+            Assert.That(cameraController, Is.Not.Null);
+            Assert.That(cameraController.isActiveAndEnabled, Is.True);
+            Assert.That(cameraController.Target, Is.Not.Null);
+            Assert.That(cameraController.IsExternalControlActive, Is.False);
+            Assert.That(Vector3.Distance(camera.transform.position, cameraController.Target.position), Is.GreaterThan(2.5f));
+            Assert.That(Vector3.Dot(camera.transform.forward, (cameraController.Target.position - camera.transform.position).normalized), Is.GreaterThan(0.45f));
+
+            GameObject player = GameObject.Find("PlayerFox");
+            Assert.That(player, Is.Not.Null);
+            Assert.That(player.activeInHierarchy, Is.True);
+            Assert.That(player.transform.Find("VisualRoot"), Is.Not.Null);
+            Assert.That(player.transform.Find("VisualRoot").gameObject.activeInHierarchy, Is.True);
+
+            GameObject environmentVisuals = GameObject.Find("Environment_Visuals");
+            Assert.That(environmentVisuals, Is.Not.Null);
+            Assert.That(HasRenderableInView(camera, player.transform.Find("VisualRoot")), Is.True);
+            Assert.That(HasRenderableInView(camera, environmentVisuals.transform), Is.True);
+
+            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<DialoguePanelUI>(FindObjectsInactive.Include));
+            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<CardMatchingPanelUI>(FindObjectsInactive.Include));
+            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<FinalMessagePanelUI>(FindObjectsInactive.Include));
+            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<MemoryFeedbackUI>(FindObjectsInactive.Include));
+            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<LightPathHUD>(FindObjectsInactive.Include));
+            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<QuestHUD>(FindObjectsInactive.Include));
+        }
+
+        [UnityTest]
         public IEnumerator CompletedQuestChainAllowsFinalSequenceToOpen()
         {
             yield return LoadBootstrapToForest();
@@ -344,6 +388,57 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Selectable selectable = selected.GetComponent<Selectable>();
             Assert.That(selectable, Is.Not.Null);
             Assert.That(selectable.IsInteractable(), Is.True);
+        }
+
+        private static void AssertHiddenCanvasGroup(Component component)
+        {
+            Assert.That(component, Is.Not.Null);
+            CanvasGroup panel = component.GetComponent<CanvasGroup>();
+            Assert.That(panel, Is.Not.Null);
+            Assert.That(panel.alpha, Is.EqualTo(0f));
+            Assert.That(panel.interactable, Is.False);
+            Assert.That(panel.blocksRaycasts, Is.False);
+        }
+
+        private static bool HasRenderableInView(Camera camera, Transform root)
+        {
+            if (camera == null || root == null)
+            {
+                return false;
+            }
+
+            Plane[] frustum = GeometryUtility.CalculateFrustumPlanes(camera);
+            Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                Renderer renderer = renderers[i];
+                if (renderer.enabled && renderer.gameObject.activeInHierarchy && GeometryUtility.TestPlanesAABB(frustum, renderer.bounds))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsFinite(Vector3 vector)
+        {
+            return IsFinite(vector.x)
+                && IsFinite(vector.y)
+                && IsFinite(vector.z);
+        }
+
+        private static bool IsFinite(Quaternion quaternion)
+        {
+            return IsFinite(quaternion.x)
+                && IsFinite(quaternion.y)
+                && IsFinite(quaternion.z)
+                && IsFinite(quaternion.w);
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
         }
     }
 }

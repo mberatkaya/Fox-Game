@@ -48,6 +48,7 @@ namespace TilkiOyunu.Foundation.Editor
             errors = new List<string>();
             ValidateImportedAssets(errors);
             ValidatePlayerPrefab(errors);
+            ValidateBuildSettings(errors);
             ValidateForestScene(errors);
             ValidateDocumentation(errors);
             return errors.Count == 0;
@@ -157,6 +158,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             ValidateCardMatchingPanel(errors);
+            ValidateInitialPresentation(errors);
 
             FinalCampController camp = Object.FindFirstObjectByType<FinalCampController>(FindObjectsInactive.Include);
             if (camp == null)
@@ -190,6 +192,26 @@ namespace TilkiOyunu.Foundation.Editor
                 {
                     errors.Add($"Scene root '{root.name}' has {missingCount} missing script reference(s).");
                 }
+            }
+        }
+
+        private static void ValidateBuildSettings(List<string> errors)
+        {
+            EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
+            if (scenes.Length < 2)
+            {
+                errors.Add("Build Settings must include Bootstrap and Forest scenes.");
+                return;
+            }
+
+            if (!scenes[0].enabled || scenes[0].path != SceneIds.BootstrapPath)
+            {
+                errors.Add("Build Settings scene 0 must be the enabled Bootstrap scene.");
+            }
+
+            if (!scenes[1].enabled || scenes[1].path != SceneIds.ForestPath)
+            {
+                errors.Add("Build Settings scene 1 must be the enabled Forest scene.");
             }
         }
 
@@ -271,6 +293,101 @@ namespace TilkiOyunu.Foundation.Editor
                         errors.Add($"CardMatchingPanelUI cardButtons[{i}] is missing.");
                     }
                 }
+            }
+        }
+
+        private static void ValidateInitialPresentation(List<string> errors)
+        {
+            Camera camera = Camera.main;
+            if (camera == null)
+            {
+                errors.Add("Forest scene is missing an active Main Camera.");
+            }
+            else
+            {
+                if (!camera.isActiveAndEnabled)
+                {
+                    errors.Add("Main Camera must be active and enabled for the initial Game View.");
+                }
+
+                if (camera.targetDisplay != 0)
+                {
+                    errors.Add("Main Camera target display must be Display 1.");
+                }
+
+                if (camera.targetTexture != null)
+                {
+                    errors.Add("Main Camera target texture must be None.");
+                }
+
+                if (camera.cullingMask == 0)
+                {
+                    errors.Add("Main Camera culling mask must render gameplay layers.");
+                }
+
+                ThirdPersonCameraController cameraController = camera.GetComponent<ThirdPersonCameraController>();
+                if (cameraController == null || !cameraController.isActiveAndEnabled)
+                {
+                    errors.Add("Main Camera must have an enabled ThirdPersonCameraController.");
+                }
+                else
+                {
+                    SerializedObject serializedCamera = new(cameraController);
+                    if (serializedCamera.FindProperty("target")?.objectReferenceValue == null)
+                    {
+                        errors.Add("ThirdPersonCameraController must reference the player Camera Target.");
+                    }
+
+                    if (cameraController.IsExternalControlActive)
+                    {
+                        errors.Add("ThirdPersonCameraController external control must be false at initial gameplay.");
+                    }
+                }
+            }
+
+            GameObject player = GameObject.Find("PlayerFox");
+            if (player == null || !player.activeInHierarchy)
+            {
+                errors.Add("PlayerFox must be active for the initial Game View.");
+            }
+            else if (player.transform.Find("VisualRoot") == null || !player.transform.Find("VisualRoot").gameObject.activeInHierarchy)
+            {
+                errors.Add("PlayerFox VisualRoot must be active for the initial Game View.");
+            }
+
+            ValidateHiddenPanel<DialoguePanelUI>("Dialogue panel", errors);
+            ValidateHiddenPanel<CardMatchingPanelUI>("Card Matching panel", errors);
+            ValidateHiddenPanel<FinalMessagePanelUI>("Final message panel", errors);
+            ValidateHiddenPanel<MemoryFeedbackUI>("Memory feedback panel", errors);
+            ValidateHiddenPanel<LightPathHUD>("Light Path HUD panel", errors);
+            ValidateHiddenPanel<QuestHUD>("Quest HUD panel", errors);
+        }
+
+        private static void ValidateHiddenPanel<T>(string label, List<string> errors) where T : Component
+        {
+            T component = Object.FindFirstObjectByType<T>(FindObjectsInactive.Include);
+            if (component == null)
+            {
+                errors.Add($"Forest scene is missing {label}.");
+                return;
+            }
+
+            SerializedObject serialized = new(component);
+            CanvasGroup panel = serialized.FindProperty("panel")?.objectReferenceValue as CanvasGroup;
+            if (panel == null)
+            {
+                panel = component.GetComponent<CanvasGroup>();
+            }
+
+            if (panel == null)
+            {
+                errors.Add($"{label} must reference a CanvasGroup.");
+                return;
+            }
+
+            if (panel.alpha > 0.001f || panel.interactable || panel.blocksRaycasts)
+            {
+                errors.Add($"{label} must be hidden in the serialized Forest scene default state.");
             }
         }
 

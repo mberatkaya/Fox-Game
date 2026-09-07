@@ -27,6 +27,7 @@ namespace TilkiOyunu.Foundation
         private bool externalControl;
         private bool lookInputLocked;
 
+        public Transform Target => target;
         public bool IsExternalControlActive => externalControl;
         public bool IsLookInputLocked => lookInputLocked;
 
@@ -74,11 +75,30 @@ namespace TilkiOyunu.Foundation
             yaw += look.x * sensitivity;
             pitch = Mathf.Clamp(pitch - look.y * sensitivity, minPitch, maxPitch);
 
+            ApplyFollow(deltaTime, false);
+        }
+
+        public void SnapToTarget()
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            yaw = target.eulerAngles.y;
+            pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+            ApplyFollow(0f, true);
+        }
+
+        private void ApplyFollow(float deltaTime, bool snap)
+        {
             Vector3 targetPosition = target.position + targetOffset;
-            smoothedTargetPosition = Vector3.Lerp(
-                smoothedTargetPosition,
-                targetPosition,
-                1f - Mathf.Exp(-followSharpness * deltaTime));
+            smoothedTargetPosition = snap
+                ? targetPosition
+                : Vector3.Lerp(
+                    smoothedTargetPosition,
+                    targetPosition,
+                    1f - Mathf.Exp(-followSharpness * deltaTime));
 
             Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
             Vector3 desiredDirection = rotation * Vector3.back;
@@ -138,19 +158,39 @@ namespace TilkiOyunu.Foundation
 
         private float ResolveCameraDistance(Vector3 origin, Vector3 direction)
         {
-            if (Physics.SphereCast(
-                    origin,
-                    collisionRadius,
-                    direction,
-                    out RaycastHit hit,
-                    distance,
-                    obstructionLayers,
-                    QueryTriggerInteraction.Ignore))
+            RaycastHit[] hits = Physics.SphereCastAll(
+                origin,
+                collisionRadius,
+                direction,
+                distance,
+                obstructionLayers,
+                QueryTriggerInteraction.Ignore);
+
+            float closestDistance = float.PositiveInfinity;
+            for (int i = 0; i < hits.Length; i++)
             {
-                return Mathf.Clamp(hit.distance - collisionRadius, minDistance, distance);
+                RaycastHit hit = hits[i];
+                if (hit.collider == null || IsTargetCollider(hit.collider))
+                {
+                    continue;
+                }
+
+                closestDistance = Mathf.Min(closestDistance, hit.distance);
+            }
+
+            if (!float.IsPositiveInfinity(closestDistance))
+            {
+                return Mathf.Clamp(closestDistance - collisionRadius, minDistance, distance);
             }
 
             return distance;
+        }
+
+        private bool IsTargetCollider(Collider candidate)
+        {
+            return target != null
+                && candidate != null
+                && candidate.transform.root == target.root;
         }
     }
 }
