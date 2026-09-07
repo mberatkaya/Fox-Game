@@ -172,6 +172,7 @@ namespace TilkiOyunu.Foundation.Editor
                 SetObject(animationDriver, "animator", animator);
 
                 AudioSource source = EnsureComponent<AudioSource>(root);
+                source.outputAudioMixerGroup = FindMixerGroup("SFX");
                 FootstepAudio footsteps = EnsureComponent<FootstepAudio>(root);
                 SetObject(footsteps, "controller", controller);
                 SetObject(footsteps, "source", source);
@@ -220,6 +221,7 @@ namespace TilkiOyunu.Foundation.Editor
             AudioSource music = EnsureChild(audioRoot.transform, "Music Loop", typeof(AudioSource)).GetComponent<AudioSource>();
             SceneLoopAudio musicLoop = EnsureComponent<SceneLoopAudio>(music.gameObject);
             music.spatialBlend = 0f;
+            music.outputAudioMixerGroup = FindMixerGroup("Music");
             SetObject(musicLoop, "source", music);
             SetObject(musicLoop, "clip", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/ThirdParty/OpenGameArt/Music/SunsetWalk.ogg"));
             SetFloat(musicLoop, "volume", 0.18f);
@@ -227,6 +229,7 @@ namespace TilkiOyunu.Foundation.Editor
             AudioSource ambience = EnsureChild(audioRoot.transform, "Forest Ambience Loop", typeof(AudioSource)).GetComponent<AudioSource>();
             SceneLoopAudio ambienceLoop = EnsureComponent<SceneLoopAudio>(ambience.gameObject);
             ambience.spatialBlend = 0f;
+            ambience.outputAudioMixerGroup = FindMixerGroup("Ambience");
             SetObject(ambienceLoop, "source", ambience);
             SetObject(ambienceLoop, "clip", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/ThirdParty/OpenGameArt/Ambience/Forest_Ambience.mp3"));
             SetFloat(ambienceLoop, "volume", 0.12f);
@@ -373,6 +376,7 @@ namespace TilkiOyunu.Foundation.Editor
             if (controller != null)
             {
                 AudioSource source = EnsureComponent<AudioSource>(controller.gameObject);
+                source.outputAudioMixerGroup = FindMixerGroup("SFX");
                 CardMatchingAudioFeedback audio = EnsureComponent<CardMatchingAudioFeedback>(controller.gameObject);
                 SetObject(audio, "controller", controller);
                 SetObject(audio, "source", source);
@@ -392,6 +396,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             AudioSource source = EnsureComponent<AudioSource>(controller.gameObject);
+            source.outputAudioMixerGroup = FindMixerGroup("SFX");
             LightPathAudioFeedback audio = EnsureComponent<LightPathAudioFeedback>(controller.gameObject);
             SetObject(audio, "controller", controller);
             SetObject(audio, "source", source);
@@ -413,6 +418,7 @@ namespace TilkiOyunu.Foundation.Editor
             foreach (MemoryCollectible collectible in Object.FindObjectsByType<MemoryCollectible>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 AudioSource source = EnsureComponent<AudioSource>(collectible.gameObject);
+                source.outputAudioMixerGroup = FindMixerGroup("SFX");
                 MemoryAudioFeedback audio = EnsureComponent<MemoryAudioFeedback>(collectible.gameObject);
                 SetObject(audio, "source", source);
                 SetObject(audio, "pickupClip", pickup);
@@ -432,6 +438,7 @@ namespace TilkiOyunu.Foundation.Editor
             FinalSequenceController sequence = EnsureComponent<FinalSequenceController>(camp);
             AudioSource source = EnsureComponent<AudioSource>(camp);
             source.spatialBlend = 0.65f;
+            source.outputAudioMixerGroup = FindMixerGroup("SFX");
             Transform focus = camp.transform.Find("Final Camera Focus") ?? new GameObject("Final Camera Focus").transform;
             focus.SetParent(camp.transform, false);
             focus.localPosition = new Vector3(0f, 1.1f, 0f);
@@ -459,6 +466,7 @@ namespace TilkiOyunu.Foundation.Editor
             campfire.volume = 0.18f;
             campfire.minDistance = 1.5f;
             campfire.maxDistance = 9f;
+            campfire.outputAudioMixerGroup = FindMixerGroup("Ambience");
         }
 
         private static FinalMessagePanelUI EnsureFinalPanel(Canvas canvas, GameUITheme theme)
@@ -677,6 +685,18 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             return component;
+        }
+
+        private static AudioMixerGroup FindMixerGroup(string groupName)
+        {
+            AudioMixer mixer = AssetDatabase.LoadAssetAtPath<AudioMixer>(MixerPath);
+            if (mixer == null)
+            {
+                return null;
+            }
+
+            AudioMixerGroup[] groups = mixer.FindMatchingGroups(groupName);
+            return groups.Length > 0 ? groups[0] : null;
         }
 
         private static void ClearStateMachine(AnimatorStateMachine stateMachine)

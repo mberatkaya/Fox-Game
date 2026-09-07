@@ -1,12 +1,16 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace TilkiOyunu.Foundation.Editor
 {
     public static class Sprint5Validation
     {
+        private const string MixerPath = "Assets/_Game/Audio/Mixers/TilkiAudioMixer.mixer";
+
         [MenuItem("Tilki Oyunu/Sprint 5/Validate")]
         public static void ValidateFromMenu()
         {
@@ -75,6 +79,7 @@ namespace TilkiOyunu.Foundation.Editor
             RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/SFX/Cards/contact1.wav", "card contact SFX", errors);
             RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/SFX/Campfire/fire.wav", "campfire loop", errors);
             RequireAsset<AudioClip>("Assets/ThirdParty/Kenney/InterfaceSounds/click_001.ogg", "UI click", errors);
+            ValidateAudioMixer(errors);
             RequireAsset<GameUITheme>("Assets/_Game/Art/UI/GameUITheme.asset", "UI theme", errors);
             RequireAsset<FinalMessageDefinition>("Assets/_Game/Data/Config/FinalMessage.asset", "final message", errors);
         }
@@ -112,6 +117,12 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 errors.Add("PlayerFox prefab is missing FootstepAudio.");
             }
+
+            AudioSource source = prefab.GetComponent<AudioSource>();
+            if (source == null || source.outputAudioMixerGroup == null || source.outputAudioMixerGroup.name != "SFX")
+            {
+                errors.Add("PlayerFox footstep AudioSource must route to the SFX mixer group.");
+            }
         }
 
         private static void ValidateForestScene(List<string> errors)
@@ -125,6 +136,10 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 errors.Add("Forest scene is missing SceneLoopAudio.");
             }
+
+            RequireAudioRoute("Music Loop", "Music", errors);
+            RequireAudioRoute("Forest Ambience Loop", "Ambience", errors);
+            RequireAudioRoute("Campfire Loop", "Ambience", errors);
 
             if (Object.FindFirstObjectByType<MemoryAudioFeedback>(FindObjectsInactive.Include) == null)
             {
@@ -163,9 +178,46 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void ValidateDocumentation(List<string> errors)
         {
-            if (!System.IO.File.Exists("ASSET_NOTES.md"))
+            if (!File.Exists("ASSET_NOTES.md"))
             {
                 errors.Add("ASSET_NOTES.md is missing.");
+            }
+        }
+
+        private static void ValidateAudioMixer(List<string> errors)
+        {
+            AudioMixer mixer = AssetDatabase.LoadAssetAtPath<AudioMixer>(MixerPath);
+            if (mixer == null)
+            {
+                errors.Add($"Audio mixer is missing at {MixerPath}.");
+                return;
+            }
+
+            RequireMixerGroup(mixer, "Master", errors);
+            RequireMixerGroup(mixer, "Music", errors);
+            RequireMixerGroup(mixer, "Ambience", errors);
+            RequireMixerGroup(mixer, "SFX", errors);
+
+            string mixerText = File.ReadAllText(MixerPath);
+            RequireMixerParameter(mixerText, "MasterVolume", errors);
+            RequireMixerParameter(mixerText, "MusicVolume", errors);
+            RequireMixerParameter(mixerText, "AmbienceVolume", errors);
+            RequireMixerParameter(mixerText, "SFXVolume", errors);
+        }
+
+        private static void RequireMixerGroup(AudioMixer mixer, string groupName, List<string> errors)
+        {
+            if (mixer.FindMatchingGroups(groupName).Length == 0)
+            {
+                errors.Add($"Audio mixer is missing the {groupName} group.");
+            }
+        }
+
+        private static void RequireMixerParameter(string mixerText, string parameterName, List<string> errors)
+        {
+            if (!mixerText.Contains($"name: {parameterName}"))
+            {
+                errors.Add($"Audio mixer is missing exposed parameter {parameterName}.");
             }
         }
 
@@ -205,6 +257,16 @@ namespace TilkiOyunu.Foundation.Editor
             if (GameObject.Find(name) == null)
             {
                 errors.Add($"Forest scene is missing {name}.");
+            }
+        }
+
+        private static void RequireAudioRoute(string objectName, string groupName, List<string> errors)
+        {
+            GameObject gameObject = GameObject.Find(objectName);
+            AudioSource source = gameObject == null ? null : gameObject.GetComponent<AudioSource>();
+            if (source == null || source.outputAudioMixerGroup == null || source.outputAudioMixerGroup.name != groupName)
+            {
+                errors.Add($"{objectName} must route to the {groupName} mixer group.");
             }
         }
     }
