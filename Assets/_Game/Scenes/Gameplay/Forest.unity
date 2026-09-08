@@ -6667,15 +6667,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputActions: {fileID: -944628639613478452, guid: a816b161fcee99e4f8bf9d63bcec50f0, type: 3}
   target: {fileID: 1174394963}
-  targetOffset: {x: 0, y: 0.75, z: 0}
-  distance: 4.4
-  minDistance: 1.2
+  targetOffset: {x: 0, y: 0.35, z: 0}
+  distance: 5
+  minDistance: 1.35
   mouseSensitivity: 0.08
   gamepadSensitivity: 135
   minPitch: -18
   maxPitch: 58
   followSharpness: 18
-  collisionRadius: 0.18
+  collisionRadius: 0.2
   obstructionLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -15241,6 +15241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 280392053}
   player: {fileID: 1174394962}
+  cameraController: {fileID: 724572437}
 --- !u!4 &1707186659
 Transform:
   m_ObjectHideFlags: 0

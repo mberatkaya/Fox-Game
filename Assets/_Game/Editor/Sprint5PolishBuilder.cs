@@ -82,50 +82,7 @@ namespace TilkiOyunu.Foundation.Editor
         private static AnimatorController EnsureFoxAnimatorController()
         {
             EnsureFolder("Assets/_Game/Art/Characters");
-            AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(AnimatorPath);
-            if (controller == null || controller.layers == null || controller.layers.Length == 0)
-            {
-                if (controller != null)
-                {
-                    AssetDatabase.DeleteAsset(AnimatorPath);
-                }
-
-                controller = AnimatorController.CreateAnimatorControllerAtPath(AnimatorPath);
-            }
-
-            controller.parameters = new AnimatorControllerParameter[0];
-            AddAnimatorParameter(controller, "Speed", AnimatorControllerParameterType.Float);
-            AddAnimatorParameter(controller, "Grounded", AnimatorControllerParameterType.Bool);
-            AddAnimatorParameter(controller, "VerticalVelocity", AnimatorControllerParameterType.Float);
-
-            AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
-            ClearStateMachine(stateMachine);
-
-            AnimationClip idle = FindClip("idle") ?? FirstClip();
-            AnimationClip walk = FindClip("walk") ?? idle;
-            AnimationClip run = FindClip("run", "gallop") ?? walk;
-            AnimationClip jump = FindClip("jump") ?? idle;
-
-            AnimatorState idleState = AddState(stateMachine, "Idle", idle, new Vector3(240f, 80f, 0f));
-            AnimatorState walkState = AddState(stateMachine, "Walk", walk, new Vector3(240f, 180f, 0f));
-            AnimatorState runState = AddState(stateMachine, "Run", run, new Vector3(240f, 280f, 0f));
-            AnimatorState jumpState = AddState(stateMachine, "Jump", jump, new Vector3(520f, 180f, 0f));
-            stateMachine.defaultState = idleState;
-
-            AddSpeedTransition(idleState, walkState, AnimatorConditionMode.Greater, 0.08f);
-            AddSpeedTransition(walkState, idleState, AnimatorConditionMode.Less, 0.06f);
-            AddSpeedTransition(walkState, runState, AnimatorConditionMode.Greater, 0.62f);
-            AddSpeedTransition(runState, walkState, AnimatorConditionMode.Less, 0.58f);
-            AddGroundedTransition(idleState, jumpState);
-            AddGroundedTransition(walkState, jumpState);
-            AddGroundedTransition(runState, jumpState);
-            AnimatorStateTransition jumpReturn = jumpState.AddTransition(idleState);
-            jumpReturn.hasExitTime = false;
-            jumpReturn.duration = 0.12f;
-            jumpReturn.AddCondition(AnimatorConditionMode.If, 0f, "Grounded");
-
-            EditorUtility.SetDirty(controller);
-            return controller;
+            return Sprint55FoxCharacterQuality.EnsureFoxAnimatorController();
         }
 
         private static void UpdatePlayerPrefab(AnimatorController animatorController)
@@ -133,60 +90,7 @@ namespace TilkiOyunu.Foundation.Editor
             GameObject root = PrefabUtility.LoadPrefabContents(PlayerPrefabPath);
             try
             {
-                FoxController controller = root.GetComponent<FoxController>();
-                Transform visualRoot = root.transform.Find("VisualRoot") ?? root.transform.Find("Visual");
-                if (visualRoot == null)
-                {
-                    visualRoot = new GameObject("VisualRoot").transform;
-                    visualRoot.SetParent(root.transform, false);
-                }
-
-                visualRoot.name = "VisualRoot";
-                for (int i = visualRoot.childCount - 1; i >= 0; i--)
-                {
-                    Object.DestroyImmediate(visualRoot.GetChild(i).gameObject);
-                }
-
-                GameObject foxVisual = new("QuaterniusFox");
-                foxVisual.transform.SetParent(visualRoot, false);
-                foxVisual.transform.localPosition = new Vector3(0f, -0.88f, 0f);
-                foxVisual.transform.localRotation = Quaternion.identity;
-                foxVisual.transform.localScale = Vector3.one * 0.62f;
-
-                GameObject foxAsset = AssetDatabase.LoadAssetAtPath<GameObject>(FoxFbxPath);
-                if (foxAsset != null)
-                {
-                    GameObject model = (GameObject)PrefabUtility.InstantiatePrefab(foxAsset, foxVisual.transform);
-                    model.name = "FoxModel";
-                    model.transform.localPosition = Vector3.zero;
-                    model.transform.localRotation = Quaternion.identity;
-                    model.transform.localScale = Vector3.one;
-                }
-
-                Animator animator = foxVisual.AddComponent<Animator>();
-                animator.runtimeAnimatorController = animatorController;
-                animator.applyRootMotion = false;
-
-                FoxAnimationDriver animationDriver = EnsureComponent<FoxAnimationDriver>(foxVisual);
-                SetObject(animationDriver, "controller", controller);
-                SetObject(animationDriver, "animator", animator);
-
-                AudioSource source = EnsureComponent<AudioSource>(root);
-                source.outputAudioMixerGroup = FindMixerGroup("SFX");
-                FootstepAudio footsteps = EnsureComponent<FootstepAudio>(root);
-                SetObject(footsteps, "controller", controller);
-                SetObject(footsteps, "source", source);
-                SetObjectArray(footsteps, "clips", LoadAudioClips("Assets/ThirdParty/OpenGameArt/SFX/Footsteps/leaves01.ogg", "Assets/ThirdParty/OpenGameArt/SFX/Footsteps/leaves02.ogg"));
-                SetFloat(footsteps, "volume", 0.24f);
-
-                CharacterController characterController = root.GetComponent<CharacterController>();
-                if (characterController != null)
-                {
-                    characterController.height = 1.45f;
-                    characterController.radius = 0.36f;
-                    characterController.center = new Vector3(0f, 0.72f, 0f);
-                }
-
+                Sprint55FoxCharacterQuality.ConfigureLoadedPlayerPrefab(root, animatorController);
                 PrefabUtility.SaveAsPrefabAsset(root, PlayerPrefabPath);
             }
             finally
