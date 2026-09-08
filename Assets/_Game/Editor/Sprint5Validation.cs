@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -62,6 +63,8 @@ namespace TilkiOyunu.Foundation.Editor
             RequireClip(errors, "walk", "walk");
             RequireClip(errors, "run/gallop", "run", "gallop");
             RequireClip(errors, "jump", "jump");
+            ValidateFoxAnimationImport(errors);
+            ValidateFoxAnimatorController(errors);
 
             string[] nature =
             {
@@ -99,6 +102,26 @@ namespace TilkiOyunu.Foundation.Editor
                 errors.Add("PlayerFox prefab must contain VisualRoot/QuaterniusFox/FoxModel.");
             }
 
+            Transform visualRoot = prefab.transform.Find("VisualRoot");
+            Transform foxVisual = prefab.transform.Find("VisualRoot/QuaterniusFox");
+            if (visualRoot == null || visualRoot.localPosition != Vector3.zero || visualRoot.localScale != Vector3.one)
+            {
+                errors.Add("PlayerFox VisualRoot must stay identity so movement root and presentation root remain separated.");
+            }
+
+            if (foxVisual == null || foxVisual.localPosition.y < 0.07f || foxVisual.localPosition.y > 0.13f)
+            {
+                errors.Add("PlayerFox QuaterniusFox visual offset must be calibrated from renderer bounds, not the old buried -0.88 offset.");
+            }
+            else
+            {
+                float groundedBottom = foxVisual.localPosition.y + foxVisual.localScale.y * MeasureFoxFbxRendererMinY();
+                if (groundedBottom < 0.015f || groundedBottom > 0.04f)
+                {
+                    errors.Add($"PlayerFox visual paws should sit near ground; measured clearance was {groundedBottom:0.###}.");
+                }
+            }
+
             if (prefab.GetComponentInChildren<FoxAnimationDriver>(true) == null)
             {
                 errors.Add("PlayerFox prefab is missing FoxAnimationDriver.");
@@ -124,6 +147,45 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 errors.Add("PlayerFox footstep AudioSource must route to the SFX mixer group.");
             }
+        }
+
+        private static void ValidateFoxAnimationImport(List<string> errors)
+        {
+            RequireClipLoop("AnimalArmature|Idle", true, errors);
+            RequireClipLoop("AnimalArmature|Walk", true, errors);
+            RequireClipLoop("AnimalArmature|Gallop", true, errors);
+            RequireClipLoop("AnimalArmature|Gallop_Jump", false, errors);
+        }
+
+        private static void ValidateFoxAnimatorController(List<string> errors)
+        {
+            AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/_Game/Art/Characters/FoxAnimatorController.controller");
+            if (controller == null || controller.layers == null || controller.layers.Length == 0)
+            {
+                errors.Add("Fox AnimatorController must exist with a Base Layer.");
+                return;
+            }
+
+            RequireAnimatorParameter(controller, "Speed", AnimatorControllerParameterType.Float, errors);
+            RequireAnimatorParameter(controller, "Grounded", AnimatorControllerParameterType.Bool, errors);
+            RequireAnimatorParameter(controller, "VerticalVelocity", AnimatorControllerParameterType.Float, errors);
+
+            AnimatorState locomotion = controller.layers[0].stateMachine.defaultState;
+            if (locomotion == null || locomotion.name != "Locomotion" || locomotion.motion is not BlendTree blendTree)
+            {
+                errors.Add("Fox AnimatorController must use a grounded Locomotion 1D BlendTree.");
+                return;
+            }
+
+            if (blendTree.blendParameter != "Speed" || blendTree.children.Length != 3)
+            {
+                errors.Add("Fox Locomotion BlendTree must blend Idle/Walk/Gallop with the Speed parameter.");
+                return;
+            }
+
+            RequireBlendChild(blendTree, 0, "AnimalArmature|Idle", 0f, 1f, errors);
+            RequireBlendChild(blendTree, 1, "AnimalArmature|Walk", 0.59f, 1.35f, errors);
+            RequireBlendChild(blendTree, 2, "AnimalArmature|Gallop", 1f, 1.18f, errors);
         }
 
         private static void ValidateForestScene(List<string> errors)
@@ -472,6 +534,89 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             errors.Add($"Fox FBX is missing an animation clip containing '{label}'.");
+        }
+
+        private static void RequireClipLoop(string clipName, bool expectedLoop, List<string> errors)
+        {
+            AnimationClip clip = FindClip(clipName);
+            if (clip == null)
+            {
+                errors.Add($"Fox FBX is missing animation clip '{clipName}'.");
+                return;
+            }
+
+            if (AnimationUtility.GetAnimationClipSettings(clip).loopTime != expectedLoop)
+            {
+                errors.Add($"Fox clip '{clipName}' loopTime must be {expectedLoop}.");
+            }
+        }
+
+        private static AnimationClip FindClip(string clipName)
+        {
+            Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            for (int i = 0; i < assets.Length; i++)
+            {
+                if (assets[i] is AnimationClip clip && clip.name == clipName)
+                {
+                    return clip;
+                }
+            }
+
+            return null;
+        }
+
+        private static void RequireAnimatorParameter(AnimatorController controller, string name, AnimatorControllerParameterType type, List<string> errors)
+        {
+            for (int i = 0; i < controller.parameters.Length; i++)
+            {
+                AnimatorControllerParameter parameter = controller.parameters[i];
+                if (parameter.name == name && parameter.type == type)
+                {
+                    return;
+                }
+            }
+
+            errors.Add($"Fox AnimatorController is missing {type} parameter '{name}'.");
+        }
+
+        private static void RequireBlendChild(BlendTree blendTree, int index, string clipName, float threshold, float timeScale, List<string> errors)
+        {
+            ChildMotion child = blendTree.children[index];
+            if (child.motion == null || child.motion.name != clipName)
+            {
+                errors.Add($"Fox Locomotion BlendTree child {index} must use '{clipName}'.");
+            }
+
+            if (Mathf.Abs(child.threshold - threshold) > 0.001f)
+            {
+                errors.Add($"Fox Locomotion BlendTree child {index} threshold must be {threshold:0.###}.");
+            }
+
+            if (Mathf.Abs(child.timeScale - timeScale) > 0.001f)
+            {
+                errors.Add($"Fox Locomotion BlendTree child {index} playback speed must be {timeScale:0.###}.");
+            }
+        }
+
+        private static float MeasureFoxFbxRendererMinY()
+        {
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            try
+            {
+                float minY = float.PositiveInfinity;
+                Renderer[] renderers = instance.GetComponentsInChildren<Renderer>(true);
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    minY = Mathf.Min(minY, renderers[i].bounds.min.y);
+                }
+
+                return minY;
+            }
+            finally
+            {
+                Object.DestroyImmediate(instance);
+            }
         }
 
         private static void RequireSceneObject(string name, List<string> errors)

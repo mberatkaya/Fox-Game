@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using UnityEditor;
+using UnityEditor.Animations;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace TilkiOyunu.Foundation.Tests
@@ -93,6 +95,83 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(prefab.GetComponentInChildren<FoxAnimationDriver>(true), Is.Not.Null);
         }
 
+        [Test]
+        public void FoxImportedLocomotionClipsLoop()
+        {
+            AssertClipLoop("AnimalArmature|Idle", true);
+            AssertClipLoop("AnimalArmature|Walk", true);
+            AssertClipLoop("AnimalArmature|Gallop", true);
+            AssertClipLoop("AnimalArmature|Gallop_Jump", false);
+        }
+
+        [Test]
+        public void FoxAnimatorUsesGroundedLocomotionBlendTree()
+        {
+            AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/_Game/Art/Characters/FoxAnimatorController.controller");
+
+            Assert.That(controller, Is.Not.Null);
+            Assert.That(HasParameter(controller, "Speed", AnimatorControllerParameterType.Float), Is.True);
+            Assert.That(HasParameter(controller, "Grounded", AnimatorControllerParameterType.Bool), Is.True);
+            Assert.That(HasParameter(controller, "VerticalVelocity", AnimatorControllerParameterType.Float), Is.True);
+
+            AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
+            AnimatorState locomotion = stateMachine.defaultState;
+            Assert.That(locomotion, Is.Not.Null);
+            Assert.That(locomotion.name, Is.EqualTo("Locomotion"));
+            Assert.That(locomotion.motion, Is.TypeOf<BlendTree>());
+
+            BlendTree blendTree = (BlendTree)locomotion.motion;
+            Assert.That(blendTree.blendParameter, Is.EqualTo("Speed"));
+            Assert.That(blendTree.children.Length, Is.EqualTo(3));
+            Assert.That(blendTree.children[0].motion.name, Is.EqualTo("AnimalArmature|Idle"));
+            Assert.That(blendTree.children[0].threshold, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(blendTree.children[1].motion.name, Is.EqualTo("AnimalArmature|Walk"));
+            Assert.That(blendTree.children[1].threshold, Is.EqualTo(0.59f).Within(0.001f));
+            Assert.That(blendTree.children[1].timeScale, Is.EqualTo(1.35f).Within(0.001f));
+            Assert.That(blendTree.children[2].motion.name, Is.EqualTo("AnimalArmature|Gallop"));
+            Assert.That(blendTree.children[2].threshold, Is.EqualTo(1f).Within(0.001f));
+            Assert.That(blendTree.children[2].timeScale, Is.EqualTo(1.18f).Within(0.001f));
+        }
+
+        [Test]
+        public void FoxPrefabKeepsMovementRootSeparateFromGroundedVisual()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Game/Prefabs/Characters/PlayerFox.prefab");
+            Transform visualRoot = prefab.transform.Find("VisualRoot");
+            Transform foxVisual = prefab.transform.Find("VisualRoot/QuaterniusFox");
+            Animator animator = prefab.GetComponentInChildren<Animator>(true);
+            CharacterController characterController = prefab.GetComponent<CharacterController>();
+
+            Assert.That(visualRoot, Is.Not.Null);
+            Assert.That(visualRoot.localPosition, Is.EqualTo(Vector3.zero));
+            Assert.That(visualRoot.localScale, Is.EqualTo(Vector3.one));
+            Assert.That(foxVisual, Is.Not.Null);
+            Assert.That(foxVisual.localPosition.y, Is.InRange(0.07f, 0.13f));
+            Assert.That(foxVisual.localScale.x, Is.EqualTo(0.62f).Within(0.001f));
+            Assert.That(animator, Is.Not.Null);
+            Assert.That(animator.applyRootMotion, Is.False);
+            Assert.That(characterController.height, Is.EqualTo(1.52f).Within(0.001f));
+            Assert.That(characterController.radius, Is.EqualTo(0.34f).Within(0.001f));
+            Assert.That(characterController.center.y, Is.EqualTo(0.76f).Within(0.001f));
+
+            float groundedBottom = foxVisual.localPosition.y + foxVisual.localScale.y * MeasureFoxFbxRendererMinY();
+            Assert.That(groundedBottom, Is.InRange(0.015f, 0.04f));
+        }
+
+        [Test]
+        public void ForestCameraFramesFoxUpperBody()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+            Camera camera = Camera.main;
+            ThirdPersonCameraController controller = camera.GetComponent<ThirdPersonCameraController>();
+            SerializedObject serializedCamera = new(controller);
+
+            Assert.That(camera.fieldOfView, Is.EqualTo(60f).Within(0.001f));
+            Assert.That(serializedCamera.FindProperty("targetOffset").vector3Value, Is.EqualTo(new Vector3(0f, 0.35f, 0f)));
+            Assert.That(serializedCamera.FindProperty("distance").floatValue, Is.EqualTo(5f).Within(0.001f));
+            Assert.That(serializedCamera.FindProperty("minDistance").floatValue, Is.EqualTo(1.35f).Within(0.001f));
+        }
+
         private QuestService CreateQuestService()
         {
             SaveService saveService = new(savePath);
@@ -147,6 +226,63 @@ namespace TilkiOyunu.Foundation.Tests
 
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
             return quest;
+        }
+
+        private static void AssertClipLoop(string clipName, bool expectedLoop)
+        {
+            AnimationClip clip = FindClip(clipName);
+
+            Assert.That(clip, Is.Not.Null);
+            Assert.That(AnimationUtility.GetAnimationClipSettings(clip).loopTime, Is.EqualTo(expectedLoop));
+        }
+
+        private static AnimationClip FindClip(string clipName)
+        {
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            for (int i = 0; i < assets.Length; i++)
+            {
+                if (assets[i] is AnimationClip clip && clip.name == clipName)
+                {
+                    return clip;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool HasParameter(AnimatorController controller, string name, AnimatorControllerParameterType type)
+        {
+            for (int i = 0; i < controller.parameters.Length; i++)
+            {
+                AnimatorControllerParameter parameter = controller.parameters[i];
+                if (parameter.name == name && parameter.type == type)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static float MeasureFoxFbxRendererMinY()
+        {
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            try
+            {
+                float minY = float.PositiveInfinity;
+                Renderer[] renderers = instance.GetComponentsInChildren<Renderer>(true);
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    minY = Mathf.Min(minY, renderers[i].bounds.min.y);
+                }
+
+                return minY;
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(instance);
+            }
         }
     }
 }
