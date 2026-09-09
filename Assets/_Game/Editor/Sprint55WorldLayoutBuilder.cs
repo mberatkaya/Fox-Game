@@ -16,7 +16,44 @@ namespace TilkiOyunu.Foundation.Editor
         public const string PrimaryTerrainName = "Sprint55B_PrimaryTerrain";
 
         private const string TerrainFolder = "Assets/_Game/Art/Environment";
+        private const string TreePackRoot = "Assets/TreePackVol.1";
         private const float TerrainOrigin = -TerrainSize * 0.5f;
+        private const int MinimumTreeCollectionInstances = 300;
+
+        private static readonly string[] TreeCollectionPrefabPaths =
+        {
+            "Assets/TreePackVol.1/Prefabs/0/Tree1.prefab",
+            "Assets/TreePackVol.1/Prefabs/0/Tree3.prefab",
+            "Assets/TreePackVol.1/Prefabs/0/Tree5.prefab",
+            "Assets/TreePackVol.1/Prefabs/0/Tree8.prefab",
+            "Assets/TreePackVol.1/Prefabs/0/Tree12.prefab",
+            "Assets/TreePackVol.1/Prefabs/2/Tree.prefab",
+            "Assets/TreePackVol.1/Prefabs/2/Tree 2.prefab",
+            "Assets/TreePackVol.1/Prefabs/3/Tree 1.prefab",
+            "Assets/TreePackVol.1/Prefabs/3/Tree 3.prefab",
+            "Assets/TreePackVol.1/Prefabs/3/Tree 7.prefab",
+            "Assets/TreePackVol.1/Prefabs/4/Tree1.prefab",
+            "Assets/TreePackVol.1/Prefabs/4/Tree4.prefab",
+            "Assets/TreePackVol.1/Prefabs/5/Tree 4.prefab",
+            "Assets/TreePackVol.1/Prefabs/5/Tree 7.prefab",
+        };
+
+        private static readonly TreeCluster[] TreeClusters =
+        {
+            new("SpawnMeadowRing", new Vector2(0f, -150f), new Vector2(62f, 46f), 48, 0.62f, 1.08f, 25f),
+            new("NPCGrove", new Vector2(-18f, -108f), new Vector2(46f, 36f), 36, 0.58f, 1.03f, 15f),
+            new("MemoryEast", new Vector2(66f, -60f), new Vector2(60f, 44f), 46, 0.58f, 1.1f, 10f),
+            new("MemoryWest", new Vector2(-78f, 18f), new Vector2(64f, 48f), 50, 0.62f, 1.12f, 12f),
+            new("CreekApproach", new Vector2(32f, -8f), new Vector2(54f, 34f), 38, 0.55f, 0.95f, 12f),
+            new("LakeShore", new Vector2(136f, 56f), new Vector2(88f, 66f), 64, 0.58f, 1.03f, 36f),
+            new("LightGrove", new Vector2(-58f, 84f), new Vector2(70f, 54f), 64, 0.64f, 1.18f, 15f),
+            new("HeartGardenRing", new Vector2(-158f, -44f), new Vector2(54f, 46f), 42, 0.58f, 1.06f, 20f),
+            new("FinalHillCrown", new Vector2(18f, 145f), new Vector2(76f, 50f), 48, 0.62f, 1.16f, 24f),
+            new("NorthBackground", new Vector2(0f, 214f), new Vector2(198f, 30f), 54, 0.72f, 1.22f, 0f),
+            new("WestBackground", new Vector2(-214f, 0f), new Vector2(30f, 198f), 54, 0.72f, 1.22f, 0f),
+            new("EastBackground", new Vector2(214f, 22f), new Vector2(30f, 170f), 42, 0.68f, 1.14f, 0f),
+            new("SouthBackground", new Vector2(10f, -216f), new Vector2(176f, 28f), 42, 0.68f, 1.12f, 0f),
+        };
 
         private static readonly LayoutAnchor[] Anchors =
         {
@@ -49,12 +86,14 @@ namespace TilkiOyunu.Foundation.Editor
         {
             UnityEngine.SceneManagement.Scene scene = EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
             EnsureFolder(TerrainFolder);
+            ImportTreePackIfPresent();
             PreserveExistingSmallBridge();
 
             TerrainData terrainData = EnsureTerrainData();
             Terrain terrain = BuildWorldHierarchy(terrainData);
             ConfigureTerrain(terrain, terrainData);
             BuildGraybox(terrain);
+            BuildTreeCollectionForest(terrain);
             PlaceLandmarks(terrain);
             AlignTraversalObjects(terrain);
             DisableArenaBlockoutVisuals();
@@ -190,6 +229,7 @@ namespace TilkiOyunu.Foundation.Editor
             GameObject world = new(WorldRootName);
             GameObject terrainRoot = EnsureChild(world.transform, "Terrain");
             EnsureChild(world.transform, "Graybox");
+            EnsureChild(world.transform, "TreeCollectionForest");
             EnsureChild(world.transform, "Landmarks");
 
             GameObject terrainObject = new(PrimaryTerrainName, typeof(Terrain), typeof(TerrainCollider));
@@ -217,15 +257,18 @@ namespace TilkiOyunu.Foundation.Editor
             Transform lakeRoot = EnsureChild(graybox, "Lake").transform;
             Transform creekRoot = EnsureChild(graybox, "Creek").transform;
             Transform pathsRoot = EnsureChild(graybox, "Paths").transform;
+            Transform startRoot = EnsureChild(graybox, "Start").transform;
             Transform bridgeRoot = EnsureChild(graybox, "Bridge").transform;
             Transform blockersRoot = EnsureChild(graybox, "BoundaryBlockers").transform;
 
             Material water = EnsureMaterial("Sprint55B_TempWater", new Color(0.25f, 0.48f, 0.58f, 0.64f));
             Material marker = EnsureMaterial("Sprint55B_GrayboxMarker", new Color(0.62f, 0.64f, 0.59f, 1f));
             Material blocker = EnsureMaterial("Sprint55B_SightlineBlocker", new Color(0.34f, 0.39f, 0.37f, 1f));
+            Material platform = EnsureMaterial("Sprint55B_StartPlatform", new Color(0.38f, 0.34f, 0.27f, 1f));
 
             CreateMeshSurface(lakeRoot, "GB_Lake_TempWater", CreateLakeMesh(terrain), water);
             CreateMeshSurface(creekRoot, "GB_Creek_TempWater", CreateCreekMesh(terrain), water);
+            CreateSolidPlatform(startRoot, "Start Platform", AnchorPosition("LM_SpawnMeadow"), new Vector3(18f, 0.18f, 14f), platform, terrain);
 
             CreateMarker(pathsRoot, "GB_SpawnMeadow_Readability", new Vector3(0f, 0f, -150f), new Vector3(18f, 0.08f, 12f), marker, terrain);
             CreateMarker(pathsRoot, "GB_NPCGrove_Readability", new Vector3(-18f, 0f, -108f), new Vector3(15f, 0.08f, 12f), marker, terrain);
@@ -237,6 +280,9 @@ namespace TilkiOyunu.Foundation.Editor
             CreateBlocker(blockersRoot, "GB_FutureForestMass_FinalApproach", new Vector3(-8f, 0f, 105f), new Vector3(44f, 17f, 18f), -10f, blocker, terrain);
             CreateBlocker(blockersRoot, "GB_NaturalEdge_NorthRidge", new Vector3(0f, 0f, 214f), new Vector3(300f, 20f, 22f), 0f, blocker, terrain);
             CreateBlocker(blockersRoot, "GB_NaturalEdge_WestRise", new Vector3(-214f, 0f, -8f), new Vector3(22f, 18f, 300f), 0f, blocker, terrain);
+
+            pathsRoot.gameObject.SetActive(false);
+            blockersRoot.gameObject.SetActive(false);
 
             Transform bridge = EnsureSmallBridge().transform;
             bridge.SetParent(bridgeRoot, true);
@@ -255,8 +301,8 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void AlignTraversalObjects(Terrain terrain)
         {
-            MoveToTerrain("Player Spawn Point", AnchorPosition("LM_SpawnMeadow"), terrain, 0.12f);
-            MoveToTerrain("PlayerFox", AnchorPosition("LM_SpawnMeadow"), terrain, 0.12f);
+            MoveToTerrain("Player Spawn Point", AnchorPosition("LM_SpawnMeadow"), terrain, 0.24f);
+            MoveToTerrain("PlayerFox", AnchorPosition("LM_SpawnMeadow"), terrain, 0.24f);
             MoveToTerrain("NPC_Guide", AnchorPosition("LM_NPCGrove"), terrain, 0.02f);
             MoveToTerrain("Camp Placeholder", AnchorPosition("LM_FinalHill"), terrain, 0.05f);
 
@@ -461,6 +507,149 @@ namespace TilkiOyunu.Foundation.Editor
             blocker.transform.localScale = scale;
             blocker.GetComponent<Renderer>().sharedMaterial = material;
             UnityEngine.Object.DestroyImmediate(blocker.GetComponent<Collider>());
+        }
+
+        private static void CreateSolidPlatform(Transform parent, string name, Vector3 position, Vector3 scale, Material material, Terrain terrain)
+        {
+            GameObject platform = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            platform.name = name;
+            platform.transform.SetParent(parent, false);
+            Vector3 terrainPosition = WithTerrainY(position, terrain, 0f);
+            platform.transform.position = terrainPosition + Vector3.up * (scale.y * 0.5f);
+            platform.transform.localScale = scale;
+            platform.GetComponent<Renderer>().sharedMaterial = material;
+
+            BoxCollider collider = platform.GetComponent<BoxCollider>();
+            collider.isTrigger = false;
+            collider.size = Vector3.one;
+            collider.center = Vector3.zero;
+        }
+
+        private static void BuildTreeCollectionForest(Terrain terrain)
+        {
+            Transform forestRoot = GameObject.Find($"{WorldRootName}/TreeCollectionForest").transform;
+            List<GameObject> prefabs = LoadTreeCollectionPrefabs();
+            if (prefabs.Count == 0)
+            {
+                Debug.LogWarning("TreePackVol.1 prefableri bulunamadı; Sprint 5.5-B orman yerleşimi atlandı.");
+                return;
+            }
+
+            int placed = 0;
+            for (int i = 0; i < TreeClusters.Length; i++)
+            {
+                placed += PlaceTreeCluster(forestRoot, terrain, prefabs, TreeClusters[i], 971 + i * 113);
+            }
+
+            if (placed < MinimumTreeCollectionInstances)
+            {
+                Debug.LogWarning($"Sprint 5.5-B Tree Collection forest only placed {placed} trees; expected at least {MinimumTreeCollectionInstances}.");
+            }
+
+            Debug.Log($"Sprint 5.5-B Tree Collection forest placed {placed} TreePackVol.1 trees.");
+        }
+
+        private static List<GameObject> LoadTreeCollectionPrefabs()
+        {
+            List<GameObject> prefabs = new();
+            for (int i = 0; i < TreeCollectionPrefabPaths.Length; i++)
+            {
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(TreeCollectionPrefabPaths[i]);
+                if (prefab != null)
+                {
+                    prefabs.Add(prefab);
+                }
+            }
+
+            return prefabs;
+        }
+
+        private static int PlaceTreeCluster(Transform forestRoot, Terrain terrain, IReadOnlyList<GameObject> prefabs, TreeCluster cluster, int seed)
+        {
+            Transform clusterRoot = EnsureChild(forestRoot, cluster.Name).transform;
+            int placed = 0;
+            int attempts = cluster.Count * 8;
+            for (int i = 0; i < attempts && placed < cluster.Count; i++)
+            {
+                Vector2 point = SampleClusterPoint(cluster, seed + i * 31);
+                if (!IsTreePlacementAllowed(point, cluster.Center, cluster.ClearingRadius))
+                {
+                    continue;
+                }
+
+                GameObject prefab = prefabs[(seed + placed * 7) % prefabs.Count];
+                GameObject instance = PrefabUtility.InstantiatePrefab(prefab, clusterRoot) as GameObject;
+                if (instance == null)
+                {
+                    instance = UnityEngine.Object.Instantiate(prefab, clusterRoot);
+                }
+
+                instance.name = $"TreePack_{cluster.Name}_{placed + 1:000}";
+                float scale = Mathf.Lerp(cluster.MinScale, cluster.MaxScale, Deterministic01(seed + placed * 41));
+                Vector3 position = WithTerrainY(new Vector3(point.x, 0f, point.y), terrain, -0.03f);
+                Quaternion rotation = Quaternion.Euler(0f, Deterministic01(seed + placed * 53) * 360f, 0f);
+                instance.transform.SetPositionAndRotation(position, rotation);
+                instance.transform.localScale = Vector3.one * scale;
+                RemoveTreeColliders(instance);
+                placed++;
+            }
+
+            return placed;
+        }
+
+        private static Vector2 SampleClusterPoint(TreeCluster cluster, int seed)
+        {
+            float angle = Deterministic01(seed) * Mathf.PI * 2f;
+            float radius = Mathf.Sqrt(Deterministic01(seed + 17));
+            return cluster.Center + new Vector2(Mathf.Cos(angle) * cluster.Radius.x * radius, Mathf.Sin(angle) * cluster.Radius.y * radius);
+        }
+
+        private static bool IsTreePlacementAllowed(Vector2 point, Vector2 clusterCenter, float clearingRadius)
+        {
+            if (Mathf.Abs(point.x) > 238f || Mathf.Abs(point.y) > 238f)
+            {
+                return false;
+            }
+
+            if (clearingRadius > 0f && Vector2.Distance(point, clusterCenter) < clearingRadius)
+            {
+                return false;
+            }
+
+            if (Vector2.Distance(point, new Vector2(0f, -150f)) < 24f)
+            {
+                return false;
+            }
+
+            if (Vector2.Distance(point, new Vector2(22f, -18f)) < 14f)
+            {
+                return false;
+            }
+
+            if (PathInfluence(point) > 0.42f || LakeInfluence(point) > 0.16f || CreekInfluence(point) > 0.28f)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void RemoveTreeColliders(GameObject instance)
+        {
+            Collider[] colliders = instance.GetComponentsInChildren<Collider>(true);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                UnityEngine.Object.DestroyImmediate(colliders[i]);
+            }
+        }
+
+        private static float Deterministic01(int value)
+        {
+            uint x = (uint)value;
+            x ^= x << 13;
+            x ^= x >> 17;
+            x ^= x << 5;
+            return (x & 0x00FFFFFF) / (float)0x01000000;
         }
 
         private static void MoveToTerrain(string name, Vector3 position, Terrain terrain, float yOffset)
@@ -687,6 +876,14 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
+        private static void ImportTreePackIfPresent()
+        {
+            if (AssetDatabase.IsValidFolder(TreePackRoot))
+            {
+                AssetDatabase.ImportAsset(TreePackRoot, ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ImportRecursive);
+            }
+        }
+
         private static GameObject FindSceneObjectIncludingInactive(string name)
         {
             GameObject[] objects = Resources.FindObjectsOfTypeAll<GameObject>();
@@ -712,6 +909,28 @@ namespace TilkiOyunu.Foundation.Editor
 
             public string Name { get; }
             public Vector3 Position { get; }
+        }
+
+        private readonly struct TreeCluster
+        {
+            public TreeCluster(string name, Vector2 center, Vector2 radius, int count, float minScale, float maxScale, float clearingRadius)
+            {
+                Name = name;
+                Center = center;
+                Radius = radius;
+                Count = count;
+                MinScale = minScale;
+                MaxScale = maxScale;
+                ClearingRadius = clearingRadius;
+            }
+
+            public string Name { get; }
+            public Vector2 Center { get; }
+            public Vector2 Radius { get; }
+            public int Count { get; }
+            public float MinScale { get; }
+            public float MaxScale { get; }
+            public float ClearingRadius { get; }
         }
     }
 }

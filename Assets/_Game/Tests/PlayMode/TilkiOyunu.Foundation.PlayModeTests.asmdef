@@ -3,6 +3,8 @@
   "rootNamespace": "TilkiOyunu.Foundation.PlayModeTests",
   "references": [
     "TilkiOyunu.Foundation",
+    "UnityEngine.TerrainModule",
+    "UnityEngine.TerrainPhysicsModule",
     "UnityEngine.TestRunner"
   ],
   "includePlatforms": [],

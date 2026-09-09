@@ -4,6 +4,8 @@
   "references": [
     "TilkiOyunu.Foundation",
     "Unity.InputSystem",
+    "UnityEngine.TerrainModule",
+    "UnityEngine.TerrainPhysicsModule",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],

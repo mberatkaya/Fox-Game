@@ -41,6 +41,8 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(GameObject.Find("Environment_Visuals"), Is.Not.Null);
             Assert.That(GameObject.Find("World"), Is.Not.Null);
             Assert.That(GameObject.Find("Sprint55B_PrimaryTerrain"), Is.Not.Null);
+            Assert.That(GameObject.Find("Start Platform"), Is.Not.Null);
+            Assert.That(GameObject.Find("TreeCollectionForest"), Is.Not.Null);
             Assert.That(GameObject.Find("LM_FinalHill"), Is.Not.Null);
             Assert.That(GameObject.Find("Sprint 5 Scene Audio"), Is.Not.Null);
             Assert.That(Object.FindFirstObjectByType<SceneLoopAudio>(), Is.Not.Null);
@@ -81,7 +83,15 @@ namespace TilkiOyunu.Foundation.PlayModeTests
 
             Terrain terrain = Object.FindFirstObjectByType<Terrain>();
             Assert.That(terrain, Is.Not.Null);
+            TerrainCollider terrainCollider = terrain.GetComponent<TerrainCollider>();
+            Assert.That(terrainCollider, Is.Not.Null);
+            Assert.That(terrainCollider.enabled, Is.True);
+            Assert.That(terrainCollider.terrainData, Is.EqualTo(terrain.terrainData));
             Assert.That(player.transform.position.y, Is.GreaterThanOrEqualTo(terrain.SampleHeight(player.transform.position) - 0.01f));
+
+            GameObject startPlatform = GameObject.Find("Start Platform");
+            Assert.That(startPlatform, Is.Not.Null);
+            Assert.That(startPlatform.GetComponent<BoxCollider>(), Is.Not.Null);
 
             GameObject world = GameObject.Find("World");
             Assert.That(world, Is.Not.Null);

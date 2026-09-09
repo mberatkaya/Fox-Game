@@ -68,6 +68,8 @@ namespace TilkiOyunu.Foundation.Editor
             RequireAsset<Texture2D>(ToonFoxBaseTexturePath, "Toon Fox base color texture", errors);
             RequireAsset<Texture2D>(ToonFoxNormalTexturePath, "Toon Fox normal texture", errors);
             RequireAsset<Texture2D>(ToonFoxOcclusionTexturePath, "Toon Fox occlusion texture", errors);
+            RequireAsset<GameObject>("Assets/TreePackVol.1/Prefabs/0/Tree1.prefab", "Tree Collection Pack 2017 Tree1 prefab", errors);
+            RequireAsset<GameObject>("Assets/TreePackVol.1/Prefabs/3/Tree 3.prefab", "Tree Collection Pack 2017 broadleaf prefab", errors);
             RequireAsset<Material>(ToonFoxMaterialPath, "Toon Fox URP material override", errors);
             RequireAsset<RuntimeAnimatorController>("Assets/_Game/Art/Characters/FoxAnimatorController.controller", "Fox animator controller", errors);
             RequireClip(errors, "Fox_Idle");
@@ -514,6 +516,12 @@ namespace TilkiOyunu.Foundation.Editor
                 return;
             }
 
+            TerrainCollider terrainCollider = terrainObject.GetComponent<TerrainCollider>();
+            if (terrainCollider == null || !terrainCollider.enabled || terrainCollider.terrainData != terrain.terrainData)
+            {
+                errors.Add("Sprint 5.5-B primary Terrain must keep an enabled TerrainCollider bound to the generated TerrainData.");
+            }
+
             Vector3 size = terrain.terrainData.size;
             if (Mathf.Abs(size.x - 512f) > 0.01f || Mathf.Abs(size.z - 512f) > 0.01f)
             {
@@ -594,6 +602,9 @@ namespace TilkiOyunu.Foundation.Editor
                 errors.Add("Sprint 5.5-B needs temporary lake and creek water reference meshes.");
             }
 
+            ValidateStartPlatform(errors);
+            ValidateTreeCollectionForest(errors);
+
             if (GameObject.Find("Small Bridge") == null || GameObject.Find("Small Bridge").transform.position.x < 5f)
             {
                 errors.Add("Small Bridge must be placed at the Sprint 5.5-B creek crossing.");
@@ -615,6 +626,55 @@ namespace TilkiOyunu.Foundation.Editor
                     errors.Add($"{arenaWalls[i]} must not remain active as a visible arena boundary.");
                 }
             }
+        }
+
+        private static void ValidateStartPlatform(List<string> errors)
+        {
+            GameObject platform = GameObject.Find("Start Platform");
+            if (platform == null)
+            {
+                errors.Add("Sprint 5.5-B needs a visible, solid Start Platform under PlayerFox.");
+                return;
+            }
+
+            BoxCollider collider = platform.GetComponent<BoxCollider>();
+            if (collider == null || collider.isTrigger)
+            {
+                errors.Add("Start Platform must have a solid BoxCollider so the fox cannot fall through at spawn.");
+            }
+        }
+
+        private static void ValidateTreeCollectionForest(List<string> errors)
+        {
+            GameObject forest = GameObject.Find("TreeCollectionForest");
+            if (forest == null)
+            {
+                errors.Add("Sprint 5.5-B needs a TreeCollectionForest root populated from Tree Collection Pack 2017.");
+                return;
+            }
+
+            int treeCount = CountNamedChildren(forest.transform, "TreePack_");
+            if (treeCount < 300)
+            {
+                errors.Add($"TreeCollectionForest must use Tree Collection Pack 2017 densely enough to fill the map; found {treeCount} trees.");
+            }
+
+            Collider[] colliders = forest.GetComponentsInChildren<Collider>(true);
+            if (colliders.Length > 0)
+            {
+                errors.Add("TreeCollectionForest should remain visual-only so dense trees do not create navigation snags.");
+            }
+        }
+
+        private static int CountNamedChildren(Transform root, string prefix)
+        {
+            int count = root.name.StartsWith(prefix) ? 1 : 0;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                count += CountNamedChildren(root.GetChild(i), prefix);
+            }
+
+            return count;
         }
 
         private static void ValidateAudioMixer(List<string> errors)

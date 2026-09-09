@@ -208,8 +208,31 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(terrain.terrainData.size.y, Is.InRange(40f, 60f));
             Assert.That(terrain.terrainData.heightmapResolution, Is.EqualTo(257));
             Assert.That(terrain.terrainData.terrainLayers.Length, Is.GreaterThanOrEqualTo(3));
+            TerrainCollider terrainCollider = terrainObject.GetComponent<TerrainCollider>();
+            Assert.That(terrainCollider, Is.Not.Null);
+            Assert.That(terrainCollider.enabled, Is.True);
+            Assert.That(terrainCollider.terrainData, Is.EqualTo(terrain.terrainData));
             Assert.That(GameObject.Find("GB_Lake_TempWater"), Is.Not.Null);
             Assert.That(GameObject.Find("GB_Creek_TempWater"), Is.Not.Null);
+        }
+
+        [Test]
+        public void ForestUsesTreeCollectionPackAndSolidStartPlatform()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+
+            GameObject startPlatform = GameObject.Find("Start Platform");
+            GameObject forest = GameObject.Find("TreeCollectionForest");
+
+            Assert.That(File.ReadAllText("Packages/manifest.json"), Does.Contain("com.unity.modules.terrainphysics"));
+            Assert.That(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TreePackVol.1/Prefabs/0/Tree1.prefab"), Is.Not.Null);
+            Assert.That(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TreePackVol.1/Prefabs/3/Tree 3.prefab"), Is.Not.Null);
+            Assert.That(startPlatform, Is.Not.Null);
+            Assert.That(startPlatform.GetComponent<BoxCollider>(), Is.Not.Null);
+            Assert.That(startPlatform.GetComponent<BoxCollider>().isTrigger, Is.False);
+            Assert.That(forest, Is.Not.Null);
+            Assert.That(CountNamedChildren(forest.transform, "TreePack_"), Is.GreaterThanOrEqualTo(300));
+            Assert.That(forest.GetComponentsInChildren<Collider>(true), Is.Empty);
         }
 
         [Test]
@@ -437,6 +460,17 @@ namespace TilkiOyunu.Foundation.Tests
             }
 
             return null;
+        }
+
+        private static int CountNamedChildren(Transform root, string prefix)
+        {
+            int count = root.name.StartsWith(prefix) ? 1 : 0;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                count += CountNamedChildren(root.GetChild(i), prefix);
+            }
+
+            return count;
         }
 
         private readonly struct PoseSample
