@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,7 +33,8 @@ namespace TilkiOyunu.Foundation.PlayModeTests
 
             GameObject player = GameObject.Find("PlayerFox");
             Assert.That(player, Is.Not.Null);
-            Assert.That(player.transform.Find("VisualRoot/QuaterniusFox/FoxModel"), Is.Not.Null);
+            Assert.That(player.transform.Find("VisualRoot/ToonFox"), Is.Not.Null);
+            Assert.That(player.transform.Find("VisualRoot/OpenGameArtFox"), Is.Null);
             Assert.That(player.GetComponentInChildren<FoxAnimationDriver>(true), Is.Not.Null);
             Assert.That(player.GetComponent<FootstepAudio>(), Is.Not.Null);
 
@@ -277,6 +279,36 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(environmentVisuals.GetComponentsInChildren<Collider>(true), Is.Empty);
         }
 
+        [UnityTest]
+        public IEnumerator RepeatedJumpPressesDuringTakeoffDoNotStackImpulse()
+        {
+            FoxController controller = CreateControllerForJumpTest();
+
+            SetGroundedForTest(controller, true);
+            SetPrivateField(controller, "verticalVelocity", -2f);
+            Assert.That(InvokeTryStartJump(controller, true), Is.True);
+            float firstJumpVelocity = controller.Velocity.y;
+            Assert.That(firstJumpVelocity, Is.GreaterThan(0.5f));
+
+            SetGroundedForTest(controller, true);
+            SetPrivateField(controller, "verticalVelocity", firstJumpVelocity - 0.1f);
+            Assert.That(InvokeTryStartJump(controller, true), Is.False);
+            Assert.That(controller.Velocity.y, Is.EqualTo(firstJumpVelocity - 0.1f).Within(0.001f));
+
+            SetGroundedForTest(controller, true);
+            SetPrivateField(controller, "verticalVelocity", 0f);
+            Assert.That(InvokeTryStartJump(controller, true), Is.False);
+            Assert.That(controller.Velocity.y, Is.EqualTo(0f).Within(0.001f));
+
+            InvokeRefreshJumpAvailabilityAfterMove(controller, CollisionFlags.Below);
+            SetGroundedForTest(controller, true);
+            Assert.That(InvokeTryStartJump(controller, true), Is.True);
+            Assert.That(controller.Velocity.y, Is.GreaterThan(0.5f));
+
+            yield return null;
+            Object.DestroyImmediate(controller.gameObject);
+        }
+
         private static IEnumerator LoadBootstrapToForest()
         {
             new SaveService().DeleteSave();
@@ -398,6 +430,52 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(panel.alpha, Is.EqualTo(0f));
             Assert.That(panel.interactable, Is.False);
             Assert.That(panel.blocksRaycasts, Is.False);
+        }
+
+        private static FoxController CreateControllerForJumpTest()
+        {
+            GameObject player = new("Jump Test Fox");
+            player.SetActive(false);
+            player.transform.position = Vector3.zero;
+            CharacterController characterController = player.AddComponent<CharacterController>();
+            characterController.height = 1.1f;
+            characterController.radius = 0.36f;
+            characterController.center = new Vector3(0f, 0.55f, 0f);
+
+            Transform groundProbe = new GameObject("Ground Probe").transform;
+            groundProbe.SetParent(player.transform, false);
+            groundProbe.localPosition = new Vector3(0f, 0.08f, 0f);
+
+            FoxController controller = player.AddComponent<FoxController>();
+            SetPrivateField(controller, "groundProbe", groundProbe);
+            player.SetActive(true);
+            return controller;
+        }
+
+        private static bool InvokeTryStartJump(FoxController controller, bool pressedThisFrame)
+        {
+            MethodInfo method = typeof(FoxController).GetMethod("TryStartJump", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null);
+            return (bool)method.Invoke(controller, new object[] { pressedThisFrame });
+        }
+
+        private static void InvokeRefreshJumpAvailabilityAfterMove(FoxController controller, CollisionFlags collisionFlags)
+        {
+            MethodInfo method = typeof(FoxController).GetMethod("RefreshJumpAvailabilityAfterMove", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null);
+            method.Invoke(controller, new object[] { collisionFlags });
+        }
+
+        private static void SetGroundedForTest(FoxController controller, bool isGrounded)
+        {
+            typeof(FoxController)
+                .GetField("<IsGrounded>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(controller, isGrounded);
+        }
+
+        private static void SetPrivateField(object target, string fieldName, object value)
+        {
+            target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(target, value);
         }
 
         private static bool HasRenderableInView(Camera camera, Transform root)

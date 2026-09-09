@@ -42,9 +42,9 @@ Player interactions use `IInteractable` and `InteractionContext`. NPCs, memories
 - `PlayerInteractor`
 - `Interaction Origin`
 - `Camera Target`
-- `VisualRoot/QuaterniusFox/FoxModel`
+- `VisualRoot/ToonFox`
 
-`FoxController` owns movement. `FoxAnimationDriver` only reads controller state and writes Animator parameters (`Speed`, `Grounded`, `VerticalVelocity`) with root motion disabled. `FootstepAudio` uses grounded speed cadence and does not affect movement.
+`FoxController` owns movement. `FoxAnimationDriver` only reads controller state and writes Animator parameters (`Speed`, `Grounded`, `VerticalVelocity`) with root motion disabled. The production visual is the Pxltiger Toon Fox wrapper prefab under `_Game`; package source assets stay in `Assets/Fox`. `FootstepAudio` uses grounded speed cadence and does not affect movement.
 
 ## Camera
 

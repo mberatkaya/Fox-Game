@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using UnityEditor;
@@ -90,7 +91,8 @@ namespace TilkiOyunu.Foundation.Tests
             RuntimeAnimatorController animator = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/_Game/Art/Characters/FoxAnimatorController.controller");
 
             Assert.That(prefab, Is.Not.Null);
-            Assert.That(prefab.transform.Find("VisualRoot/QuaterniusFox/FoxModel"), Is.Not.Null);
+            Assert.That(prefab.transform.Find("VisualRoot/ToonFox"), Is.Not.Null);
+            Assert.That(prefab.transform.Find("VisualRoot/OpenGameArtFox"), Is.Null);
             Assert.That(animator, Is.Not.Null);
             Assert.That(prefab.GetComponentInChildren<FoxAnimationDriver>(true), Is.Not.Null);
         }
@@ -98,10 +100,18 @@ namespace TilkiOyunu.Foundation.Tests
         [Test]
         public void FoxImportedLocomotionClipsLoop()
         {
-            AssertClipLoop("AnimalArmature|Idle", true);
-            AssertClipLoop("AnimalArmature|Walk", true);
-            AssertClipLoop("AnimalArmature|Gallop", true);
-            AssertClipLoop("AnimalArmature|Gallop_Jump", false);
+            AssertClipLoop("Fox_Idle", true);
+            AssertClipLoop("Fox_Walk_InPlace", true);
+            AssertClipLoop("Fox_Run_InPlace", true);
+            AssertClipLoop("Fox_Jump_InAir", false);
+        }
+
+        [Test]
+        public void FoxImportedLocomotionClipsMoveSkeleton()
+        {
+            AssertClipMovesSkeleton("Fox_Idle", 0.01f);
+            AssertClipMovesSkeleton("Fox_Walk_InPlace", 0.05f);
+            AssertClipMovesSkeleton("Fox_Run_InPlace", 0.05f);
         }
 
         [Test]
@@ -123,14 +133,14 @@ namespace TilkiOyunu.Foundation.Tests
             BlendTree blendTree = (BlendTree)locomotion.motion;
             Assert.That(blendTree.blendParameter, Is.EqualTo("Speed"));
             Assert.That(blendTree.children.Length, Is.EqualTo(3));
-            Assert.That(blendTree.children[0].motion.name, Is.EqualTo("AnimalArmature|Idle"));
+            Assert.That(blendTree.children[0].motion.name, Is.EqualTo("Fox_Idle"));
             Assert.That(blendTree.children[0].threshold, Is.EqualTo(0f).Within(0.001f));
-            Assert.That(blendTree.children[1].motion.name, Is.EqualTo("AnimalArmature|Walk"));
+            Assert.That(blendTree.children[1].motion.name, Is.EqualTo("Fox_Walk_InPlace"));
             Assert.That(blendTree.children[1].threshold, Is.EqualTo(0.59f).Within(0.001f));
-            Assert.That(blendTree.children[1].timeScale, Is.EqualTo(1.35f).Within(0.001f));
-            Assert.That(blendTree.children[2].motion.name, Is.EqualTo("AnimalArmature|Gallop"));
+            Assert.That(blendTree.children[1].timeScale, Is.EqualTo(1.08f).Within(0.001f));
+            Assert.That(blendTree.children[2].motion.name, Is.EqualTo("Fox_Run_InPlace"));
             Assert.That(blendTree.children[2].threshold, Is.EqualTo(1f).Within(0.001f));
-            Assert.That(blendTree.children[2].timeScale, Is.EqualTo(1.18f).Within(0.001f));
+            Assert.That(blendTree.children[2].timeScale, Is.EqualTo(1.16f).Within(0.001f));
         }
 
         [Test]
@@ -138,7 +148,7 @@ namespace TilkiOyunu.Foundation.Tests
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Game/Prefabs/Characters/PlayerFox.prefab");
             Transform visualRoot = prefab.transform.Find("VisualRoot");
-            Transform foxVisual = prefab.transform.Find("VisualRoot/QuaterniusFox");
+            Transform foxVisual = prefab.transform.Find("VisualRoot/ToonFox");
             Animator animator = prefab.GetComponentInChildren<Animator>(true);
             CharacterController characterController = prefab.GetComponent<CharacterController>();
 
@@ -146,15 +156,16 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(visualRoot.localPosition, Is.EqualTo(Vector3.zero));
             Assert.That(visualRoot.localScale, Is.EqualTo(Vector3.one));
             Assert.That(foxVisual, Is.Not.Null);
-            Assert.That(foxVisual.localPosition.y, Is.InRange(0.07f, 0.13f));
+            Assert.That(foxVisual.localPosition.y, Is.InRange(0.045f, 0.065f));
+            Assert.That(foxVisual.localEulerAngles.y, Is.EqualTo(0f).Within(0.001f));
             Assert.That(foxVisual.localScale.x, Is.EqualTo(0.62f).Within(0.001f));
             Assert.That(animator, Is.Not.Null);
             Assert.That(animator.applyRootMotion, Is.False);
-            Assert.That(characterController.height, Is.EqualTo(1.52f).Within(0.001f));
+            Assert.That(characterController.height, Is.EqualTo(1.12f).Within(0.001f));
             Assert.That(characterController.radius, Is.EqualTo(0.34f).Within(0.001f));
-            Assert.That(characterController.center.y, Is.EqualTo(0.76f).Within(0.001f));
+            Assert.That(characterController.center.y, Is.EqualTo(0.56f).Within(0.001f));
 
-            float groundedBottom = foxVisual.localPosition.y + foxVisual.localScale.y * MeasureFoxFbxRendererMinY();
+            float groundedBottom = foxVisual.localPosition.y + foxVisual.localScale.y * MeasureToonFoxGroundedRendererMinY();
             Assert.That(groundedBottom, Is.InRange(0.015f, 0.04f));
         }
 
@@ -170,6 +181,14 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(serializedCamera.FindProperty("targetOffset").vector3Value, Is.EqualTo(new Vector3(0f, 0.35f, 0f)));
             Assert.That(serializedCamera.FindProperty("distance").floatValue, Is.EqualTo(5f).Within(0.001f));
             Assert.That(serializedCamera.FindProperty("minDistance").floatValue, Is.EqualTo(1.35f).Within(0.001f));
+        }
+
+        [Test]
+        public void ForestBridgeHasBodyBlockingRailColliders()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+            AssertBridgeRailCollider("Bridge Left Rail Collider", -1.5f);
+            AssertBridgeRailCollider("Bridge Right Rail Collider", 1.5f);
         }
 
         private QuestService CreateQuestService()
@@ -238,7 +257,7 @@ namespace TilkiOyunu.Foundation.Tests
 
         private static AnimationClip FindClip(string clipName)
         {
-            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath($"Assets/Fox/Animations/{clipName}.fbx");
             for (int i = 0; i < assets.Length; i++)
             {
                 if (assets[i] is AnimationClip clip && clip.name == clipName)
@@ -248,6 +267,84 @@ namespace TilkiOyunu.Foundation.Tests
             }
 
             return null;
+        }
+
+        private static void AssertClipMovesSkeleton(string clipName, float minimumDelta)
+        {
+            AnimationClip clip = FindClip(clipName);
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Fox/Prefabs/Fox.prefab");
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            try
+            {
+                clip.SampleAnimation(instance, 0f);
+                Dictionary<string, PoseSample> start = CapturePose(instance.transform);
+                clip.SampleAnimation(instance, clip.length * 0.5f);
+                Dictionary<string, PoseSample> middle = CapturePose(instance.transform);
+
+                float delta = 0f;
+                foreach (KeyValuePair<string, PoseSample> entry in start)
+                {
+                    if (middle.TryGetValue(entry.Key, out PoseSample value))
+                    {
+                        delta += Vector3.Distance(entry.Value.Position, value.Position);
+                        delta += Quaternion.Angle(entry.Value.Rotation, value.Rotation) / 180f;
+                    }
+                }
+
+                Assert.That(delta, Is.GreaterThan(minimumDelta), $"{clipName} should visibly change the imported skeleton pose.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(instance);
+            }
+        }
+
+        private static Dictionary<string, PoseSample> CapturePose(Transform root)
+        {
+            Dictionary<string, PoseSample> samples = new();
+            Transform[] transforms = root.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < transforms.Length; i++)
+            {
+                samples[GetPath(root, transforms[i])] = new PoseSample(transforms[i].localPosition, transforms[i].localRotation);
+            }
+
+            return samples;
+        }
+
+        private static string GetPath(Transform root, Transform transform)
+        {
+            if (transform == root)
+            {
+                return root.name;
+            }
+
+            return GetPath(root, transform.parent) + "/" + transform.name;
+        }
+
+        private static void AssertBridgeRailCollider(string name, float expectedX)
+        {
+            GameObject rail = GameObject.Find(name);
+            Assert.That(rail, Is.Not.Null);
+            Assert.That(rail.transform.parent.name, Is.EqualTo("Small Bridge"));
+            Assert.That(rail.transform.localPosition.x, Is.EqualTo(expectedX).Within(0.001f));
+            Assert.That(rail.transform.localPosition.y, Is.EqualTo(0.56f).Within(0.001f));
+
+            BoxCollider collider = rail.GetComponent<BoxCollider>();
+            Assert.That(collider, Is.Not.Null);
+            Assert.That(collider.isTrigger, Is.False);
+            Assert.That(collider.size, Is.EqualTo(new Vector3(0.18f, 0.9f, 4.45f)));
+        }
+
+        private readonly struct PoseSample
+        {
+            public PoseSample(Vector3 position, Quaternion rotation)
+            {
+                Position = position;
+                Rotation = rotation;
+            }
+
+            public Vector3 Position { get; }
+            public Quaternion Rotation { get; }
         }
 
         private static bool HasParameter(AnimatorController controller, string name, AnimatorControllerParameterType type)
@@ -264,17 +361,28 @@ namespace TilkiOyunu.Foundation.Tests
             return false;
         }
 
-        private static float MeasureFoxFbxRendererMinY()
+        private static float MeasureToonFoxGroundedRendererMinY()
         {
-            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Fox/Prefabs/Fox.prefab");
             GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
             try
             {
                 float minY = float.PositiveInfinity;
-                Renderer[] renderers = instance.GetComponentsInChildren<Renderer>(true);
-                for (int i = 0; i < renderers.Length; i++)
+                string[] clipNames = { "Fox_Idle", "Fox_Walk_InPlace", "Fox_Run_InPlace" };
+                for (int clipIndex = 0; clipIndex < clipNames.Length; clipIndex++)
                 {
-                    minY = Mathf.Min(minY, renderers[i].bounds.min.y);
+                    AnimationClip clip = FindClip(clipNames[clipIndex]);
+                    Assert.That(clip, Is.Not.Null);
+                    int sampleCount = Mathf.Max(8, Mathf.CeilToInt(clip.length * 30f));
+                    for (int sample = 0; sample <= sampleCount; sample++)
+                    {
+                        clip.SampleAnimation(instance, clip.length * sample / sampleCount);
+                        Renderer[] renderers = instance.GetComponentsInChildren<Renderer>(true);
+                        for (int i = 0; i < renderers.Length; i++)
+                        {
+                            minY = Mathf.Min(minY, renderers[i].bounds.min.y);
+                        }
+                    }
                 }
 
                 return minY;

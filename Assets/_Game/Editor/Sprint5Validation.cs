@@ -10,6 +10,12 @@ namespace TilkiOyunu.Foundation.Editor
 {
     public static class Sprint5Validation
     {
+        private const string ToonFoxPrefabPath = "Assets/Fox/Prefabs/Fox.prefab";
+        private const string ToonFoxModelPath = "Assets/Fox/FBXs/Fox.fbx";
+        private const string ToonFoxMaterialPath = "Assets/_Game/Art/Characters/ToonFox_URP.mat";
+        private const string ToonFoxBaseTexturePath = "Assets/Fox/Textures/T_Fox_BC.png";
+        private const string ToonFoxNormalTexturePath = "Assets/Fox/Textures/T_Fox_Normal.png";
+        private const string ToonFoxOcclusionTexturePath = "Assets/Fox/Textures/T_Fox_AO.png";
         private const string MixerPath = "Assets/_Game/Audio/Mixers/TilkiAudioMixer.mixer";
 
         [MenuItem("Tilki Oyunu/Sprint 5/Validate")]
@@ -57,12 +63,16 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void ValidateImportedAssets(List<string> errors)
         {
-            RequireAsset<GameObject>("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx", "Quaternius fox FBX", errors);
+            RequireAsset<GameObject>(ToonFoxPrefabPath, "Pxltiger Toon Fox prefab", errors);
+            RequireAsset<GameObject>(ToonFoxModelPath, "Pxltiger Toon Fox model", errors);
+            RequireAsset<Texture2D>(ToonFoxBaseTexturePath, "Toon Fox base color texture", errors);
+            RequireAsset<Texture2D>(ToonFoxNormalTexturePath, "Toon Fox normal texture", errors);
+            RequireAsset<Texture2D>(ToonFoxOcclusionTexturePath, "Toon Fox occlusion texture", errors);
+            RequireAsset<Material>(ToonFoxMaterialPath, "Toon Fox URP material override", errors);
             RequireAsset<RuntimeAnimatorController>("Assets/_Game/Art/Characters/FoxAnimatorController.controller", "Fox animator controller", errors);
-            RequireClip(errors, "idle", "idle");
-            RequireClip(errors, "walk", "walk");
-            RequireClip(errors, "run/gallop", "run", "gallop");
-            RequireClip(errors, "jump", "jump");
+            RequireClip(errors, "Fox_Idle");
+            RequireClip(errors, "Fox_Walk_InPlace");
+            RequireClip(errors, "Fox_Run_InPlace");
             ValidateFoxAnimationImport(errors);
             ValidateFoxAnimatorController(errors);
 
@@ -97,25 +107,35 @@ namespace TilkiOyunu.Foundation.Editor
                 return;
             }
 
-            if (prefab.transform.Find("VisualRoot/QuaterniusFox/FoxModel") == null)
+            if (prefab.transform.Find("VisualRoot/ToonFox") == null)
             {
-                errors.Add("PlayerFox prefab must contain VisualRoot/QuaterniusFox/FoxModel.");
+                errors.Add("PlayerFox prefab must contain VisualRoot/ToonFox.");
+            }
+
+            if (prefab.transform.Find("VisualRoot/OpenGameArtFox") != null)
+            {
+                errors.Add("OpenGameArtFox must not remain active as the PlayerFox production visual.");
             }
 
             Transform visualRoot = prefab.transform.Find("VisualRoot");
-            Transform foxVisual = prefab.transform.Find("VisualRoot/QuaterniusFox");
+            Transform foxVisual = prefab.transform.Find("VisualRoot/ToonFox");
             if (visualRoot == null || visualRoot.localPosition != Vector3.zero || visualRoot.localScale != Vector3.one)
             {
                 errors.Add("PlayerFox VisualRoot must stay identity so movement root and presentation root remain separated.");
             }
 
-            if (foxVisual == null || foxVisual.localPosition.y < 0.07f || foxVisual.localPosition.y > 0.13f)
+            if (foxVisual == null || foxVisual.localPosition.y < 0.045f || foxVisual.localPosition.y > 0.065f)
             {
-                errors.Add("PlayerFox QuaterniusFox visual offset must be calibrated from renderer bounds, not the old buried -0.88 offset.");
+                errors.Add("PlayerFox ToonFox visual offset must be calibrated from Toon Fox locomotion renderer bounds.");
             }
             else
             {
-                float groundedBottom = foxVisual.localPosition.y + foxVisual.localScale.y * MeasureFoxFbxRendererMinY();
+                if (Mathf.Abs(Mathf.DeltaAngle(foxVisual.localEulerAngles.y, 0f)) > 0.001f)
+                {
+                    errors.Add("PlayerFox ToonFox visual yaw must stay at 0 degrees so the model faces the movement root direction.");
+                }
+
+                float groundedBottom = foxVisual.localPosition.y + foxVisual.localScale.y * MeasureToonFoxGroundedRendererMinY();
                 if (groundedBottom < 0.015f || groundedBottom > 0.04f)
                 {
                     errors.Add($"PlayerFox visual paws should sit near ground; measured clearance was {groundedBottom:0.###}.");
@@ -151,10 +171,10 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void ValidateFoxAnimationImport(List<string> errors)
         {
-            RequireClipLoop("AnimalArmature|Idle", true, errors);
-            RequireClipLoop("AnimalArmature|Walk", true, errors);
-            RequireClipLoop("AnimalArmature|Gallop", true, errors);
-            RequireClipLoop("AnimalArmature|Gallop_Jump", false, errors);
+            RequireClipLoop("Fox_Idle", true, errors);
+            RequireClipLoop("Fox_Walk_InPlace", true, errors);
+            RequireClipLoop("Fox_Run_InPlace", true, errors);
+            RequireClipLoop("Fox_Jump_InAir", false, errors);
         }
 
         private static void ValidateFoxAnimatorController(List<string> errors)
@@ -179,13 +199,13 @@ namespace TilkiOyunu.Foundation.Editor
 
             if (blendTree.blendParameter != "Speed" || blendTree.children.Length != 3)
             {
-                errors.Add("Fox Locomotion BlendTree must blend Idle/Walk/Gallop with the Speed parameter.");
+                errors.Add("Fox Locomotion BlendTree must blend Idle/Walk/Run with the Speed parameter.");
                 return;
             }
 
-            RequireBlendChild(blendTree, 0, "AnimalArmature|Idle", 0f, 1f, errors);
-            RequireBlendChild(blendTree, 1, "AnimalArmature|Walk", 0.59f, 1.35f, errors);
-            RequireBlendChild(blendTree, 2, "AnimalArmature|Gallop", 1f, 1.18f, errors);
+            RequireBlendChild(blendTree, 0, "Fox_Idle", 0f, 1f, errors);
+            RequireBlendChild(blendTree, 1, "Fox_Walk_InPlace", 0.59f, 1.08f, errors);
+            RequireBlendChild(blendTree, 2, "Fox_Run_InPlace", 1f, 1.16f, errors);
         }
 
         private static void ValidateForestScene(List<string> errors)
@@ -218,6 +238,9 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 errors.Add("Card Matching is missing CardMatchingAudioFeedback.");
             }
+
+            RequireBridgeRailCollider("Bridge Left Rail Collider", -1.5f, errors);
+            RequireBridgeRailCollider("Bridge Right Rail Collider", 1.5f, errors);
 
             ValidateCardMatchingPanel(errors);
             ValidateInitialPresentation(errors);
@@ -289,6 +312,11 @@ namespace TilkiOyunu.Foundation.Editor
             if (!assetNotes.Contains("Asset Name: Bell dings/chimes") || !assetNotes.Contains("Author: PWL"))
             {
                 errors.Add("ASSET_NOTES.md must list Bell dings/chimes author as PWL.");
+            }
+
+            if (!assetNotes.Contains("Asset Name: Toon Fox") || !assetNotes.Contains("Author: Pxltiger") || !assetNotes.Contains("https://assetstore.unity.com/packages/3d/characters/animals/toon-fox-183005"))
+            {
+                errors.Add("ASSET_NOTES.md must document the active Pxltiger Toon Fox source and author.");
             }
         }
 
@@ -513,27 +541,12 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
-        private static void RequireClip(List<string> errors, string label, params string[] tokens)
+        private static void RequireClip(List<string> errors, string clipName)
         {
-            Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
-            for (int i = 0; i < assets.Length; i++)
+            if (FindClip(clipName) == null)
             {
-                if (assets[i] is not AnimationClip clip)
-                {
-                    continue;
-                }
-
-                string clipName = clip.name.ToLowerInvariant();
-                for (int tokenIndex = 0; tokenIndex < tokens.Length; tokenIndex++)
-                {
-                    if (clipName.Contains(tokens[tokenIndex]))
-                    {
-                        return;
-                    }
-                }
+                errors.Add($"Toon Fox package is missing animation clip '{clipName}'.");
             }
-
-            errors.Add($"Fox FBX is missing an animation clip containing '{label}'.");
         }
 
         private static void RequireClipLoop(string clipName, bool expectedLoop, List<string> errors)
@@ -553,7 +566,8 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static AnimationClip FindClip(string clipName)
         {
-            Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            string path = $"Assets/Fox/Animations/{clipName}.fbx";
+            Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath(path);
             for (int i = 0; i < assets.Length; i++)
             {
                 if (assets[i] is AnimationClip clip && clip.name == clipName)
@@ -598,17 +612,32 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
-        private static float MeasureFoxFbxRendererMinY()
+        private static float MeasureToonFoxGroundedRendererMinY()
         {
-            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx");
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(ToonFoxPrefabPath);
             GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
             try
             {
                 float minY = float.PositiveInfinity;
-                Renderer[] renderers = instance.GetComponentsInChildren<Renderer>(true);
-                for (int i = 0; i < renderers.Length; i++)
+                string[] clipNames = { "Fox_Idle", "Fox_Walk_InPlace", "Fox_Run_InPlace" };
+                for (int clipIndex = 0; clipIndex < clipNames.Length; clipIndex++)
                 {
-                    minY = Mathf.Min(minY, renderers[i].bounds.min.y);
+                    AnimationClip clip = FindClip(clipNames[clipIndex]);
+                    if (clip == null)
+                    {
+                        continue;
+                    }
+
+                    int sampleCount = Mathf.Max(8, Mathf.CeilToInt(clip.length * 30f));
+                    for (int sample = 0; sample <= sampleCount; sample++)
+                    {
+                        clip.SampleAnimation(instance, clip.length * sample / sampleCount);
+                        Renderer[] renderers = instance.GetComponentsInChildren<Renderer>(true);
+                        for (int i = 0; i < renderers.Length; i++)
+                        {
+                            minY = Mathf.Min(minY, renderers[i].bounds.min.y);
+                        }
+                    }
                 }
 
                 return minY;
@@ -624,6 +653,32 @@ namespace TilkiOyunu.Foundation.Editor
             if (GameObject.Find(name) == null)
             {
                 errors.Add($"Forest scene is missing {name}.");
+            }
+        }
+
+        private static void RequireBridgeRailCollider(string name, float expectedX, List<string> errors)
+        {
+            GameObject rail = GameObject.Find(name);
+            if (rail == null)
+            {
+                errors.Add($"Forest bridge is missing {name}.");
+                return;
+            }
+
+            if (rail.transform.parent == null || rail.transform.parent.name != "Small Bridge")
+            {
+                errors.Add($"{name} must stay under Small Bridge.");
+            }
+
+            if (Mathf.Abs(rail.transform.localPosition.x - expectedX) > 0.001f || Mathf.Abs(rail.transform.localPosition.y - 0.56f) > 0.001f)
+            {
+                errors.Add($"{name} has drifted from the calibrated bridge rail position.");
+            }
+
+            BoxCollider collider = rail.GetComponent<BoxCollider>();
+            if (collider == null || collider.isTrigger || Vector3.Distance(collider.size, new Vector3(0.18f, 0.9f, 4.45f)) > 0.001f)
+            {
+                errors.Add($"{name} must be a solid BoxCollider sized for fox body blocking.");
             }
         }
 

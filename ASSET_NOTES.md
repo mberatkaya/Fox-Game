@@ -2,7 +2,38 @@
 
 Date Downloaded: 2026-09-07
 
-## Quaternius - Ultimate Animated Animal Pack / Fox
+## Unity Asset Store - Toon Fox
+
+Asset Name: Toon Fox
+Author: Pxltiger
+Official Source: Unity Asset Store
+Source Page: https://assetstore.unity.com/packages/3d/characters/animals/toon-fox-183005
+Unity Asset Store Package ID: 183005
+Package Version: 1.0
+Original Unity Version: 2019.4.10
+License: Standard Unity Asset Store EULA
+Files Imported: `Assets/Fox/FBXs/Fox.fbx`, `Assets/Fox/Prefabs/Fox.prefab`, `Assets/Fox/Animations/*.fbx`, `Assets/Fox/Materials/M_Fox.mat`, `Assets/Fox/Textures/T_Fox_BC.png`, `T_Fox_Normal.png`, `T_Fox_AO.png`
+Usage: Player character visual and animations under `PlayerFox/VisualRoot/ToonFox`
+Modified: Package source files are left in their imported `Assets/Fox` structure. Game-specific wrapper assets are `Assets/_Game/Prefabs/Characters/ToonFoxVisual.prefab`, `Assets/_Game/Art/Characters/FoxAnimatorController.controller`, and `Assets/_Game/Art/Characters/ToonFox_URP.mat`.
+Attribution Requirements: Follow the Standard Unity Asset Store EULA.
+Notes: Production locomotion uses `Fox_Idle`, `Fox_Walk_InPlace`, and `Fox_Run_InPlace`. Air state uses the included `Fox_Jump_InAir` clip. Root motion is disabled on the PlayerFox production animator; movement remains owned by `FoxController` and `CharacterController`.
+
+## OpenGameArt - Fox (Not Used In Production)
+
+Asset Name: Fox
+Author: br-n518
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/fox-0
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Date Downloaded: 2026-09-08
+Files Imported: `Assets/ThirdParty/br-n518/Fox/fox.blend`, `Assets/ThirdParty/br-n518/Fox/Fox_br-n518.fbx`, `Assets/ThirdParty/br-n518/Fox/fox_diffuse.png`, `Assets/ThirdParty/br-n518/Fox/fox_normal.png`
+Usage: NOT USED IN PRODUCTION. Superseded by Pxltiger Toon Fox during Sprint 5.5-A.2.
+Modified: Previously exported `fox.blend` to `Fox_br-n518.fbx` with Blender 4.5.0 portable for Unity import; previous Unity material wrapper was `Assets/_Game/Art/Characters/OpenGameArtFox_URP.mat`.
+Attribution Requirements: None required by CC0
+Notes: Retained only as historical Sprint 5.5-A.1 fallback documentation unless the abandoned fallback files are removed.
+
+## Quaternius - Ultimate Animated Animal Pack / Fox (Superseded)
 
 Asset Name: Ultimate Animated Animal Pack
 Author: Quaternius
@@ -13,7 +44,7 @@ License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and in
 Files Imported: `Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx`, `License.txt`
 Usage: Player fox visual and locomotion animation clips
 Modified: No source asset edits; Unity import metadata generated
-Notes: Official Quaternius page and Drive flow used. Raw full pack kept outside the repo.
+Notes: Superseded by the OpenGameArt br-n518 fox during Sprint 5.5-A.1, then by Pxltiger Toon Fox during Sprint 5.5-A.2 after the official Asset Store package was imported.
 
 ## Quaternius - Ultimate Stylized Nature Pack
 

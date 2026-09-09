@@ -19,7 +19,11 @@ namespace TilkiOyunu.Foundation
         private InputAction sprintAction;
         private Vector3 horizontalVelocity;
         private float verticalVelocity;
+        private float postJumpGroundLockTimer;
+        private bool jumpAvailable = true;
         private bool inputLocked;
+
+        private const float PostJumpGroundLockSeconds = 0.12f;
 
         public Vector3 Velocity => horizontalVelocity + Vector3.up * verticalVelocity;
         public Vector2 MoveInput { get; private set; }
@@ -53,6 +57,12 @@ namespace TilkiOyunu.Foundation
         {
             float deltaTime = Time.deltaTime;
             IsGrounded = CheckGrounded();
+            if (postJumpGroundLockTimer > 0f)
+            {
+                postJumpGroundLockTimer = Mathf.Max(0f, postJumpGroundLockTimer - deltaTime);
+                IsGrounded = false;
+            }
+
             MoveInput = inputLocked ? Vector2.zero : moveAction?.ReadValue<Vector2>() ?? Vector2.zero;
             IsSprinting = IsGrounded && sprintAction != null && sprintAction.IsPressed() && MoveInput.sqrMagnitude > 0.01f;
 
@@ -61,11 +71,7 @@ namespace TilkiOyunu.Foundation
                 verticalVelocity = movement.groundedStickVelocity;
             }
 
-            if (!inputLocked && IsGrounded && jumpAction != null && jumpAction.WasPressedThisFrame())
-            {
-                verticalVelocity = Mathf.Sqrt(movement.jumpHeight * -2f * movement.gravity);
-                IsGrounded = false;
-            }
+            TryStartJump(jumpAction != null && jumpAction.WasPressedThisFrame());
 
             Vector3 desiredVelocity = BuildCameraRelativeMove(MoveInput) * (IsSprinting ? movement.sprintSpeed : movement.moveSpeed);
             float control = IsGrounded ? 1f : movement.airControl;
@@ -82,7 +88,8 @@ namespace TilkiOyunu.Foundation
 
             verticalVelocity += movement.gravity * deltaTime;
             Vector3 frameVelocity = horizontalVelocity + Vector3.up * verticalVelocity;
-            characterController.Move(frameVelocity * deltaTime);
+            CollisionFlags collisionFlags = characterController.Move(frameVelocity * deltaTime);
+            RefreshJumpAvailabilityAfterMove(collisionFlags);
         }
 
         public void TeleportTo(Transform spawnPoint)
@@ -97,6 +104,8 @@ namespace TilkiOyunu.Foundation
             characterController.enabled = true;
             horizontalVelocity = Vector3.zero;
             verticalVelocity = movement.groundedStickVelocity;
+            postJumpGroundLockTimer = 0f;
+            jumpAvailable = true;
         }
 
         public void SetInputLocked(bool locked)
@@ -172,6 +181,32 @@ namespace TilkiOyunu.Foundation
                 movement.groundedProbeRadius,
                 groundLayers,
                 QueryTriggerInteraction.Ignore);
+        }
+
+        private bool TryStartJump(bool jumpPressedThisFrame)
+        {
+            if (inputLocked || !jumpAvailable || !IsGrounded || verticalVelocity > 0f || !jumpPressedThisFrame)
+            {
+                return false;
+            }
+
+            verticalVelocity = Mathf.Sqrt(movement.jumpHeight * -2f * movement.gravity);
+            postJumpGroundLockTimer = PostJumpGroundLockSeconds;
+            jumpAvailable = false;
+            IsGrounded = false;
+            return true;
+        }
+
+        private void RefreshJumpAvailabilityAfterMove(CollisionFlags collisionFlags)
+        {
+            if (((collisionFlags & CollisionFlags.Below) == 0 && !characterController.isGrounded) || verticalVelocity > 0f)
+            {
+                return;
+            }
+
+            jumpAvailable = true;
+            postJumpGroundLockTimer = 0f;
+            IsGrounded = true;
         }
     }
 }

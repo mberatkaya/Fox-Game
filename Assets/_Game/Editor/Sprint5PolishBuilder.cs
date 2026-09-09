@@ -11,7 +11,8 @@ namespace TilkiOyunu.Foundation.Editor
 {
     public static class Sprint5PolishBuilder
     {
-        private const string FoxFbxPath = "Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx";
+        private const string ToonFoxRootPath = "Assets/Fox";
+        private const string FoxFbxPath = "Assets/Fox/Animations/Fox_Idle.fbx";
         private const string PlayerPrefabPath = "Assets/_Game/Prefabs/Characters/PlayerFox.prefab";
         private const string AnimatorPath = "Assets/_Game/Art/Characters/FoxAnimatorController.controller";
         private const string ThemePath = "Assets/_Game/Art/UI/GameUITheme.asset";
@@ -55,7 +56,7 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void ImportThirdPartyAssets()
         {
-            AssetDatabase.ImportAsset(FoxFbxPath, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.ImportAsset(ToonFoxRootPath, ImportAssetOptions.ImportRecursive);
             for (int i = 0; i < NatureAssetPaths.Length; i++)
             {
                 AssetDatabase.ImportAsset(NatureAssetPaths[i], ImportAssetOptions.ForceUpdate);

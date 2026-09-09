@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -12,31 +13,41 @@ namespace TilkiOyunu.Foundation.Editor
 {
     public static class Sprint55FoxCharacterQuality
     {
-        private const string FoxFbxPath = "Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx";
-        private const string PlayerPrefabPath = "Assets/_Game/Prefabs/Characters/PlayerFox.prefab";
-        private const string AnimatorPath = "Assets/_Game/Art/Characters/FoxAnimatorController.controller";
-        private const string MixerPath = "Assets/_Game/Audio/Mixers/TilkiAudioMixer.mixer";
+        public const string ToonFoxPackageRoot = "Assets/Fox";
+        public const string ToonFoxSourcePrefabPath = "Assets/Fox/Prefabs/Fox.prefab";
+        public const string ToonFoxModelPath = "Assets/Fox/FBXs/Fox.fbx";
+        public const string ToonFoxWrapperPrefabPath = "Assets/_Game/Prefabs/Characters/ToonFoxVisual.prefab";
+        public const string PlayerPrefabPath = "Assets/_Game/Prefabs/Characters/PlayerFox.prefab";
+        public const string AnimatorPath = "Assets/_Game/Art/Characters/FoxAnimatorController.controller";
+        public const string MaterialPath = "Assets/_Game/Art/Characters/ToonFox_URP.mat";
+        public const string BaseTexturePath = "Assets/Fox/Textures/T_Fox_BC.png";
+        public const string NormalTexturePath = "Assets/Fox/Textures/T_Fox_Normal.png";
+        public const string OcclusionTexturePath = "Assets/Fox/Textures/T_Fox_AO.png";
 
-        private const float FoxVisualScale = 0.62f;
+        private const string MixerPath = "Assets/_Game/Audio/Mixers/TilkiAudioMixer.mixer";
+        private const string ToonFoxVisualName = "ToonFox";
+
+        private const float ToonFoxVisualScale = 0.62f;
         private const float PawGroundClearance = 0.025f;
+        private const float VisualYawDegrees = 0f;
         private const float WalkThreshold = 0.59f;
         private const float RunThreshold = 1f;
-        private const float WalkPlaybackSpeed = 1.35f;
-        private const float RunPlaybackSpeed = 1.18f;
+        private const float WalkPlaybackSpeed = 1.08f;
+        private const float RunPlaybackSpeed = 1.16f;
         private const float SprintSpeed = 6.1f;
         private const float AnimatorDampSeconds = 0.1f;
-        private const float CharacterHeight = 1.52f;
+        private const float CharacterHeight = 1.12f;
         private const float CharacterRadius = 0.34f;
-        private const float CharacterCenterY = 0.76f;
+        private const float CharacterCenterY = 0.56f;
         private const float CameraTargetY = 0.9f;
         private const float FootstepVolume = 0.24f;
         private const float FootstepPitchVariation = 0.035f;
         private const float FootstepMinSpeed = 0.35f;
 
-        private const string IdleClipName = "AnimalArmature|Idle";
-        private const string WalkClipName = "AnimalArmature|Walk";
-        private const string RunClipName = "AnimalArmature|Gallop";
-        private const string AirClipName = "AnimalArmature|Gallop_Jump";
+        private const string IdleClipName = "Fox_Idle";
+        private const string WalkClipName = "Fox_Walk_InPlace";
+        private const string RunClipName = "Fox_Run_InPlace";
+        private const string AirClipName = "Fox_Jump_InAir";
 
         [MenuItem("Tilki Oyunu/Sprint 5.5/Report Fox Character Data")]
         public static void ReportFoxCharacterData()
@@ -47,10 +58,15 @@ namespace TilkiOyunu.Foundation.Editor
         [MenuItem("Tilki Oyunu/Sprint 5.5/Apply Fox Character Quality")]
         public static void ApplyFoxCharacterQuality()
         {
+            RequireToonFoxPackage();
+            ConfigureFoxTextures();
             ConfigureFoxImporterLoopSettings();
             AnimatorController controller = EnsureFoxAnimatorController();
+            EnsureFoxMaterial();
+            EnsureToonFoxWrapperPrefab(controller);
             ApplyPlayerPrefabQuality(controller);
             ApplyForestCameraQuality();
+            ApplyForestCollisionQuality();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
@@ -70,8 +86,8 @@ namespace TilkiOyunu.Foundation.Editor
 
         public static float CalculatePreferredVisualLocalY()
         {
-            BoundsReport bounds = MeasureSampledFbxBounds(LoadFoxClips());
-            return CalculateVisualLocalY(bounds.MinY, FoxVisualScale, PawGroundClearance);
+            BoundsReport bounds = MeasureSampledPrefabBounds(LoadGroundAlignmentClips());
+            return CalculateVisualLocalY(bounds.MinY, ToonFoxVisualScale, PawGroundClearance);
         }
 
         public static AnimatorController EnsureFoxAnimatorController()
@@ -99,7 +115,7 @@ namespace TilkiOyunu.Foundation.Editor
             AnimationClip idle = RequireClip(IdleClipName);
             AnimationClip walk = RequireClip(WalkClipName);
             AnimationClip run = RequireClip(RunClipName);
-            AnimationClip air = FindClip(AirClipName) ?? RequireClip("AnimalArmature|Jump_ToIdle");
+            AnimationClip air = FindClip(AirClipName) ?? RequireClip("Fox_Jump");
 
             AnimatorState locomotionState = stateMachine.AddState("Locomotion", new Vector3(240f, 120f, 0f));
             BlendTree locomotion = new()
@@ -155,33 +171,19 @@ namespace TilkiOyunu.Foundation.Editor
             visualRoot.localRotation = Quaternion.identity;
             visualRoot.localScale = Vector3.one;
 
-            Transform foxVisual = visualRoot.Find("QuaterniusFox");
-            if (foxVisual == null)
+            RemoveAllVisualChildren(visualRoot);
+            GameObject wrapperAsset = AssetDatabase.LoadAssetAtPath<GameObject>(ToonFoxWrapperPrefabPath);
+            if (wrapperAsset == null)
             {
-                foxVisual = new GameObject("QuaterniusFox").transform;
-                foxVisual.SetParent(visualRoot, false);
+                throw new InvalidOperationException($"Missing Toon Fox wrapper prefab at {ToonFoxWrapperPrefabPath}.");
             }
 
-            EnsureFoxModelChild(foxVisual);
-            foxVisual.localPosition = new Vector3(0f, CalculatePreferredVisualLocalY(), 0f);
-            foxVisual.localRotation = Quaternion.identity;
-            foxVisual.localScale = Vector3.one * FoxVisualScale;
-
-            Animator animator = foxVisual.GetComponent<Animator>();
-            if (animator == null)
-            {
-                animator = foxVisual.gameObject.AddComponent<Animator>();
-            }
-
-            animator.runtimeAnimatorController = animatorController;
-            animator.applyRootMotion = false;
-            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-
-            FoxAnimationDriver animationDriver = EnsureComponent<FoxAnimationDriver>(foxVisual.gameObject);
-            SetObject(animationDriver, "controller", controller);
-            SetObject(animationDriver, "animator", animator);
-            SetFloat(animationDriver, "runSpeed", SprintSpeed);
-            SetFloat(animationDriver, "dampSeconds", AnimatorDampSeconds);
+            GameObject toonFox = (GameObject)PrefabUtility.InstantiatePrefab(wrapperAsset, visualRoot);
+            toonFox.name = ToonFoxVisualName;
+            toonFox.transform.localPosition = new Vector3(0f, CalculatePreferredVisualLocalY(), 0f);
+            toonFox.transform.localRotation = Quaternion.Euler(0f, VisualYawDegrees, 0f);
+            toonFox.transform.localScale = Vector3.one * ToonFoxVisualScale;
+            ConfigureToonFoxInstance(toonFox, controller, animatorController);
 
             AudioSource source = EnsureComponent<AudioSource>(root);
             source.outputAudioMixerGroup = FindMixerGroup("SFX");
@@ -204,6 +206,9 @@ namespace TilkiOyunu.Foundation.Editor
                 characterController.height = CharacterHeight;
                 characterController.radius = CharacterRadius;
                 characterController.center = new Vector3(0f, CharacterCenterY, 0f);
+                characterController.skinWidth = 0.045f;
+                characterController.stepOffset = 0.22f;
+                characterController.slopeLimit = 48f;
             }
 
             Transform cameraTarget = root.transform.Find("Camera Target");
@@ -216,8 +221,11 @@ namespace TilkiOyunu.Foundation.Editor
         public static string BuildCharacterReport()
         {
             StringBuilder report = new();
-            ModelImporter importer = AssetImporter.GetAtPath(FoxFbxPath) as ModelImporter;
-            report.AppendLine("SPRINT55_FOX_REPORT_BEGIN");
+            ModelImporter importer = AssetImporter.GetAtPath(ToonFoxModelPath) as ModelImporter;
+            report.AppendLine("SPRINT55_TOON_FOX_REPORT_BEGIN");
+            report.AppendLine($"Package root: {ToonFoxPackageRoot}");
+            report.AppendLine($"Source prefab: {ToonFoxSourcePrefabPath}");
+            report.AppendLine($"Product ID: {GetAssetOriginProductId(ToonFoxModelPath)}");
             if (importer == null)
             {
                 report.AppendLine("Importer: MISSING");
@@ -228,12 +236,11 @@ namespace TilkiOyunu.Foundation.Editor
                 report.AppendLine($"Importer importAnimation: {importer.importAnimation}");
                 report.AppendLine($"Importer globalScale: {Format(importer.globalScale)}");
                 report.AppendLine($"Importer useFileScale: {importer.useFileScale}");
-                report.AppendLine($"Importer clipAnimations: {importer.clipAnimations.Length}");
                 report.AppendLine($"Importer avatarSetup: {importer.avatarSetup}");
                 report.AppendLine($"Importer motionNodeName: {importer.motionNodeName}");
             }
 
-            List<AnimationClip> clips = LoadFoxClips();
+            List<AnimationClip> clips = LoadToonFoxClips();
             report.AppendLine($"Clip count: {clips.Count}");
             for (int i = 0; i < clips.Count; i++)
             {
@@ -248,23 +255,28 @@ namespace TilkiOyunu.Foundation.Editor
                         $"frameRate={Format(clip.frameRate)}",
                         $"frames={Format(clip.length * clip.frameRate)}",
                         $"loop={settings.loopTime}",
+                        $"used={IsProductionClip(clip.name)}",
                         $"rootCurves={clip.hasRootCurves}",
                         $"genericRoot={clip.hasGenericRootTransform}",
                         $"motionCurves={clip.hasMotionCurves}"));
             }
 
-            BoundsReport rawBounds = MeasureSampledFbxBounds(clips);
+            BoundsReport rawBounds = MeasureSampledPrefabBounds(clips);
+            BoundsReport groundBounds = MeasureSampledPrefabBounds(LoadGroundAlignmentClips());
             report.AppendLine($"Raw sampled minY: {Format(rawBounds.MinY)}");
             report.AppendLine($"Raw sampled maxY: {Format(rawBounds.MaxY)}");
             report.AppendLine($"Raw sampled height: {Format(rawBounds.MaxY - rawBounds.MinY)}");
-            report.AppendLine($"Scale: {Format(FoxVisualScale)}");
-            report.AppendLine($"Calculated visual localY: {Format(CalculateVisualLocalY(rawBounds.MinY, FoxVisualScale, PawGroundClearance))}");
+            report.AppendLine($"Ground alignment sampled minY: {Format(groundBounds.MinY)}");
+            report.AppendLine($"Ground alignment clips: {string.Join(", ", GroundAlignmentClipNames)}");
+            report.AppendLine($"Scale: {Format(ToonFoxVisualScale)}");
+            report.AppendLine($"Rotation Y: {Format(VisualYawDegrees)}");
+            report.AppendLine($"Calculated visual localY: {Format(CalculateVisualLocalY(groundBounds.MinY, ToonFoxVisualScale, PawGroundClearance))}");
             report.AppendLine($"Target paw clearance: {Format(PawGroundClearance)}");
             report.AppendLine("Per-clip sampled bounds:");
             foreach (KeyValuePair<string, BoundsReport> entry in rawBounds.PerClip)
             {
                 BoundsReport bounds = entry.Value;
-                report.AppendLine($"{entry.Key} | minY={Format(bounds.MinY)} | maxY={Format(bounds.MaxY)} | height={Format(bounds.MaxY - bounds.MinY)}");
+                report.AppendLine($"{entry.Key} | minY={Format(bounds.MinY)} | maxY={Format(bounds.MaxY)} | height={Format(bounds.MaxY - bounds.MinY)} | skeletonDelta={Format(CalculateSkeletonDelta(entry.Key))}");
             }
 
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabPath);
@@ -272,39 +284,192 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 CharacterController characterController = prefab.GetComponent<CharacterController>();
                 Transform visualRoot = prefab.transform.Find("VisualRoot");
-                Transform foxVisual = prefab.transform.Find("VisualRoot/QuaterniusFox");
+                Transform foxVisual = prefab.transform.Find($"VisualRoot/{ToonFoxVisualName}");
                 Transform cameraTarget = prefab.transform.Find("Camera Target");
                 report.AppendLine($"Prefab VisualRoot local: {FormatTransform(visualRoot)}");
-                report.AppendLine($"Prefab QuaterniusFox local: {FormatTransform(foxVisual)}");
+                report.AppendLine($"Prefab {ToonFoxVisualName} local: {FormatTransform(foxVisual)}");
                 report.AppendLine($"Prefab CameraTarget local: {FormatTransform(cameraTarget)}");
                 if (characterController != null)
                 {
-                    report.AppendLine($"CharacterController height={Format(characterController.height)} radius={Format(characterController.radius)} center={Format(characterController.center)}");
+                    report.AppendLine($"CharacterController height={Format(characterController.height)} radius={Format(characterController.radius)} center={Format(characterController.center)} skinWidth={Format(characterController.skinWidth)} stepOffset={Format(characterController.stepOffset)} slopeLimit={Format(characterController.slopeLimit)}");
                 }
             }
 
-            report.AppendLine("SPRINT55_FOX_REPORT_END");
+            report.AppendLine("SPRINT55_TOON_FOX_REPORT_END");
             return report.ToString();
+        }
+
+        private static void RequireToonFoxPackage()
+        {
+            RequireAsset<GameObject>(ToonFoxSourcePrefabPath, "Toon Fox source prefab");
+            RequireAsset<GameObject>(ToonFoxModelPath, "Toon Fox model");
+            RequireAsset<Texture2D>(BaseTexturePath, "Toon Fox base color texture");
+            RequireAsset<Texture2D>(NormalTexturePath, "Toon Fox normal texture");
+            RequireAsset<Texture2D>(OcclusionTexturePath, "Toon Fox occlusion texture");
+            RequireClip(IdleClipName);
+            RequireClip(WalkClipName);
+            RequireClip(RunClipName);
         }
 
         private static void ConfigureFoxImporterLoopSettings()
         {
-            ModelImporter importer = AssetImporter.GetAtPath(FoxFbxPath) as ModelImporter;
-            if (importer == null)
+            foreach (string path in Directory.GetFiles("Assets/Fox/Animations", "*.fbx", SearchOption.TopDirectoryOnly))
             {
-                throw new InvalidOperationException($"Missing fox FBX importer at {FoxFbxPath}.");
+                string assetPath = path.Replace('\\', '/');
+                ModelImporter importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
+                if (importer == null)
+                {
+                    continue;
+                }
+
+                importer.animationType = ModelImporterAnimationType.Generic;
+                importer.avatarSetup = ModelImporterAvatarSetup.CopyFromOther;
+                importer.sourceAvatar = AssetDatabase.LoadAssetAtPath<Avatar>(ToonFoxModelPath);
+                importer.optimizeGameObjects = false;
+                importer.preserveHierarchy = true;
+
+                ModelImporterClipAnimation[] clips = importer.clipAnimations.Length > 0
+                    ? importer.clipAnimations
+                    : importer.defaultClipAnimations;
+                for (int i = 0; i < clips.Length; i++)
+                {
+                    bool loops = IsLoopingClip(clips[i].name);
+                    clips[i].loopTime = loops;
+                    clips[i].loopPose = loops;
+                    clips[i].keepOriginalPositionY = true;
+                    clips[i].keepOriginalPositionXZ = assetPath.Contains("_InPlace");
+                }
+
+                importer.clipAnimations = clips;
+                importer.SaveAndReimport();
+            }
+        }
+
+        private static void ConfigureFoxTextures()
+        {
+            TextureImporter normalImporter = AssetImporter.GetAtPath(NormalTexturePath) as TextureImporter;
+            if (normalImporter != null && normalImporter.textureType != TextureImporterType.NormalMap)
+            {
+                normalImporter.textureType = TextureImporterType.NormalMap;
+                normalImporter.SaveAndReimport();
+            }
+        }
+
+        private static Material EnsureFoxMaterial()
+        {
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(MaterialPath);
+            if (material == null)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
+                material = new Material(shader)
+                {
+                    name = "ToonFox_URP"
+                };
+                AssetDatabase.CreateAsset(material, MaterialPath);
+            }
+            else
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader != null)
+                {
+                    material.shader = shader;
+                }
             }
 
-            ModelImporterClipAnimation[] clips = importer.defaultClipAnimations;
-            for (int i = 0; i < clips.Length; i++)
+            Texture2D baseColor = AssetDatabase.LoadAssetAtPath<Texture2D>(BaseTexturePath);
+            Texture2D normal = AssetDatabase.LoadAssetAtPath<Texture2D>(NormalTexturePath);
+            Texture2D occlusion = AssetDatabase.LoadAssetAtPath<Texture2D>(OcclusionTexturePath);
+            if (material.HasProperty("_BaseMap"))
             {
-                bool loops = IsLoopingClip(clips[i].name);
-                clips[i].loopTime = loops;
-                clips[i].loopPose = loops;
+                material.SetTexture("_BaseMap", baseColor);
+                material.SetColor("_BaseColor", Color.white);
+            }
+            else if (material.HasProperty("_MainTex"))
+            {
+                material.SetTexture("_MainTex", baseColor);
+                material.SetColor("_Color", Color.white);
             }
 
-            importer.clipAnimations = clips;
-            importer.SaveAndReimport();
+            if (material.HasProperty("_BumpMap"))
+            {
+                material.SetTexture("_BumpMap", normal);
+                material.EnableKeyword("_NORMALMAP");
+            }
+
+            if (material.HasProperty("_OcclusionMap"))
+            {
+                material.SetTexture("_OcclusionMap", occlusion);
+                material.SetFloat("_OcclusionStrength", 0.75f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.18f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static GameObject EnsureToonFoxWrapperPrefab(RuntimeAnimatorController animatorController)
+        {
+            GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(ToonFoxSourcePrefabPath);
+            if (source == null)
+            {
+                throw new InvalidOperationException($"Missing Toon Fox source prefab at {ToonFoxSourcePrefabPath}.");
+            }
+
+            EnsureDirectory(Path.GetDirectoryName(ToonFoxWrapperPrefabPath));
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(source);
+            try
+            {
+                instance.name = ToonFoxVisualName;
+                instance.transform.localPosition = new Vector3(0f, CalculatePreferredVisualLocalY(), 0f);
+                instance.transform.localRotation = Quaternion.Euler(0f, VisualYawDegrees, 0f);
+                instance.transform.localScale = Vector3.one * ToonFoxVisualScale;
+                ConfigureToonFoxInstance(instance, null, animatorController);
+                return PrefabUtility.SaveAsPrefabAsset(instance, ToonFoxWrapperPrefabPath);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(instance);
+            }
+        }
+
+        private static void ConfigureToonFoxInstance(GameObject toonFox, FoxController controller, RuntimeAnimatorController animatorController)
+        {
+            Animator animator = toonFox.GetComponent<Animator>();
+            if (animator == null)
+            {
+                animator = toonFox.AddComponent<Animator>();
+            }
+
+            animator.runtimeAnimatorController = animatorController;
+            animator.applyRootMotion = false;
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+
+            FoxAnimationDriver animationDriver = EnsureComponent<FoxAnimationDriver>(toonFox);
+            SetObject(animationDriver, "controller", controller);
+            SetObject(animationDriver, "animator", animator);
+            SetFloat(animationDriver, "runSpeed", SprintSpeed);
+            SetFloat(animationDriver, "dampSeconds", AnimatorDampSeconds);
+
+            AssignFoxMaterial(toonFox);
+        }
+
+        private static void AssignFoxMaterial(GameObject model)
+        {
+            Material material = EnsureFoxMaterial();
+            Renderer[] renderers = model.GetComponentsInChildren<Renderer>(true);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                renderers[i].sharedMaterial = material;
+            }
         }
 
         private static void ApplyPlayerPrefabQuality(RuntimeAnimatorController animatorController)
@@ -347,19 +512,54 @@ namespace TilkiOyunu.Foundation.Editor
             EditorSceneManager.SaveScene(scene);
         }
 
-        private static List<AnimationClip> LoadFoxClips()
+        private static void ApplyForestCollisionQuality()
+        {
+            UnityEngine.SceneManagement.Scene scene = EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+            GameObject bridge = GameObject.Find("Small Bridge");
+            if (bridge != null)
+            {
+                EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", new Vector3(-1.5f, 0.56f, 0f));
+                EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", new Vector3(1.5f, 0.56f, 0f));
+            }
+
+            EditorSceneManager.SaveScene(scene);
+        }
+
+        private static List<AnimationClip> LoadToonFoxClips()
         {
             List<AnimationClip> clips = new();
-            UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath(FoxFbxPath);
-            for (int i = 0; i < assets.Length; i++)
+            foreach (string path in Directory.GetFiles("Assets/Fox/Animations", "*.fbx", SearchOption.TopDirectoryOnly))
             {
-                if (assets[i] is AnimationClip clip && !clip.name.StartsWith("__preview__", StringComparison.OrdinalIgnoreCase))
+                string assetPath = path.Replace('\\', '/');
+                UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath);
+                for (int i = 0; i < assets.Length; i++)
                 {
-                    clips.Add(clip);
+                    if (assets[i] is AnimationClip clip && !clip.name.StartsWith("__preview__", StringComparison.OrdinalIgnoreCase))
+                    {
+                        clips.Add(clip);
+                    }
                 }
             }
 
             clips.Sort((left, right) => string.Compare(left.name, right.name, StringComparison.OrdinalIgnoreCase));
+            return clips;
+        }
+
+        private static readonly string[] GroundAlignmentClipNames =
+        {
+            IdleClipName,
+            WalkClipName,
+            RunClipName
+        };
+
+        private static List<AnimationClip> LoadGroundAlignmentClips()
+        {
+            List<AnimationClip> clips = new();
+            for (int i = 0; i < GroundAlignmentClipNames.Length; i++)
+            {
+                clips.Add(RequireClip(GroundAlignmentClipNames[i]));
+            }
+
             return clips;
         }
 
@@ -368,7 +568,7 @@ namespace TilkiOyunu.Foundation.Editor
             AnimationClip clip = FindClip(clipName);
             if (clip == null)
             {
-                throw new InvalidOperationException($"Missing required fox animation clip '{clipName}'.");
+                throw new InvalidOperationException($"Missing required Toon Fox animation clip '{clipName}'.");
             }
 
             return clip;
@@ -376,10 +576,10 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static AnimationClip FindClip(string clipName)
         {
-            List<AnimationClip> clips = LoadFoxClips();
+            List<AnimationClip> clips = LoadToonFoxClips();
             for (int i = 0; i < clips.Count; i++)
             {
-                if (string.Equals(clips[i].name, clipName, StringComparison.Ordinal))
+                if (clips[i].name == clipName)
                 {
                     return clips[i];
                 }
@@ -388,9 +588,9 @@ namespace TilkiOyunu.Foundation.Editor
             return null;
         }
 
-        private static BoundsReport MeasureSampledFbxBounds(IReadOnlyList<AnimationClip> clips)
+        private static BoundsReport MeasureSampledPrefabBounds(IReadOnlyList<AnimationClip> clips)
         {
-            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(FoxFbxPath);
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(ToonFoxSourcePrefabPath);
             if (asset == null)
             {
                 return BoundsReport.Empty();
@@ -446,6 +646,63 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
+        private static float CalculateSkeletonDelta(string clipName)
+        {
+            AnimationClip clip = FindClip(clipName);
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(ToonFoxSourcePrefabPath);
+            if (clip == null || asset == null)
+            {
+                return 0f;
+            }
+
+            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(asset);
+            try
+            {
+                clip.SampleAnimation(instance, 0f);
+                Dictionary<string, PoseSample> start = CapturePose(instance.transform);
+                clip.SampleAnimation(instance, clip.length * 0.5f);
+                Dictionary<string, PoseSample> middle = CapturePose(instance.transform);
+
+                float delta = 0f;
+                foreach (KeyValuePair<string, PoseSample> entry in start)
+                {
+                    if (middle.TryGetValue(entry.Key, out PoseSample value))
+                    {
+                        delta += Vector3.Distance(entry.Value.Position, value.Position);
+                        delta += Quaternion.Angle(entry.Value.Rotation, value.Rotation) / 180f;
+                    }
+                }
+
+                return delta;
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(instance);
+            }
+        }
+
+        private static Dictionary<string, PoseSample> CapturePose(Transform root)
+        {
+            Dictionary<string, PoseSample> samples = new();
+            Transform[] transforms = root.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < transforms.Length; i++)
+            {
+                samples[GetPath(root, transforms[i])] = new PoseSample(transforms[i].localPosition, transforms[i].localRotation);
+            }
+
+            return samples;
+        }
+
+        private static string GetPath(Transform root, Transform transform)
+        {
+            if (transform == root)
+            {
+                return root.name;
+            }
+
+            return GetPath(root, transform.parent) + "/" + transform.name;
+        }
+
         private static float CalculateVisualLocalY(float sampledMinY, float visualScale, float clearance)
         {
             return clearance - sampledMinY * visualScale;
@@ -459,32 +716,45 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static bool IsLoopingClip(string clipName)
         {
-            return string.Equals(clipName, IdleClipName, StringComparison.Ordinal)
-                || string.Equals(clipName, "AnimalArmature|Idle_2", StringComparison.Ordinal)
-                || string.Equals(clipName, "AnimalArmature|Idle_2_HeadLow", StringComparison.Ordinal)
-                || string.Equals(clipName, "AnimalArmature|Eating", StringComparison.Ordinal)
-                || string.Equals(clipName, WalkClipName, StringComparison.Ordinal)
-                || string.Equals(clipName, RunClipName, StringComparison.Ordinal);
+            string lower = clipName.ToLowerInvariant();
+            return lower.Contains("idle") || lower.Contains("walk") || lower.Contains("run");
         }
 
-        private static void EnsureFoxModelChild(Transform foxVisual)
+        private static bool IsProductionClip(string clipName)
         {
-            if (foxVisual.Find("FoxModel") != null)
+            return clipName == IdleClipName || clipName == WalkClipName || clipName == RunClipName || clipName == AirClipName;
+        }
+
+        private static void EnsureBridgeRailCollider(Transform parent, string name, Vector3 localPosition)
+        {
+            Transform child = parent.Find(name);
+            if (child == null)
             {
-                return;
+                child = new GameObject(name).transform;
+                child.SetParent(parent, false);
             }
 
-            GameObject foxAsset = AssetDatabase.LoadAssetAtPath<GameObject>(FoxFbxPath);
-            if (foxAsset == null)
+            child.localPosition = localPosition;
+            child.localRotation = Quaternion.identity;
+            child.localScale = Vector3.one;
+
+            BoxCollider collider = child.GetComponent<BoxCollider>();
+            if (collider == null)
             {
-                return;
+                collider = child.gameObject.AddComponent<BoxCollider>();
             }
 
-            GameObject model = (GameObject)PrefabUtility.InstantiatePrefab(foxAsset, foxVisual);
-            model.name = "FoxModel";
-            model.transform.localPosition = Vector3.zero;
-            model.transform.localRotation = Quaternion.identity;
-            model.transform.localScale = Vector3.one;
+            collider.isTrigger = false;
+            collider.center = Vector3.zero;
+            collider.size = new Vector3(0.18f, 0.9f, 4.45f);
+        }
+
+        private static void RemoveAllVisualChildren(Transform visualRoot)
+        {
+            for (int i = visualRoot.childCount - 1; i >= 0; i--)
+            {
+                UnityEngine.Object.DestroyImmediate(visualRoot.GetChild(i).gameObject);
+            }
         }
 
         private static T EnsureComponent<T>(GameObject gameObject) where T : Component
@@ -518,6 +788,11 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void SetObject(UnityEngine.Object target, string fieldName, UnityEngine.Object value)
         {
+            if (target == null)
+            {
+                return;
+            }
+
             SerializedObject serialized = new(target);
             serialized.FindProperty(fieldName).objectReferenceValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
@@ -598,6 +873,42 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
+        private static void RequireAsset<T>(string path, string label) where T : UnityEngine.Object
+        {
+            if (AssetDatabase.LoadAssetAtPath<T>(path) == null)
+            {
+                throw new InvalidOperationException($"{label} is missing at {path}.");
+            }
+        }
+
+        private static void EnsureDirectory(string directory)
+        {
+            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+        }
+
+        private static string GetAssetOriginProductId(string assetPath)
+        {
+            string metaPath = assetPath + ".meta";
+            if (!File.Exists(metaPath))
+            {
+                return "UNKNOWN";
+            }
+
+            foreach (string line in File.ReadLines(metaPath))
+            {
+                string trimmed = line.Trim();
+                if (trimmed.StartsWith("productId:", StringComparison.Ordinal))
+                {
+                    return trimmed.Substring("productId:".Length).Trim();
+                }
+            }
+
+            return "UNKNOWN";
+        }
+
         private static string FormatTransform(Transform transform)
         {
             if (transform == null)
@@ -616,6 +927,18 @@ namespace TilkiOyunu.Foundation.Editor
         private static string Format(float value)
         {
             return value.ToString("0.###", CultureInfo.InvariantCulture);
+        }
+
+        private readonly struct PoseSample
+        {
+            public PoseSample(Vector3 position, Quaternion rotation)
+            {
+                Position = position;
+                Rotation = rotation;
+            }
+
+            public Vector3 Position { get; }
+            public Quaternion Rotation { get; }
         }
 
         private struct BoundsReport
