@@ -191,6 +191,88 @@ namespace TilkiOyunu.Foundation.Tests
             AssertBridgeRailCollider("Bridge Right Rail Collider", 1.5f);
         }
 
+        [Test]
+        public void ForestHasSprint55BTerrainGraybox()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+
+            GameObject world = GameObject.Find("World");
+            GameObject terrainObject = GameObject.Find("Sprint55B_PrimaryTerrain");
+            Terrain terrain = terrainObject != null ? terrainObject.GetComponent<Terrain>() : null;
+
+            Assert.That(world, Is.Not.Null);
+            Assert.That(terrain, Is.Not.Null);
+            Assert.That(terrain.terrainData, Is.Not.Null);
+            Assert.That(terrain.terrainData.size.x, Is.EqualTo(512f).Within(0.01f));
+            Assert.That(terrain.terrainData.size.z, Is.EqualTo(512f).Within(0.01f));
+            Assert.That(terrain.terrainData.size.y, Is.InRange(40f, 60f));
+            Assert.That(terrain.terrainData.heightmapResolution, Is.EqualTo(257));
+            Assert.That(terrain.terrainData.terrainLayers.Length, Is.GreaterThanOrEqualTo(3));
+            Assert.That(GameObject.Find("GB_Lake_TempWater"), Is.Not.Null);
+            Assert.That(GameObject.Find("GB_Creek_TempWater"), Is.Not.Null);
+        }
+
+        [Test]
+        public void ForestSprint55BLandmarksHaveWorldScaleAndElevation()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+
+            string[] names =
+            {
+                "LM_SpawnMeadow",
+                "LM_NPCGrove",
+                "LM_MemoryRoute_A",
+                "LM_MemoryRoute_B",
+                "LM_Bridge",
+                "LM_Lake",
+                "LM_LightGrove",
+                "LM_HeartGarden",
+                "LM_FinalHill"
+            };
+
+            Bounds bounds = new(Vector3.zero, Vector3.zero);
+            bool hasBounds = false;
+            for (int i = 0; i < names.Length; i++)
+            {
+                GameObject landmark = GameObject.Find(names[i]);
+                Assert.That(landmark, Is.Not.Null, names[i]);
+                if (!hasBounds)
+                {
+                    bounds = new Bounds(landmark.transform.position, Vector3.zero);
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(landmark.transform.position);
+                }
+            }
+
+            Transform spawn = GameObject.Find("LM_SpawnMeadow").transform;
+            Transform npc = GameObject.Find("LM_NPCGrove").transform;
+            Transform lake = GameObject.Find("LM_Lake").transform;
+            Transform bridge = GameObject.Find("LM_Bridge").transform;
+            Transform finalHill = GameObject.Find("LM_FinalHill").transform;
+
+            Assert.That(bounds.size.x, Is.InRange(290f, 350f));
+            Assert.That(bounds.size.z, Is.InRange(290f, 350f));
+            Assert.That(Vector3.Distance(spawn.position, npc.position), Is.InRange(38f, 55f));
+            Assert.That(Vector3.Distance(spawn.position, finalHill.position), Is.GreaterThan(290f));
+            Assert.That(finalHill.position.y - spawn.position.y, Is.GreaterThan(24f));
+            Assert.That(finalHill.position.y - lake.position.y, Is.GreaterThan(26f));
+            Assert.That(Vector3.Distance(bridge.position, lake.position), Is.InRange(100f, 145f));
+        }
+
+        [Test]
+        public void ForestSprint55BNoVisibleArenaBoundaryDefinesWorld()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+
+            AssertInactiveSceneObject("North Boundary Ridge");
+            AssertInactiveSceneObject("South Boundary Ridge");
+            AssertInactiveSceneObject("East Boundary Ridge");
+            AssertInactiveSceneObject("West Boundary Ridge");
+        }
+
         private QuestService CreateQuestService()
         {
             SaveService saveService = new(savePath);
@@ -333,6 +415,28 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(collider, Is.Not.Null);
             Assert.That(collider.isTrigger, Is.False);
             Assert.That(collider.size, Is.EqualTo(new Vector3(0.18f, 0.9f, 4.45f)));
+        }
+
+        private static void AssertInactiveSceneObject(string name)
+        {
+            GameObject gameObject = FindSceneObjectIncludingInactive(name);
+            Assert.That(gameObject, Is.Not.Null);
+            Assert.That(gameObject.activeInHierarchy, Is.False);
+        }
+
+        private static GameObject FindSceneObjectIncludingInactive(string name)
+        {
+            GameObject[] objects = Resources.FindObjectsOfTypeAll<GameObject>();
+            for (int i = 0; i < objects.Length; i++)
+            {
+                GameObject gameObject = objects[i];
+                if (gameObject.name == name && gameObject.scene.IsValid())
+                {
+                    return gameObject;
+                }
+            }
+
+            return null;
         }
 
         private readonly struct PoseSample

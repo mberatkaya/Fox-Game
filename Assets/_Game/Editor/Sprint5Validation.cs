@@ -264,6 +264,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             ValidateEnvironmentVisuals(errors);
+            ValidateSprint55WorldLayout(errors);
 
             if (Object.FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>(FindObjectsInactive.Include) == null)
             {
@@ -496,6 +497,126 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
+        private static void ValidateSprint55WorldLayout(List<string> errors)
+        {
+            GameObject world = GameObject.Find("World");
+            if (world == null)
+            {
+                errors.Add("Forest scene is missing the Sprint 5.5-B World root.");
+                return;
+            }
+
+            GameObject terrainObject = GameObject.Find("Sprint55B_PrimaryTerrain");
+            Terrain terrain = terrainObject != null ? terrainObject.GetComponent<Terrain>() : null;
+            if (terrain == null || terrain.terrainData == null)
+            {
+                errors.Add("Forest scene is missing the Sprint 5.5-B primary Terrain.");
+                return;
+            }
+
+            Vector3 size = terrain.terrainData.size;
+            if (Mathf.Abs(size.x - 512f) > 0.01f || Mathf.Abs(size.z - 512f) > 0.01f)
+            {
+                errors.Add($"Sprint 5.5-B terrain must be 512x512, but was {size.x:0.#}x{size.z:0.#}.");
+            }
+
+            if (size.y < 40f || size.y > 60f)
+            {
+                errors.Add($"Sprint 5.5-B terrain height range must be roughly 40-60m, but was {size.y:0.#}m.");
+            }
+
+            if (terrain.terrainData.heightmapResolution != 257)
+            {
+                errors.Add("Sprint 5.5-B terrain must use a small-world heightmap resolution of 257.");
+            }
+
+            string[] requiredAnchors =
+            {
+                "LM_SpawnMeadow",
+                "LM_NPCGrove",
+                "LM_MemoryRoute_A",
+                "LM_MemoryRoute_B",
+                "LM_Bridge",
+                "LM_Lake",
+                "LM_LightGrove",
+                "LM_HeartGarden",
+                "LM_FinalHill"
+            };
+
+            Bounds bounds = new(Vector3.zero, Vector3.zero);
+            bool hasBounds = false;
+            Dictionary<string, GameObject> anchors = new();
+            for (int i = 0; i < requiredAnchors.Length; i++)
+            {
+                GameObject anchor = GameObject.Find(requiredAnchors[i]);
+                if (anchor == null)
+                {
+                    errors.Add($"Forest scene is missing world layout anchor {requiredAnchors[i]}.");
+                    continue;
+                }
+
+                anchors[requiredAnchors[i]] = anchor;
+                if (!hasBounds)
+                {
+                    bounds = new Bounds(anchor.transform.position, Vector3.zero);
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(anchor.transform.position);
+                }
+            }
+
+            if (hasBounds)
+            {
+                if (bounds.size.x < 290f || bounds.size.x > 350f || bounds.size.z < 290f || bounds.size.z > 350f)
+                {
+                    errors.Add($"Sprint 5.5-B playable landmark core should be about 300-350m wide/deep, but was {bounds.size.x:0.#}x{bounds.size.z:0.#}.");
+                }
+            }
+
+            if (anchors.TryGetValue("LM_SpawnMeadow", out GameObject spawn)
+                && anchors.TryGetValue("LM_FinalHill", out GameObject finalHill)
+                && finalHill.transform.position.y - spawn.transform.position.y < 24f)
+            {
+                errors.Add("Final Hill must be meaningfully higher than Spawn Meadow.");
+            }
+
+            if (anchors.TryGetValue("LM_Lake", out GameObject lake)
+                && anchors.TryGetValue("LM_FinalHill", out GameObject hill)
+                && hill.transform.position.y - lake.transform.position.y < 26f)
+            {
+                errors.Add("Lake must sit well below Final Hill.");
+            }
+
+            if (GameObject.Find("GB_Lake_TempWater") == null || GameObject.Find("GB_Creek_TempWater") == null)
+            {
+                errors.Add("Sprint 5.5-B needs temporary lake and creek water reference meshes.");
+            }
+
+            if (GameObject.Find("Small Bridge") == null || GameObject.Find("Small Bridge").transform.position.x < 5f)
+            {
+                errors.Add("Small Bridge must be placed at the Sprint 5.5-B creek crossing.");
+            }
+
+            string[] arenaWalls =
+            {
+                "North Boundary Ridge",
+                "South Boundary Ridge",
+                "East Boundary Ridge",
+                "West Boundary Ridge"
+            };
+
+            for (int i = 0; i < arenaWalls.Length; i++)
+            {
+                GameObject wall = FindSceneObjectIncludingInactive(arenaWalls[i]);
+                if (wall != null && wall.activeInHierarchy)
+                {
+                    errors.Add($"{arenaWalls[i]} must not remain active as a visible arena boundary.");
+                }
+            }
+        }
+
         private static void ValidateAudioMixer(List<string> errors)
         {
             AudioMixer mixer = AssetDatabase.LoadAssetAtPath<AudioMixer>(MixerPath);
@@ -690,6 +811,21 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 errors.Add($"{objectName} must route to the {groupName} mixer group.");
             }
+        }
+
+        private static GameObject FindSceneObjectIncludingInactive(string name)
+        {
+            GameObject[] objects = Resources.FindObjectsOfTypeAll<GameObject>();
+            for (int i = 0; i < objects.Length; i++)
+            {
+                GameObject gameObject = objects[i];
+                if (gameObject.name == name && gameObject.scene.IsValid())
+                {
+                    return gameObject;
+                }
+            }
+
+            return null;
         }
     }
 }

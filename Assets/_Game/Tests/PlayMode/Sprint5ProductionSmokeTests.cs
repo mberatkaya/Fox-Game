@@ -39,6 +39,9 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(player.GetComponent<FootstepAudio>(), Is.Not.Null);
 
             Assert.That(GameObject.Find("Environment_Visuals"), Is.Not.Null);
+            Assert.That(GameObject.Find("World"), Is.Not.Null);
+            Assert.That(GameObject.Find("Sprint55B_PrimaryTerrain"), Is.Not.Null);
+            Assert.That(GameObject.Find("LM_FinalHill"), Is.Not.Null);
             Assert.That(GameObject.Find("Sprint 5 Scene Audio"), Is.Not.Null);
             Assert.That(Object.FindFirstObjectByType<SceneLoopAudio>(), Is.Not.Null);
             Assert.That(Object.FindFirstObjectByType<FinalSequenceController>(FindObjectsInactive.Include), Is.Not.Null);
@@ -76,10 +79,14 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(player.transform.Find("VisualRoot"), Is.Not.Null);
             Assert.That(player.transform.Find("VisualRoot").gameObject.activeInHierarchy, Is.True);
 
-            GameObject environmentVisuals = GameObject.Find("Environment_Visuals");
-            Assert.That(environmentVisuals, Is.Not.Null);
+            Terrain terrain = Object.FindFirstObjectByType<Terrain>();
+            Assert.That(terrain, Is.Not.Null);
+            Assert.That(player.transform.position.y, Is.GreaterThanOrEqualTo(terrain.SampleHeight(player.transform.position) - 0.01f));
+
+            GameObject world = GameObject.Find("World");
+            Assert.That(world, Is.Not.Null);
             Assert.That(HasRenderableInView(camera, player.transform.Find("VisualRoot")), Is.True);
-            Assert.That(HasRenderableInView(camera, environmentVisuals.transform), Is.True);
+            Assert.That(HasRenderableInView(camera, world.transform), Is.True);
 
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<DialoguePanelUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<CardMatchingPanelUI>(FindObjectsInactive.Include));
