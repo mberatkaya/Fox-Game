@@ -59,6 +59,21 @@ Usage: Non-colliding Forest production visual layer under `Environment_Visuals`
 Modified: No source asset edits; Unity import metadata generated
 Notes: Only a small subset is imported to preserve readability and avoid repository bloat.
 
+## Quaternius - Stylized Nature MegaKit Standard
+
+Asset Name: Stylized Nature MegaKit Standard
+Author: Quaternius
+Official Source: Quaternius website
+Source Page: https://quaternius.com/packs/stylizednaturemegakit.html
+Download Page Used: https://opengameart.org/content/stylized-nature-megakit
+License: Creative Commons CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License_Standard.txt`
+Date Downloaded: 2026-09-11
+Files Imported: selected FBX files only under `Assets/ThirdParty/Quaternius/StylizedNatureMegaKit/`: `CommonTree_1`-`CommonTree_5`, `Pine_1`-`Pine_5`, `TwistedTree_1`-`TwistedTree_5`, `DeadTree_1`, `DeadTree_2`, `Bush_Common`, `Bush_Common_Flowers`, `Fern_1`, `Flower_3_Group`, `Flower_4_Group`, `Grass_Common_Short`, `Grass_Common_Tall`, `Grass_Wispy_Short`, `Grass_Wispy_Tall`, `Plant_1`, `Plant_1_Big`, `Plant_7`, `Plant_7_Big`, `Clover_1`, `Clover_2`, `Mushroom_Common`, `Mushroom_Laetiporus`, `Rock_Medium_1`-`Rock_Medium_3`, selected pebble and rock path FBX files, and `License_Standard.txt`.
+Usage: Primary Sprint 5.5-C production forest dressing: tree clusters, natural boundaries, shoreline rocks, creek reeds/plants, meadow flowers, Heart Garden flowers, Light Grove understory, and terrain grass detail prototypes.
+Modified: Source FBX files are unedited. Game-specific URP materials, terrain layers, deterministic placement, bridge visuals, and wrapper scene organization are project-owned under `Assets/_Game/Art/Environment/Sprint55C` and `World/Environment`.
+Notes: The official itch download flow rate-limited this environment, so the Standard zip was downloaded from OpenGameArt where the uploader is `quaternius` and the page links back to the official Quaternius source page. The raw zip was not committed; only the selected production subset was imported.
+
 ## Kenney - UI Pack
 
 Asset Name: UI Pack

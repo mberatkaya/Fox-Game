@@ -42,7 +42,8 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(GameObject.Find("World"), Is.Not.Null);
             Assert.That(GameObject.Find("Sprint55B_PrimaryTerrain"), Is.Not.Null);
             Assert.That(GameObject.Find("Start Platform"), Is.Not.Null);
-            Assert.That(GameObject.Find("TreeCollectionForest"), Is.Not.Null);
+            Assert.That(GameObject.Find("Environment"), Is.Not.Null);
+            Assert.That(GameObject.Find("Sprint55C_Bridge_Walkway"), Is.Not.Null);
             Assert.That(GameObject.Find("LM_FinalHill"), Is.Not.Null);
             Assert.That(GameObject.Find("Sprint 5 Scene Audio"), Is.Not.Null);
             Assert.That(Object.FindFirstObjectByType<SceneLoopAudio>(), Is.Not.Null);
@@ -94,9 +95,11 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(startPlatform.GetComponent<BoxCollider>(), Is.Not.Null);
 
             GameObject world = GameObject.Find("World");
+            GameObject environment = GameObject.Find("Environment");
             Assert.That(world, Is.Not.Null);
+            Assert.That(environment, Is.Not.Null);
             Assert.That(HasRenderableInView(camera, player.transform.Find("VisualRoot")), Is.True);
-            Assert.That(HasRenderableInView(camera, world.transform), Is.True);
+            Assert.That(HasRenderableInView(camera, environment.transform), Is.True);
 
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<DialoguePanelUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<CardMatchingPanelUI>(FindObjectsInactive.Include));

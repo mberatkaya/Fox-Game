@@ -217,22 +217,56 @@ namespace TilkiOyunu.Foundation.Tests
         }
 
         [Test]
-        public void ForestUsesTreeCollectionPackAndSolidStartPlatform()
+        public void ForestUsesSprint55CProductionEnvironmentAndSolidStartPlatform()
         {
             EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
 
             GameObject startPlatform = GameObject.Find("Start Platform");
-            GameObject forest = GameObject.Find("TreeCollectionForest");
+            GameObject environment = GameObject.Find("Environment");
 
             Assert.That(File.ReadAllText("Packages/manifest.json"), Does.Contain("com.unity.modules.terrainphysics"));
-            Assert.That(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TreePackVol.1/Prefabs/0/Tree1.prefab"), Is.Not.Null);
-            Assert.That(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/TreePackVol.1/Prefabs/3/Tree 3.prefab"), Is.Not.Null);
+            Assert.That(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThirdParty/Quaternius/StylizedNatureMegaKit/CommonTree_1.fbx"), Is.Not.Null);
+            Assert.That(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThirdParty/Quaternius/StylizedNatureMegaKit/TwistedTree_5.fbx"), Is.Not.Null);
             Assert.That(startPlatform, Is.Not.Null);
             Assert.That(startPlatform.GetComponent<BoxCollider>(), Is.Not.Null);
             Assert.That(startPlatform.GetComponent<BoxCollider>().isTrigger, Is.False);
-            Assert.That(forest, Is.Not.Null);
-            Assert.That(CountNamedChildren(forest.transform, "TreePack_"), Is.GreaterThanOrEqualTo(300));
-            Assert.That(forest.GetComponentsInChildren<Collider>(true), Is.Empty);
+            Assert.That(environment, Is.Not.Null);
+            Assert.That(CountNamedChildren(environment.transform, "QuaterniusTree_"), Is.InRange(150, 320));
+            Assert.That(CountTreeVariants(environment.transform), Is.GreaterThanOrEqualTo(10));
+            Assert.That(CountNamedChildren(environment.transform, "QuaterniusRock_"), Is.GreaterThanOrEqualTo(80));
+            Assert.That(CountNamedChildren(environment.transform, "QuaterniusPlant_"), Is.GreaterThanOrEqualTo(50));
+            Assert.That(CountNamedChildren(environment.transform, "QuaterniusFlower_"), Is.GreaterThanOrEqualTo(40));
+
+            GameObject oldForest = FindSceneObjectIncludingInactive("TreeCollectionForest");
+            Assert.That(oldForest, Is.Not.Null);
+            Assert.That(oldForest.activeInHierarchy, Is.False);
+        }
+
+        [Test]
+        public void ForestSprint55CTerrainLayersGrassAndBridgeExist()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+
+            Terrain terrain = GameObject.Find("Sprint55B_PrimaryTerrain").GetComponent<Terrain>();
+            string[] expectedLayers =
+            {
+                "Sprint55C_Grass",
+                "Sprint55C_ForestDirt",
+                "Sprint55C_PathDryGround",
+                "Sprint55C_Rock"
+            };
+
+            Assert.That(terrain.terrainData.terrainLayers.Length, Is.GreaterThanOrEqualTo(expectedLayers.Length));
+            for (int i = 0; i < expectedLayers.Length; i++)
+            {
+                Assert.That(terrain.terrainData.terrainLayers[i].name, Is.EqualTo(expectedLayers[i]));
+            }
+
+            Assert.That(terrain.terrainData.detailPrototypes.Length, Is.GreaterThanOrEqualTo(3));
+            Assert.That(GameObject.Find("Sprint55C_Bridge_Walkway"), Is.Not.Null);
+            Assert.That(GameObject.Find("GB_SpawnMeadow_Readability"), Is.Null);
+            Assert.That(GameObject.Find("GB_NPCGrove_Readability"), Is.Null);
+            Assert.That(GameObject.Find("GB_FinalHill_Summit"), Is.Null);
         }
 
         [Test]
@@ -471,6 +505,30 @@ namespace TilkiOyunu.Foundation.Tests
             }
 
             return count;
+        }
+
+        private static int CountTreeVariants(Transform root)
+        {
+            HashSet<string> variants = new();
+            CollectTreeVariants(root, variants);
+            return variants.Count;
+        }
+
+        private static void CollectTreeVariants(Transform root, HashSet<string> variants)
+        {
+            if (root.name.StartsWith("QuaterniusTree_"))
+            {
+                string[] parts = root.name.Split('_');
+                if (parts.Length >= 3)
+                {
+                    variants.Add($"{parts[1]}_{parts[2]}");
+                }
+            }
+
+            for (int i = 0; i < root.childCount; i++)
+            {
+                CollectTreeVariants(root.GetChild(i), variants);
+            }
         }
 
         private readonly struct PoseSample

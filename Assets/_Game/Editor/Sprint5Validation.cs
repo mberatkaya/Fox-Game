@@ -88,6 +88,17 @@ namespace TilkiOyunu.Foundation.Editor
                 RequireAsset<GameObject>($"Assets/ThirdParty/Quaternius/UltimateStylizedNature/{nature[i]}", nature[i], errors);
             }
 
+            string[] megaKit =
+            {
+                "CommonTree_1.fbx", "CommonTree_5.fbx", "Pine_1.fbx", "Pine_5.fbx",
+                "TwistedTree_1.fbx", "TwistedTree_5.fbx", "Rock_Medium_1.fbx", "Bush_Common.fbx",
+                "Grass_Common_Short.fbx", "Flower_3_Group.fbx"
+            };
+            for (int i = 0; i < megaKit.Length; i++)
+            {
+                RequireAsset<GameObject>($"Assets/ThirdParty/Quaternius/StylizedNatureMegaKit/{megaKit[i]}", $"Quaternius Stylized Nature MegaKit {megaKit[i]}", errors);
+            }
+
             RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/Music/SunsetWalk.ogg", "background music", errors);
             RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/Ambience/Forest_Ambience.mp3", "forest ambience", errors);
             RequireAsset<AudioClip>("Assets/ThirdParty/OpenGameArt/SFX/Footsteps/leaves01.ogg", "footstep SFX", errors);
@@ -603,7 +614,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             ValidateStartPlatform(errors);
-            ValidateTreeCollectionForest(errors);
+            ValidateSprint55CEnvironment(errors);
 
             if (GameObject.Find("Small Bridge") == null || GameObject.Find("Small Bridge").transform.position.x < 5f)
             {
@@ -644,25 +655,97 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
-        private static void ValidateTreeCollectionForest(List<string> errors)
+        private static void ValidateSprint55CEnvironment(List<string> errors)
         {
-            GameObject forest = GameObject.Find("TreeCollectionForest");
-            if (forest == null)
+            GameObject environment = GameObject.Find("Environment");
+            if (environment == null || environment.transform.parent == null || environment.transform.parent.name != "World")
             {
-                errors.Add("Sprint 5.5-B needs a TreeCollectionForest root populated from Tree Collection Pack 2017.");
+                errors.Add("Sprint 5.5-C needs a World/Environment production dressing root.");
                 return;
             }
 
-            int treeCount = CountNamedChildren(forest.transform, "TreePack_");
-            if (treeCount < 300)
+            int treeCount = CountNamedChildren(environment.transform, "QuaterniusTree_");
+            if (treeCount < 150 || treeCount > 320)
             {
-                errors.Add($"TreeCollectionForest must use Tree Collection Pack 2017 densely enough to fill the map; found {treeCount} trees.");
+                errors.Add($"Sprint 5.5-C should use about 150-300 production trees; found {treeCount}.");
             }
 
-            Collider[] colliders = forest.GetComponentsInChildren<Collider>(true);
-            if (colliders.Length > 0)
+            int variants = CountTreeVariants(environment.transform);
+            if (variants < 10)
             {
-                errors.Add("TreeCollectionForest should remain visual-only so dense trees do not create navigation snags.");
+                errors.Add($"Sprint 5.5-C needs at least 10 meaningful tree variants; found {variants}.");
+            }
+
+            if (CountNamedChildren(environment.transform, "QuaterniusRock_") < 80)
+            {
+                errors.Add("Sprint 5.5-C needs rock clusters supporting shoreline, slopes, and boundaries.");
+            }
+
+            if (CountNamedChildren(environment.transform, "QuaterniusPlant_") < 50)
+            {
+                errors.Add("Sprint 5.5-C needs bushes/plants to support trails, shoreline, and landmarks.");
+            }
+
+            if (CountNamedChildren(environment.transform, "QuaterniusFlower_") < 40)
+            {
+                errors.Add("Sprint 5.5-C needs intentional flower clusters, especially around meadow and Heart Garden.");
+            }
+
+            Terrain terrain = GameObject.Find("Sprint55B_PrimaryTerrain")?.GetComponent<Terrain>();
+            TerrainLayer[] layers = terrain != null && terrain.terrainData != null ? terrain.terrainData.terrainLayers : null;
+            string[] expectedLayers =
+            {
+                "Sprint55C_Grass",
+                "Sprint55C_ForestDirt",
+                "Sprint55C_PathDryGround",
+                "Sprint55C_Rock"
+            };
+
+            if (layers == null || layers.Length < expectedLayers.Length)
+            {
+                errors.Add("Sprint 5.5-C terrain must have Grass, Forest Dirt, Path/Dry Ground, and Rock layers.");
+            }
+            else
+            {
+                for (int i = 0; i < expectedLayers.Length; i++)
+                {
+                    if (layers[i] == null || layers[i].name != expectedLayers[i])
+                    {
+                        errors.Add($"Sprint 5.5-C terrain layer {i} should be {expectedLayers[i]}.");
+                    }
+                }
+            }
+
+            if (terrain == null || terrain.terrainData == null || terrain.terrainData.detailPrototypes.Length < 3)
+            {
+                errors.Add("Sprint 5.5-C terrain must use controlled grass detail prototypes.");
+            }
+
+            if (GameObject.Find("Sprint55C_Bridge_Walkway") == null)
+            {
+                errors.Add("Sprint 5.5-C needs the production bridge walkway visual under Small Bridge.");
+            }
+
+            GameObject oldForest = FindSceneObjectIncludingInactive("TreeCollectionForest");
+            if (oldForest != null && oldForest.activeInHierarchy)
+            {
+                errors.Add("TreeCollectionForest must be inactive after Sprint 5.5-C so TreePack prototype visuals no longer dominate the world.");
+            }
+
+            string[] disabledPrototypeMarkers =
+            {
+                "GB_SpawnMeadow_Readability",
+                "GB_NPCGrove_Readability",
+                "GB_FinalHill_Summit"
+            };
+
+            for (int i = 0; i < disabledPrototypeMarkers.Length; i++)
+            {
+                GameObject marker = FindSceneObjectIncludingInactive(disabledPrototypeMarkers[i]);
+                if (marker != null && marker.activeInHierarchy)
+                {
+                    errors.Add($"{disabledPrototypeMarkers[i]} must not remain active as a visible prototype marker.");
+                }
             }
         }
 
@@ -675,6 +758,30 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             return count;
+        }
+
+        private static int CountTreeVariants(Transform root)
+        {
+            HashSet<string> variants = new();
+            CollectTreeVariants(root, variants);
+            return variants.Count;
+        }
+
+        private static void CollectTreeVariants(Transform root, HashSet<string> variants)
+        {
+            if (root.name.StartsWith("QuaterniusTree_"))
+            {
+                string[] parts = root.name.Split('_');
+                if (parts.Length >= 3)
+                {
+                    variants.Add($"{parts[1]}_{parts[2]}");
+                }
+            }
+
+            for (int i = 0; i < root.childCount; i++)
+            {
+                CollectTreeVariants(root.GetChild(i), variants);
+            }
         }
 
         private static void ValidateAudioMixer(List<string> errors)
