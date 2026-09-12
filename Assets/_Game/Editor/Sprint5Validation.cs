@@ -753,24 +753,28 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             GameObject oldForest = FindSceneObjectIncludingInactive("TreeCollectionForest");
-            if (oldForest != null && oldForest.activeInHierarchy)
+            if (oldForest != null)
             {
-                errors.Add("TreeCollectionForest must be inactive after Sprint 5.5-C so TreePack prototype visuals no longer dominate the world.");
+                errors.Add("TreeCollectionForest must be removed after Sprint 5.5-C so old TreePack prototype visuals no longer stay in the runtime scene.");
             }
 
-            string[] disabledPrototypeMarkers =
+            string[] removedPrototypeMarkers =
             {
                 "GB_SpawnMeadow_Readability",
                 "GB_NPCGrove_Readability",
-                "GB_FinalHill_Summit"
+                "GB_FinalHill_Summit",
+                "Safe Clearing Ground",
+                "Path To Trees",
+                "Future Memory Area Marker",
+                "Future Quest Area Marker"
             };
 
-            for (int i = 0; i < disabledPrototypeMarkers.Length; i++)
+            for (int i = 0; i < removedPrototypeMarkers.Length; i++)
             {
-                GameObject marker = FindSceneObjectIncludingInactive(disabledPrototypeMarkers[i]);
-                if (marker != null && marker.activeInHierarchy)
+                GameObject marker = FindSceneObjectIncludingInactive(removedPrototypeMarkers[i]);
+                if (marker != null)
                 {
-                    errors.Add($"{disabledPrototypeMarkers[i]} must not remain active as a visible prototype marker.");
+                    errors.Add($"{removedPrototypeMarkers[i]} must be removed from the production scene.");
                 }
             }
         }

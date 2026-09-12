@@ -238,8 +238,7 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(CountNamedChildren(environment.transform, "QuaterniusFlower_"), Is.GreaterThanOrEqualTo(40));
 
             GameObject oldForest = FindSceneObjectIncludingInactive("TreeCollectionForest");
-            Assert.That(oldForest, Is.Not.Null);
-            Assert.That(oldForest.activeInHierarchy, Is.False);
+            Assert.That(oldForest, Is.Null);
         }
 
         [Test]
@@ -324,10 +323,10 @@ namespace TilkiOyunu.Foundation.Tests
         {
             EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
 
-            AssertInactiveSceneObject("North Boundary Ridge");
-            AssertInactiveSceneObject("South Boundary Ridge");
-            AssertInactiveSceneObject("East Boundary Ridge");
-            AssertInactiveSceneObject("West Boundary Ridge");
+            AssertAbsentOrInactiveSceneObject("North Boundary Ridge");
+            AssertAbsentOrInactiveSceneObject("South Boundary Ridge");
+            AssertAbsentOrInactiveSceneObject("East Boundary Ridge");
+            AssertAbsentOrInactiveSceneObject("West Boundary Ridge");
         }
 
         private QuestService CreateQuestService()
@@ -474,11 +473,13 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(collider.size, Is.EqualTo(new Vector3(0.2f, 1f, 27.2f)));
         }
 
-        private static void AssertInactiveSceneObject(string name)
+        private static void AssertAbsentOrInactiveSceneObject(string name)
         {
             GameObject gameObject = FindSceneObjectIncludingInactive(name);
-            Assert.That(gameObject, Is.Not.Null);
-            Assert.That(gameObject.activeInHierarchy, Is.False);
+            if (gameObject != null)
+            {
+                Assert.That(gameObject.activeInHierarchy, Is.False);
+            }
         }
 
         private static GameObject FindSceneObjectIncludingInactive(string name)

@@ -39,8 +39,8 @@ namespace TilkiOyunu.Foundation.Tests
             CapsuleCollider blocker = npc.transform.Find("NPC_Guide_PhysicalBlocker")?.GetComponent<CapsuleCollider>();
             Assert.That(blocker, Is.Not.Null);
             Assert.That(blocker.isTrigger, Is.False);
-            Assert.That(blocker.height, Is.GreaterThanOrEqualTo(2.1f));
-            Assert.That(blocker.radius, Is.GreaterThanOrEqualTo(0.44f));
+            Assert.That(blocker.height, Is.GreaterThanOrEqualTo(2.3f));
+            Assert.That(blocker.radius, Is.GreaterThanOrEqualTo(0.5f));
         }
 
         [Test]
@@ -67,6 +67,18 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(prefab.transform.Find("AnimatedRoot/GuideBeacon"), Is.Not.Null);
             Assert.That(prefab.transform.Find("AnimatedRoot/GuideVisibilityRing"), Is.Not.Null);
             Assert.That(prefab.transform.Find("AnimatedRoot/GuideShoulderFern_Left"), Is.Not.Null);
+            Transform guideBody = prefab.transform.Find("AnimatedRoot/GuideCharacterRig/QuaterniusGuideBody");
+            Assert.That(guideBody, Is.Not.Null);
+
+            GameObject foxPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Game/Prefabs/Characters/PlayerFox.prefab");
+            Assert.That(foxPrefab, Is.Not.Null);
+            Transform foxVisual = foxPrefab.transform.Find("VisualRoot/ToonFox");
+            Assert.That(foxVisual, Is.Not.Null);
+
+            Bounds guideBodyBounds = CalculateRendererBounds(guideBody.gameObject);
+            Bounds foxBounds = CalculateRendererBounds(foxVisual.gameObject);
+            Assert.That(guideBodyBounds.size.y, Is.InRange(1.55f, 2.35f), $"Guide body should read as normal human height, measured {guideBodyBounds.size.y:0.00}m.");
+            Assert.That(guideBodyBounds.size.y, Is.GreaterThan(foxBounds.size.y * 1.3f), $"Guide body {guideBodyBounds.size.y:0.00}m should be clearly taller than fox {foxBounds.size.y:0.00}m.");
             Assert.That(CalculateRendererBounds(prefab).size.y, Is.GreaterThanOrEqualTo(2.3f));
         }
 
@@ -104,6 +116,17 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(walkway.transform.localScale.z, Is.EqualTo(28f).Within(0.01f));
             Assert.That(walkway.GetComponent<BoxCollider>()?.isTrigger, Is.False);
 
+            Terrain terrain = UnityEngine.Object.FindFirstObjectByType<Terrain>();
+            Assert.That(terrain, Is.Not.Null);
+            float terrainY = terrain.transform.position.y + terrain.SampleHeight(bridge.transform.position);
+            Assert.That(bridge.transform.position.y - terrainY, Is.GreaterThanOrEqualTo(1.35f));
+
+            GameObject creekWater = GameObject.Find("GB_Creek_TempWater");
+            Assert.That(creekWater, Is.Not.Null);
+            Bounds walkwayBounds = CalculateRendererBounds(walkway);
+            Bounds waterBounds = CalculateRendererBounds(creekWater);
+            Assert.That(walkwayBounds.min.y, Is.GreaterThan(waterBounds.max.y + 0.08f));
+
             Vector2 center = new(bridge.transform.position.x, bridge.transform.position.z);
             Vector2 bankA = center - bridgeDirection.normalized * 14f;
             Vector2 bankB = center + bridgeDirection.normalized * 14f;
@@ -135,6 +158,31 @@ namespace TilkiOyunu.Foundation.Tests
             }
 
             Assert.That(blocking, Is.GreaterThanOrEqualTo(100));
+        }
+
+        [Test]
+        public void OldHandmadePrototypeMapDressingIsRemovedFromRuntimeScene()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+
+            string[] removedObjects =
+            {
+                "TreeCollectionForest",
+                "Safe Clearing Ground",
+                "Path To Trees",
+                "Future Memory Area Marker",
+                "Future Quest Area Marker",
+                "GB_SpawnMeadow_Readability",
+                "GB_NPCGrove_Readability",
+                "GB_FinalHill_Summit"
+            };
+
+            foreach (string objectName in removedObjects)
+            {
+                Assert.That(FindSceneObjectIncludingInactive(objectName), Is.Null, $"{objectName} should be removed from the production runtime scene.");
+            }
+
+            Assert.That(FindSceneObjectsByPrefix("Traversal Tree "), Is.Empty, "Sprint 1 handmade cylinder/sphere traversal trees should not remain in the runtime scene.");
         }
 
         [Test]
@@ -182,6 +230,22 @@ namespace TilkiOyunu.Foundation.Tests
             }
 
             return bounds;
+        }
+
+        private static GameObject FindSceneObjectIncludingInactive(string name)
+        {
+            return UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .Where(transform => transform.gameObject.scene.IsValid())
+                .FirstOrDefault(transform => transform.name == name)
+                ?.gameObject;
+        }
+
+        private static GameObject[] FindSceneObjectsByPrefix(string prefix)
+        {
+            return UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .Where(transform => transform.gameObject.scene.IsValid() && transform.name.StartsWith(prefix, StringComparison.Ordinal))
+                .Select(transform => transform.gameObject)
+                .ToArray();
         }
 
         private static float DistanceToSegment(Vector2 point, Vector2 a, Vector2 b)

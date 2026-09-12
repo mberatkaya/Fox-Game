@@ -25,7 +25,8 @@ namespace TilkiOyunu.Foundation.Editor
         private const string GuideFlowerPath = NatureRoot + "/Flower_4_Group.fbx";
         private const string GuideFernPath = NatureRoot + "/Fern_1.fbx";
         private const string GuideCloverPath = NatureRoot + "/Clover_1.fbx";
-        private const float GuideModelScale = 1.04f;
+        private const float GuideModelScale = 1.15f;
+        private const float GuideGroundClearance = 0.03f;
 
         [MenuItem("Tilki Oyunu/Sprint 5.5/C.2 Apply Guide NPC Production Visual")]
         public static void ApplyGuideNpcProductionVisual()
@@ -154,9 +155,16 @@ namespace TilkiOyunu.Foundation.Editor
                 Transform animatedRoot = new GameObject("AnimatedRoot").transform;
                 animatedRoot.SetParent(root.transform, false);
 
-                AddModelChild(animatedRoot, GuideModelPath, "QuaterniusGuideBody", body, Vector3.zero, Vector3.one * GuideModelScale);
-                AddModelChild(animatedRoot, GuideHairPath, "QuaterniusGuideHair", hair, Vector3.zero, Vector3.one * GuideModelScale);
-                AddModelChild(animatedRoot, GuideEyebrowsPath, "QuaterniusGuideEyebrows", hair, Vector3.zero, Vector3.one * GuideModelScale);
+                Transform characterRig = new GameObject("GuideCharacterRig").transform;
+                characterRig.SetParent(animatedRoot, false);
+                characterRig.localPosition = Vector3.zero;
+                characterRig.localRotation = Quaternion.identity;
+                characterRig.localScale = Vector3.one * GuideModelScale;
+
+                AddModelChild(characterRig, GuideModelPath, "QuaterniusGuideBody", body, Vector3.zero, Vector3.one);
+                AddModelChild(characterRig, GuideHairPath, "QuaterniusGuideHair", hair, Vector3.zero, Vector3.one);
+                AddModelChild(characterRig, GuideEyebrowsPath, "QuaterniusGuideEyebrows", hair, Vector3.zero, Vector3.one);
+                AlignRendererBottom(characterRig, GuideGroundClearance);
                 AddForestGuideProps(animatedRoot, cloak, accent, staff);
 
                 PrefabUtility.SaveAsPrefabAsset(root, GuidePrefabPath);
@@ -169,32 +177,32 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void AddForestGuideProps(Transform animatedRoot, Material cloak, Material accent, Material staff)
         {
-            GameObject cloakBack = CreatePrimitiveChild(animatedRoot, PrimitiveType.Cube, "GuideLeafCloak_Back", new Vector3(0f, 1.08f, -0.19f), new Vector3(0.78f, 1.28f, 0.08f), cloak);
+            GameObject cloakBack = CreatePrimitiveChild(animatedRoot, PrimitiveType.Cube, "GuideLeafCloak_Back", new Vector3(0f, 1.12f, -0.19f), new Vector3(0.92f, 1.48f, 0.08f), cloak);
             cloakBack.transform.localRotation = Quaternion.Euler(-5f, 0f, 0f);
-            GameObject cloakHem = CreatePrimitiveChild(animatedRoot, PrimitiveType.Cube, "GuideLeafCloak_Hem", new Vector3(0f, 0.45f, -0.2f), new Vector3(0.98f, 0.22f, 0.1f), cloak);
+            GameObject cloakHem = CreatePrimitiveChild(animatedRoot, PrimitiveType.Cube, "GuideLeafCloak_Hem", new Vector3(0f, 0.48f, -0.2f), new Vector3(1.1f, 0.22f, 0.1f), cloak);
             cloakHem.transform.localRotation = Quaternion.Euler(-3f, 0f, 0f);
 
             Transform staffRoot = new GameObject("GuideStaff").transform;
             staffRoot.SetParent(animatedRoot, false);
-            staffRoot.localPosition = new Vector3(0.62f, 0.92f, 0.08f);
+            staffRoot.localPosition = new Vector3(0.78f, 1.02f, 0.08f);
             staffRoot.localRotation = Quaternion.Euler(0f, 0f, -8f);
             staffRoot.localScale = Vector3.one;
-            CreatePrimitiveChild(staffRoot, PrimitiveType.Cylinder, "GuideStaff_Shaft", Vector3.zero, new Vector3(0.08f, 1.45f, 0.08f), staff);
-            CreatePrimitiveChild(staffRoot, PrimitiveType.Sphere, "GuideStaff_GlowSeed", new Vector3(0f, 1.48f, 0f), new Vector3(0.28f, 0.28f, 0.28f), accent);
-            AddNatureChild(staffRoot, GuideFlowerPath, "GuideStaff_FlowerAccent", accent, new Vector3(0f, 1.5f, 0f), Quaternion.Euler(0f, 32f, 0f), Vector3.one * 0.32f);
+            CreatePrimitiveChild(staffRoot, PrimitiveType.Cylinder, "GuideStaff_Shaft", Vector3.zero, new Vector3(0.08f, 1.7f, 0.08f), staff);
+            CreatePrimitiveChild(staffRoot, PrimitiveType.Sphere, "GuideStaff_GlowSeed", new Vector3(0f, 1.72f, 0f), new Vector3(0.28f, 0.28f, 0.28f), accent);
+            AddNatureChild(staffRoot, GuideFlowerPath, "GuideStaff_FlowerAccent", accent, new Vector3(0f, 1.74f, 0f), Quaternion.Euler(0f, 32f, 0f), Vector3.one * 0.32f);
 
-            AddNatureChild(animatedRoot, GuideFernPath, "GuideShoulderFern_Left", cloak, new Vector3(-0.35f, 1.52f, -0.1f), Quaternion.Euler(18f, -38f, 18f), Vector3.one * 0.24f);
-            AddNatureChild(animatedRoot, GuideFernPath, "GuideShoulderFern_Right", cloak, new Vector3(0.35f, 1.52f, -0.1f), Quaternion.Euler(18f, 38f, -18f), Vector3.one * 0.24f);
+            AddNatureChild(animatedRoot, GuideFernPath, "GuideShoulderFern_Left", cloak, new Vector3(-0.43f, 1.58f, -0.1f), Quaternion.Euler(18f, -38f, 18f), Vector3.one * 0.26f);
+            AddNatureChild(animatedRoot, GuideFernPath, "GuideShoulderFern_Right", cloak, new Vector3(0.43f, 1.58f, -0.1f), Quaternion.Euler(18f, 38f, -18f), Vector3.one * 0.26f);
             AddNatureChild(animatedRoot, GuideCloverPath, "GuideGroundClover", cloak, new Vector3(-0.18f, 0.02f, 0.18f), Quaternion.Euler(0f, 24f, 0f), Vector3.one * 0.42f);
 
-            GameObject beacon = CreatePrimitiveChild(animatedRoot, PrimitiveType.Sphere, "GuideBeacon", new Vector3(0f, 2.35f, 0f), new Vector3(0.22f, 0.22f, 0.22f), accent);
+            GameObject beacon = CreatePrimitiveChild(animatedRoot, PrimitiveType.Sphere, "GuideBeacon", new Vector3(0f, 2.55f, 0f), new Vector3(0.22f, 0.22f, 0.22f), accent);
             Light light = beacon.AddComponent<Light>();
             light.type = LightType.Point;
             light.color = new Color(1f, 0.68f, 0.28f);
             light.intensity = 1.25f;
             light.range = 4.8f;
 
-            CreatePrimitiveChild(animatedRoot, PrimitiveType.Cylinder, "GuideVisibilityRing", new Vector3(0f, 0.035f, 0f), new Vector3(1.35f, 0.025f, 1.35f), accent);
+            CreatePrimitiveChild(animatedRoot, PrimitiveType.Cylinder, "GuideVisibilityRing", new Vector3(0f, 0.035f, 0f), new Vector3(1.55f, 0.025f, 1.55f), accent);
         }
 
         private static void AddModelChild(Transform parent, string path, string name, Material material, Vector3 localPosition, Vector3 localScale)
@@ -267,6 +275,25 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             return primitive;
+        }
+
+        private static void AlignRendererBottom(Transform root, float localGroundClearance)
+        {
+            Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                return;
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            Vector3 localPosition = root.localPosition;
+            localPosition.y += localGroundClearance - bounds.min.y;
+            root.localPosition = localPosition;
         }
 
         private static void ApplyForestGuideInstance(RuntimeAnimatorController controller)
@@ -348,9 +375,9 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             collider.isTrigger = false;
-            collider.radius = 0.46f;
-            collider.height = 2.18f;
-            collider.center = new Vector3(0f, 1.09f, 0f);
+            collider.radius = 0.52f;
+            collider.height = 2.35f;
+            collider.center = new Vector3(0f, 1.175f, 0f);
         }
 
         private static Material EnsureMaterial(string path, Color color)

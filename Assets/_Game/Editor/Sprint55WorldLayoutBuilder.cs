@@ -22,6 +22,7 @@ namespace TilkiOyunu.Foundation.Editor
         private const float BridgeYaw = 126.87f;
         private const float BridgeDeckLength = 28f;
         private const float BridgeDeckWidth = 4.4f;
+        private const float BridgeElevation = 2.85f;
         private const float BridgeRailX = 1.95f;
 
         private static readonly string[] TreeCollectionPrefabPaths =
@@ -313,7 +314,7 @@ namespace TilkiOyunu.Foundation.Editor
             GameObject bridge = GameObject.Find("Small Bridge");
             if (bridge != null)
             {
-                Vector3 bridgePosition = WithTerrainY(AnchorPosition("LM_Bridge"), terrain, 0.98f);
+                Vector3 bridgePosition = WithTerrainY(AnchorPosition("LM_Bridge"), terrain, BridgeElevation);
                 bridge.transform.SetPositionAndRotation(bridgePosition, Quaternion.Euler(0f, BridgeYaw, 0f));
                 bridge.transform.localScale = Vector3.one;
             }

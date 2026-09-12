@@ -26,7 +26,7 @@ namespace TilkiOyunu.Foundation.Editor
         private const float BridgeYaw = 126.87f;
         private const float BridgeDeckWidth = 4.4f;
         private const float BridgeDeckLength = 28f;
-        private const float BridgeElevation = 0.98f;
+        private const float BridgeElevation = 2.85f;
         private const float BridgeRailX = 1.95f;
 
         private static readonly string[] TreeAssetNames =
@@ -671,25 +671,24 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void HidePrototypeVisuals()
         {
-            GameObject oldForest = FindSceneObjectIncludingInactive("TreeCollectionForest");
-            if (oldForest != null)
+            DestroySceneObjectIfFound("TreeCollectionForest");
+
+            GameObject visuals = FindSceneObjectIncludingInactive("Environment_Visuals") ?? new GameObject("Environment_Visuals");
+            visuals.SetActive(true);
+            for (int i = visuals.transform.childCount - 1; i >= 0; i--)
             {
-                oldForest.SetActive(false);
-                EditorUtility.SetDirty(oldForest);
+                UnityEngine.Object.DestroyImmediate(visuals.transform.GetChild(i).gameObject);
             }
 
-            GameObject visuals = GameObject.Find("Environment_Visuals");
-            if (visuals != null)
+            foreach (Collider collider in visuals.GetComponentsInChildren<Collider>(true))
             {
-                for (int i = visuals.transform.childCount - 1; i >= 0; i--)
-                {
-                    UnityEngine.Object.DestroyImmediate(visuals.transform.GetChild(i).gameObject);
-                }
+                UnityEngine.Object.DestroyImmediate(collider);
             }
 
             GameObject platform = GameObject.Find("Start Platform");
             if (platform != null)
             {
+                platform.SetActive(true);
                 foreach (Renderer renderer in platform.GetComponentsInChildren<Renderer>(true))
                 {
                     renderer.enabled = false;
@@ -698,25 +697,49 @@ namespace TilkiOyunu.Foundation.Editor
 
             string[] prototypeObjects =
             {
+                "Safe Clearing Ground",
                 "North Boundary Ridge", "South Boundary Ridge", "East Boundary Ridge", "West Boundary Ridge",
                 "Blocked Placeholder Pond", "Pond North Stones", "Pond South Stones",
-                "Path Start To Bridge", "Path Bridge To Camp", "Path To Pond",
-                "GB_SpawnMeadow_Readability", "GB_NPCGrove_Readability", "GB_FinalHill_Summit"
+                "Path Start To Bridge", "Path Bridge To Camp", "Path To Pond", "Path To Trees",
+                "Future Memory Area Marker", "Future Quest Area Marker",
+                "GB_SpawnMeadow_Readability", "GB_NPCGrove_Readability", "GB_FinalHill_Summit",
+                "GB_FutureForestMass_CentralFold", "GB_FutureForestMass_LightGroveSouth",
+                "GB_FutureForestMass_LakeWest", "GB_FutureForestMass_FinalApproach",
+                "GB_NaturalEdge_NorthRidge", "GB_NaturalEdge_WestRise"
             };
 
             foreach (string name in prototypeObjects)
             {
-                GameObject found = FindSceneObjectIncludingInactive(name);
-                if (found != null)
-                {
-                    found.SetActive(false);
-                    EditorUtility.SetDirty(found);
-                }
+                DestroySceneObjectIfFound(name);
             }
+
+            DestroySceneObjectsByPrefix("Traversal Tree ");
 
             Material water = EnsureMaterial("Sprint55C_SimpleWater", new Color(0.22f, 0.48f, 0.56f, 0.7f));
             AssignMaterialIfFound("GB_Lake_TempWater", water);
             AssignMaterialIfFound("GB_Creek_TempWater", water);
+        }
+
+        private static void DestroySceneObjectIfFound(string name)
+        {
+            GameObject found = FindSceneObjectIncludingInactive(name);
+            if (found != null)
+            {
+                UnityEngine.Object.DestroyImmediate(found);
+            }
+        }
+
+        private static void DestroySceneObjectsByPrefix(string prefix)
+        {
+            Transform[] transforms = UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int i = transforms.Length - 1; i >= 0; i--)
+            {
+                Transform transform = transforms[i];
+                if (transform != null && transform.name.StartsWith(prefix, StringComparison.Ordinal))
+                {
+                    UnityEngine.Object.DestroyImmediate(transform.gameObject);
+                }
+            }
         }
 
         public static void CaptureEnvironmentReviewScreenshots()
