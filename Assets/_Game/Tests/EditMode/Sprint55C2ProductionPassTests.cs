@@ -39,8 +39,8 @@ namespace TilkiOyunu.Foundation.Tests
             CapsuleCollider blocker = npc.transform.Find("NPC_Guide_PhysicalBlocker")?.GetComponent<CapsuleCollider>();
             Assert.That(blocker, Is.Not.Null);
             Assert.That(blocker.isTrigger, Is.False);
-            Assert.That(blocker.height, Is.GreaterThanOrEqualTo(2.3f));
-            Assert.That(blocker.radius, Is.GreaterThanOrEqualTo(0.5f));
+            Assert.That(blocker.height, Is.GreaterThanOrEqualTo(3f));
+            Assert.That(blocker.radius, Is.GreaterThanOrEqualTo(0.6f));
         }
 
         [Test]
@@ -77,9 +77,9 @@ namespace TilkiOyunu.Foundation.Tests
 
             Bounds guideBodyBounds = CalculateRendererBounds(guideBody.gameObject);
             Bounds foxBounds = CalculateRendererBounds(foxVisual.gameObject);
-            Assert.That(guideBodyBounds.size.y, Is.InRange(1.55f, 2.35f), $"Guide body should read as normal human height, measured {guideBodyBounds.size.y:0.00}m.");
-            Assert.That(guideBodyBounds.size.y, Is.GreaterThan(foxBounds.size.y * 1.3f), $"Guide body {guideBodyBounds.size.y:0.00}m should be clearly taller than fox {foxBounds.size.y:0.00}m.");
-            Assert.That(CalculateRendererBounds(prefab).size.y, Is.GreaterThanOrEqualTo(2.3f));
+            Assert.That(guideBodyBounds.size.y, Is.InRange(2.45f, 3.25f), $"Guide body should read larger than the fox in gameplay, measured {guideBodyBounds.size.y:0.00}m.");
+            Assert.That(guideBodyBounds.size.y, Is.GreaterThan(foxBounds.size.y * 1.65f), $"Guide body {guideBodyBounds.size.y:0.00}m should be unmistakably taller than fox {foxBounds.size.y:0.00}m.");
+            Assert.That(CalculateRendererBounds(prefab).size.y, Is.GreaterThanOrEqualTo(3.2f));
         }
 
         [Test]
