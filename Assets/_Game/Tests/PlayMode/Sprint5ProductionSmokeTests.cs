@@ -329,6 +329,26 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Object.DestroyImmediate(controller.gameObject);
         }
 
+        [UnityTest]
+        public IEnumerator FoxObstacleSweepStopsBeforeSolidObjects()
+        {
+            FoxController controller = CreateControllerForJumpTest();
+            GameObject obstacle = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            obstacle.name = "Fox Movement Blocker Test";
+            obstacle.transform.position = new Vector3(0f, 0.55f, 0.9f);
+            obstacle.transform.localScale = new Vector3(1f, 1.1f, 0.35f);
+            Physics.SyncTransforms();
+
+            Vector3 resolvedMotion = InvokeResolveObstacleMotion(controller, Vector3.forward * 2f);
+
+            Assert.That(resolvedMotion.z, Is.LessThan(0.55f));
+            Assert.That(resolvedMotion.z, Is.GreaterThanOrEqualTo(0f));
+
+            yield return null;
+            Object.DestroyImmediate(obstacle);
+            Object.DestroyImmediate(controller.gameObject);
+        }
+
         private static IEnumerator LoadBootstrapToForest()
         {
             new SaveService().DeleteSave();
@@ -484,6 +504,13 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             MethodInfo method = typeof(FoxController).GetMethod("RefreshJumpAvailabilityAfterMove", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(method, Is.Not.Null);
             method.Invoke(controller, new object[] { collisionFlags });
+        }
+
+        private static Vector3 InvokeResolveObstacleMotion(FoxController controller, Vector3 motion)
+        {
+            MethodInfo method = typeof(FoxController).GetMethod("ResolveObstacleMotion", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null);
+            return (Vector3)method.Invoke(controller, new object[] { motion });
         }
 
         private static void SetGroundedForTest(FoxController controller, bool isGrounded)

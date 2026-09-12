@@ -443,10 +443,7 @@ namespace TilkiOyunu.Foundation.Editor
                 RemoveColliders(instance);
                 ApplyNatureMaterials(instance, "Rock");
                 NormalizeRockBounds(instance, asset.name, label);
-                if (ShouldBlockRock(asset.name, scale, label))
-                {
-                    AddRockCollider(instance);
-                }
+                AddRockCollider(instance);
             }
         }
 
@@ -814,16 +811,6 @@ namespace TilkiOyunu.Foundation.Editor
             collider.center = new Vector3(0f, collider.height * 0.5f, 0f);
             collider.direction = 1;
             collider.isTrigger = false;
-        }
-
-        private static bool ShouldBlockRock(string assetName, float scale, string label)
-        {
-            if (assetName.StartsWith("Rock_Medium", StringComparison.Ordinal))
-            {
-                return true;
-            }
-
-            return scale >= 1.18f && (label.Contains("Shoreline", StringComparison.Ordinal) || label.Contains("Ridge", StringComparison.Ordinal) || label.Contains("Rise", StringComparison.Ordinal));
         }
 
         private static void AddRockCollider(GameObject rock)

@@ -146,6 +146,10 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  obstacleSkin: 0.035
   movement:
     moveSpeed: 3.6
     sprintSpeed: 6.1

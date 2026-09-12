@@ -28,7 +28,9 @@ namespace TilkiOyunu.Foundation.Tests
             EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
             GameObject environment = GameObject.Find("Environment");
             Assert.That(environment, Is.Not.Null);
-            Assert.That(CountBlockingRockColliders(environment.transform), Is.GreaterThanOrEqualTo(35));
+            int rockCount = CountNamedChildren(environment.transform, "QuaterniusRock_");
+            Assert.That(rockCount, Is.GreaterThanOrEqualTo(100));
+            Assert.That(CountBlockingRockColliders(environment.transform), Is.EqualTo(rockCount));
 
             GameObject walkway = GameObject.Find("Sprint55C_Bridge_Walkway");
             GameObject leftRail = GameObject.Find("Bridge Left Rail Collider");

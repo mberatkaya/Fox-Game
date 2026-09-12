@@ -91,19 +91,15 @@ namespace TilkiOyunu.Foundation.Tests
                 float maxDimension = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
                 Assert.That(maxDimension, Is.LessThanOrEqualTo(3.1f), $"{rock.name} is too large: {maxDimension:0.00}m.");
                 BoxCollider collider = rock.GetComponent<BoxCollider>();
-                if (collider == null)
-                {
-                    continue;
-                }
-
+                Assert.That(collider, Is.Not.Null, $"{rock.name} should block the player.");
                 blocking++;
                 Assert.That(collider.isTrigger, Is.False);
                 Vector3 worldColliderSize = Vector3.Scale(collider.size, rock.lossyScale);
-                Assert.That(worldColliderSize.x, Is.InRange(0.3f, bounds.size.x + 0.35f));
-                Assert.That(worldColliderSize.z, Is.InRange(0.3f, bounds.size.z + 0.35f));
+                Assert.That(worldColliderSize.x, Is.InRange(0.2f, bounds.size.x + 0.35f));
+                Assert.That(worldColliderSize.z, Is.InRange(0.2f, bounds.size.z + 0.35f));
             }
 
-            Assert.That(blocking, Is.GreaterThanOrEqualTo(35));
+            Assert.That(blocking, Is.GreaterThanOrEqualTo(100));
         }
 
         [Test]
