@@ -679,9 +679,9 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             int treeCount = CountNamedChildren(environment.transform, "QuaterniusTree_");
-            if (treeCount < 150 || treeCount > 320)
+            if (treeCount < 150 || treeCount > 360)
             {
-                errors.Add($"Sprint 5.5-C should use about 150-300 production trees; found {treeCount}.");
+                errors.Add($"Sprint 5.5-C should use about 150-360 production trees; found {treeCount}.");
             }
 
             int treeColliderCount = CountTreeColliders(environment.transform);

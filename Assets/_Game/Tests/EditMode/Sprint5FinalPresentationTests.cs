@@ -231,7 +231,7 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(startPlatform.GetComponent<BoxCollider>(), Is.Not.Null);
             Assert.That(startPlatform.GetComponent<BoxCollider>().isTrigger, Is.False);
             Assert.That(environment, Is.Not.Null);
-            Assert.That(CountNamedChildren(environment.transform, "QuaterniusTree_"), Is.InRange(150, 320));
+            Assert.That(CountNamedChildren(environment.transform, "QuaterniusTree_"), Is.InRange(150, 360));
             Assert.That(CountTreeVariants(environment.transform), Is.GreaterThanOrEqualTo(10));
             Assert.That(CountNamedChildren(environment.transform, "QuaterniusRock_"), Is.GreaterThanOrEqualTo(80));
             Assert.That(CountNamedChildren(environment.transform, "QuaterniusPlant_"), Is.GreaterThanOrEqualTo(50));

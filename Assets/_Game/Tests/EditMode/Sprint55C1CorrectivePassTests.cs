@@ -18,7 +18,7 @@ namespace TilkiOyunu.Foundation.Tests
             int treeCount = CountNamedChildren(environment.transform, "QuaterniusTree_");
             int colliderCount = CountTreeColliders(environment.transform);
 
-            Assert.That(treeCount, Is.InRange(150, 320));
+            Assert.That(treeCount, Is.InRange(150, 360));
             Assert.That(colliderCount, Is.EqualTo(treeCount));
         }
 

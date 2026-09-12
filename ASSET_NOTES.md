@@ -74,6 +74,22 @@ Usage: Primary Sprint 5.5-C production forest dressing: tree clusters, natural b
 Modified: Source FBX files are unedited. Game-specific URP materials, terrain layers, deterministic placement, bridge visuals, and wrapper scene organization are project-owned under `Assets/_Game/Art/Environment/Sprint55C` and `World/Environment`.
 Notes: The official itch download flow rate-limited this environment, so the Standard zip was downloaded from OpenGameArt where the uploader is `quaternius` and the page links back to the official Quaternius source page. The raw zip was not committed; only the selected production subset was imported.
 
+## Quaternius - Universal Base Characters Standard
+
+Asset Name: Universal Base Characters Kit / Standard FREE version
+Author: Quaternius
+Official Source: Quaternius website
+Source Page: https://quaternius.com
+License: CC0 1.0 Universal / Public Domain Dedication
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License_Standard.txt`
+Date Imported: 2026-09-12
+Raw Source Location: `Universal Base Characters[Standard]/` kept outside `Assets` as a reference download.
+Files Imported: production subset under `Assets/ThirdParty/Quaternius/UniversalBaseCharacters/`: `BaseCharacters/Superhero_Female_FullBody.fbx`, `Hairstyles/Hair_Buns.fbx`, `Hairstyles/Eyebrows_Female.fbx`, selected eye/body/hair texture PNGs, and `License_Standard.txt`.
+Files Excluded: male full-body FBX, Godot/Unreal glTF/bin duplicates, Origin-at-0 and Unreal hairstyle duplicates, redundant texture copies, and preview imagery.
+Usage: Sprint 5.5-C.2 Guide NPC visual under `NPC_Guide/VisualRoot/NPC_Guide_Visual`. The existing scene `NPC_Guide` object remains the gameplay authority for dialogue trigger and interaction.
+Modified: Source FBX files are unedited. Unity import metadata sets the female full-body model to Humanoid and hair/eyebrows to Generic. Project-owned URP materials, animator, idle clip, production prefab, and scene wiring are under `Assets/_Game/Art/NPC`, `Assets/_Game/Animations/NPC`, and `Assets/_Game/Prefabs/NPC`.
+Notes: The separate Quaternius Universal Animation Library was searched for locally during Sprint 5.5-C.2 but was not present in the repository or download folders, so no Universal Animation Library assets were imported. The guide uses a project-owned subtle idle animation until that library is available.
+
 ## Kenney - UI Pack
 
 Asset Name: UI Pack

@@ -11,7 +11,7 @@ namespace TilkiOyunu.Foundation.Editor
     {
         public const string MegaKitRoot = "Assets/ThirdParty/Quaternius/StylizedNatureMegaKit";
         public const string EnvironmentMaterialFolder = "Assets/_Game/Art/Environment/Sprint55C";
-        public const string ScreenshotFolder = "Documentation/Sprint55C1/Screenshots";
+        public const string ScreenshotFolder = "Documentation/Sprint55C2/Screenshots";
         public const string EnvironmentRootPath = "World/Environment";
         public const string TerrainName = "Sprint55B_PrimaryTerrain";
 
@@ -49,15 +49,15 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static readonly TreeCluster[] TreeClusters =
         {
-            new("SpawnMeadow", new Vector2(0f, -150f), new Vector2(76f, 54f), 22, 0.9f, 1.2f, 29f, 0),
-            new("NPCGrove", new Vector2(-18f, -108f), new Vector2(50f, 36f), 16, 0.82f, 1.12f, 17f, 2),
-            new("MemoryEast", new Vector2(66f, -60f), new Vector2(66f, 48f), 18, 0.82f, 1.15f, 12f, 5),
-            new("MemoryWest", new Vector2(-78f, 18f), new Vector2(72f, 52f), 22, 0.86f, 1.18f, 14f, 8),
-            new("CreekApproach", new Vector2(32f, -8f), new Vector2(58f, 38f), 16, 0.8f, 1.05f, 15f, 1),
-            new("LakeShore", new Vector2(136f, 56f), new Vector2(96f, 70f), 24, 0.86f, 1.12f, 38f, 4),
-            new("LightGrove", new Vector2(-58f, 84f), new Vector2(78f, 58f), 24, 0.92f, 1.24f, 17f, 10),
-            new("HeartGarden", new Vector2(-158f, -44f), new Vector2(60f, 50f), 18, 0.84f, 1.12f, 22f, 0),
-            new("FinalHill", new Vector2(18f, 145f), new Vector2(84f, 54f), 22, 0.9f, 1.25f, 26f, 5),
+            new("SpawnMeadow", new Vector2(0f, -150f), new Vector2(76f, 54f), 26, 0.9f, 1.2f, 29f, 0),
+            new("NPCGrove", new Vector2(-18f, -108f), new Vector2(50f, 36f), 22, 0.82f, 1.12f, 17f, 2),
+            new("MemoryEast", new Vector2(66f, -60f), new Vector2(66f, 48f), 24, 0.82f, 1.15f, 12f, 5),
+            new("MemoryWest", new Vector2(-78f, 18f), new Vector2(72f, 52f), 28, 0.86f, 1.18f, 14f, 8),
+            new("CreekApproach", new Vector2(32f, -8f), new Vector2(58f, 38f), 18, 0.8f, 1.05f, 15f, 1),
+            new("LakeShore", new Vector2(136f, 56f), new Vector2(96f, 70f), 28, 0.86f, 1.12f, 38f, 4),
+            new("LightGrove", new Vector2(-58f, 84f), new Vector2(78f, 58f), 30, 0.92f, 1.24f, 17f, 10),
+            new("HeartGarden", new Vector2(-158f, -44f), new Vector2(60f, 50f), 20, 0.84f, 1.12f, 22f, 0),
+            new("FinalHill", new Vector2(18f, 145f), new Vector2(84f, 54f), 26, 0.9f, 1.25f, 26f, 5),
             new("NorthBoundary", new Vector2(0f, 218f), new Vector2(210f, 34f), 30, 1.0f, 1.32f, 0f, 6),
             new("WestBoundary", new Vector2(-218f, 0f), new Vector2(34f, 210f), 28, 1.0f, 1.32f, 0f, 9),
             new("EastBoundary", new Vector2(218f, 22f), new Vector2(34f, 188f), 24, 0.96f, 1.26f, 0f, 3),
@@ -164,10 +164,10 @@ namespace TilkiOyunu.Foundation.Editor
         private static void ConfigureTerrainSurfaces(Terrain terrain)
         {
             TerrainData data = terrain.terrainData;
-            TerrainLayer grass = EnsureTerrainLayer("Sprint55C_Grass", new Color(0.52f, 0.72f, 0.32f), new Color(0.64f, 0.82f, 0.42f));
-            TerrainLayer forestDirt = EnsureTerrainLayer("Sprint55C_ForestDirt", new Color(0.38f, 0.3f, 0.18f), new Color(0.48f, 0.39f, 0.24f));
-            TerrainLayer path = EnsureTerrainLayer("Sprint55C_PathDryGround", new Color(0.64f, 0.52f, 0.32f), new Color(0.76f, 0.64f, 0.42f));
-            TerrainLayer rock = EnsureTerrainLayer("Sprint55C_Rock", new Color(0.48f, 0.5f, 0.42f), new Color(0.58f, 0.6f, 0.5f));
+            TerrainLayer grass = EnsureTerrainLayer("Sprint55C_Grass", new Color(0.36f, 0.58f, 0.22f), new Color(0.46f, 0.68f, 0.3f));
+            TerrainLayer forestDirt = EnsureTerrainLayer("Sprint55C_ForestDirt", new Color(0.3f, 0.23f, 0.14f), new Color(0.4f, 0.31f, 0.2f));
+            TerrainLayer path = EnsureTerrainLayer("Sprint55C_PathDryGround", new Color(0.48f, 0.38f, 0.23f), new Color(0.58f, 0.48f, 0.31f));
+            TerrainLayer rock = EnsureTerrainLayer("Sprint55C_Rock", new Color(0.36f, 0.38f, 0.32f), new Color(0.46f, 0.48f, 0.4f));
             data.terrainLayers = new[] { grass, forestDirt, path, rock };
             data.alphamapResolution = AlphamapResolution;
             data.SetAlphamaps(0, 0, GenerateAlphamaps(data));
@@ -428,26 +428,24 @@ namespace TilkiOyunu.Foundation.Editor
             Transform clusterRoot = EnsureChild(root, label).transform;
             for (int i = 0; i < count; i++)
             {
-                float angle = Deterministic01(seed + i * 17) * Mathf.PI * 2f;
-                float radius = Mathf.Lerp(2f, 10f, Deterministic01(seed + i * 29));
-                Vector2 point = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-                if (IsBridgeApproach(point))
+                if (!TryFindRockPoint(center, label, seed, i, out Vector2 point))
                 {
-                    point += (point - new Vector2(22f, -18f)).normalized * 8f;
+                    continue;
                 }
 
                 GameObject asset = assets[(seed + i * 3) % assets.Count];
                 GameObject instance = InstantiateAsset(asset, clusterRoot, $"QuaterniusRock_{asset.name}_{label}_{i + 1:00}");
-                float scale = Mathf.Lerp(minScale, maxScale, Deterministic01(seed + i * 43));
+                float scale = NormalizeRockScale(asset.name, label, Mathf.Lerp(minScale, maxScale, Deterministic01(seed + i * 43)));
                 instance.transform.SetPositionAndRotation(
                     WithTerrainY(new Vector3(point.x, 0f, point.y), terrain, -0.02f),
                     Quaternion.Euler(0f, Deterministic01(seed + i * 53) * 360f, 0f));
                 instance.transform.localScale = Vector3.one * scale;
                 RemoveColliders(instance);
                 ApplyNatureMaterials(instance, "Rock");
+                NormalizeRockBounds(instance, asset.name, label);
                 if (ShouldBlockRock(asset.name, scale, label))
                 {
-                    AddRockCollider(instance, scale);
+                    AddRockCollider(instance);
                 }
             }
         }
@@ -459,20 +457,20 @@ namespace TilkiOyunu.Foundation.Editor
             List<GameObject> bushAssets = LoadAssets(BushAssetNames);
             List<GameObject> flowerAssets = LoadAssets(FlowerAssetNames);
 
-            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(0f, -150f), "SpawnMeadowEdge", 28, 48f, 66f, 8101, 0.8f, 1.25f);
-            PlacePlantRing(flowers, terrain, flowerAssets, new Vector2(0f, -150f), "SpawnFlowers", 18, 18f, 36f, 8102, 0.85f, 1.2f);
-            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(-18f, -108f), "NPCGroveUnderstory", 18, 19f, 38f, 8103, 0.75f, 1.15f);
-            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(22f, -18f), "BridgeReeds", 24, 9f, 22f, 8104, 0.7f, 1.2f);
-            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(136f, 56f), "LakeReeds", 34, 45f, 64f, 8105, 0.75f, 1.25f);
-            PlacePlantRing(flowers, terrain, flowerAssets, new Vector2(-158f, -44f), "HeartGardenFlowers", 42, 12f, 38f, 8106, 0.85f, 1.35f);
-            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(-58f, 84f), "LightGroveFerns", 22, 22f, 48f, 8107, 0.85f, 1.3f);
-            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(18f, 145f), "FinalHillLowPlants", 16, 26f, 54f, 8108, 0.75f, 1.1f);
+            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(0f, -150f), "SpawnMeadowEdge", 36, 48f, 66f, 8101, 0.8f, 1.25f);
+            PlacePlantRing(flowers, terrain, flowerAssets, new Vector2(0f, -150f), "SpawnFlowers", 26, 18f, 36f, 8102, 0.85f, 1.2f);
+            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(-18f, -108f), "NPCGroveUnderstory", 32, 19f, 38f, 8103, 0.75f, 1.15f);
+            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(22f, -18f), "BridgeReeds", 36, 11f, 25f, 8104, 0.7f, 1.2f);
+            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(136f, 56f), "LakeReeds", 48, 45f, 64f, 8105, 0.75f, 1.25f);
+            PlacePlantRing(flowers, terrain, flowerAssets, new Vector2(-158f, -44f), "HeartGardenFlowers", 54, 12f, 38f, 8106, 0.85f, 1.35f);
+            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(-58f, 84f), "LightGroveFerns", 36, 22f, 48f, 8107, 0.85f, 1.3f);
+            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(18f, 145f), "FinalHillLowPlants", 24, 26f, 54f, 8108, 0.75f, 1.1f);
 
-            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-18f, -108f), new Vector2(60f, -62f), "NpcToMemoryPathEdge", 30, 9f, 16f, 8301, 0.75f, 1.18f);
-            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(60f, -62f), new Vector2(22f, -18f), "MemoryToBridgePathEdge", 24, 8f, 15f, 8302, 0.72f, 1.12f);
-            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(22f, -18f), new Vector2(24f, 62f), "BridgeToLightPathEdge", 34, 10f, 18f, 8303, 0.8f, 1.22f);
-            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(6f, 30f), new Vector2(-58f, 84f), "LightGroveLayeredUnderstory", 38, 12f, 22f, 8304, 0.85f, 1.3f);
-            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-94f, 4f), new Vector2(-58f, 84f), "HeartToLightTransition", 28, 10f, 19f, 8305, 0.75f, 1.18f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-18f, -108f), new Vector2(60f, -62f), "NpcToMemoryPathEdge", 44, 9f, 16f, 8301, 0.75f, 1.18f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(60f, -62f), new Vector2(22f, -18f), "MemoryToBridgePathEdge", 36, 8f, 15f, 8302, 0.72f, 1.12f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(22f, -18f), new Vector2(24f, 62f), "BridgeToLightPathEdge", 46, 10f, 18f, 8303, 0.8f, 1.22f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(6f, 30f), new Vector2(-58f, 84f), "LightGroveLayeredUnderstory", 54, 12f, 22f, 8304, 0.85f, 1.3f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-94f, 4f), new Vector2(-58f, 84f), "HeartToLightTransition", 38, 10f, 19f, 8305, 0.75f, 1.18f);
             PlaceTreeBaseDressing(bushes, terrain, bushAssets);
         }
 
@@ -727,12 +725,14 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             Capture(camera, "01_spawn_meadow.png", new Vector3(0f, 18f, -186f), new Vector3(0f, 10f, -142f));
-            Capture(camera, "02_dense_forest_path.png", new Vector3(62f, 20f, -82f), new Vector3(31f, 11f, -38f));
-            Capture(camera, "03_bridge_lake.png", new Vector3(3f, 17f, -46f), new Vector3(25f, 9f, -17f));
-            Capture(camera, "04_light_grove.png", new Vector3(-20f, 25f, 34f), new Vector3(-58f, 15f, 84f));
-            Capture(camera, "05_heart_garden.png", new Vector3(-120f, 22f, -86f), new Vector3(-158f, 11f, -44f));
-            Capture(camera, "06_final_hill.png", new Vector3(-28f, 34f, 88f), new Vector3(18f, 39f, 145f));
-            Capture(camera, "07_npc_candidate.png", new Vector3(-38f, 18f, -136f), new Vector3(-18f, 9f, -108f));
+            Capture(camera, "02_npc_grove.png", new Vector3(-38f, 18f, -136f), new Vector3(-18f, 9f, -108f));
+            Capture(camera, "03_forest_collision.png", new Vector3(62f, 20f, -82f), new Vector3(31f, 11f, -38f));
+            Capture(camera, "04_rock_collision.png", new Vector3(-36f, 17f, 10f), new Vector3(-18f, 7f, 32f));
+            Capture(camera, "05_bridge_lake.png", new Vector3(3f, 17f, -46f), new Vector3(25f, 9f, -17f));
+            Capture(camera, "06_light_grove.png", new Vector3(-20f, 25f, 34f), new Vector3(-58f, 15f, 84f));
+            Capture(camera, "07_heart_garden.png", new Vector3(-120f, 22f, -86f), new Vector3(-158f, 11f, -44f));
+            Capture(camera, "08_final_hill.png", new Vector3(-28f, 34f, 88f), new Vector3(18f, 39f, 145f));
+            Capture(camera, "09_fox_secondary_animation.png", new Vector3(9f, 18f, -183f), new Vector3(0f, 9f, -150f));
             AssetDatabase.Refresh();
         }
 
@@ -809,8 +809,8 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 collider = tree.AddComponent<CapsuleCollider>();
             }
-            collider.radius = Mathf.Clamp(0.18f / Mathf.Max(scale, 0.01f), 0.12f, 0.28f);
-            collider.height = Mathf.Clamp(2.8f / Mathf.Max(scale, 0.01f), 2.0f, 4.0f);
+            collider.radius = Mathf.Clamp(0.28f / Mathf.Max(scale, 0.01f), 0.18f, 0.42f);
+            collider.height = Mathf.Clamp(3.25f / Mathf.Max(scale, 0.01f), 2.35f, 4.4f);
             collider.center = new Vector3(0f, collider.height * 0.5f, 0f);
             collider.direction = 1;
             collider.isTrigger = false;
@@ -826,7 +826,7 @@ namespace TilkiOyunu.Foundation.Editor
             return scale >= 1.18f && (label.Contains("Shoreline", StringComparison.Ordinal) || label.Contains("Ridge", StringComparison.Ordinal) || label.Contains("Rise", StringComparison.Ordinal));
         }
 
-        private static void AddRockCollider(GameObject rock, float scale)
+        private static void AddRockCollider(GameObject rock)
         {
             BoxCollider collider = rock.GetComponent<BoxCollider>();
             if (collider == null)
@@ -834,32 +834,171 @@ namespace TilkiOyunu.Foundation.Editor
                 collider = rock.AddComponent<BoxCollider>();
             }
 
-            float inverseScale = 1f / Mathf.Max(scale, 0.01f);
-            collider.center = new Vector3(0f, 0.36f * inverseScale, 0f);
-            collider.size = new Vector3(1.35f * inverseScale, 0.78f * inverseScale, 1.2f * inverseScale);
+            Bounds bounds = CalculateLocalRendererBounds(rock);
+            collider.center = bounds.center + new Vector3(0f, bounds.size.y * 0.03f, 0f);
+            collider.size = new Vector3(
+                Mathf.Max(0.35f, bounds.size.x * 0.72f),
+                Mathf.Max(0.28f, bounds.size.y * 0.76f),
+                Mathf.Max(0.35f, bounds.size.z * 0.72f));
             collider.isTrigger = false;
+        }
+
+        private static bool TryFindRockPoint(Vector2 center, string label, int seed, int index, out Vector2 point)
+        {
+            for (int attempt = 0; attempt < 8; attempt++)
+            {
+                int attemptSeed = seed + index * 97 + attempt * 577;
+                float angle = Deterministic01(attemptSeed + 17) * Mathf.PI * 2f;
+                float radius = Mathf.Lerp(3.5f, 12f, Deterministic01(attemptSeed + 29));
+                point = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+                if (IsRockPlacementAllowed(point, label))
+                {
+                    return true;
+                }
+            }
+
+            point = center;
+            return false;
+        }
+
+        private static bool IsRockPlacementAllowed(Vector2 point, string label)
+        {
+            if (IsBridgeApproach(point) || IsGuideNpcSpace(point))
+            {
+                return false;
+            }
+
+            if (!label.Contains("Shoreline", StringComparison.Ordinal) && !label.Contains("Creek", StringComparison.Ordinal) && CreekInfluence(point) > 0.33f)
+            {
+                return false;
+            }
+
+            return PathInfluence(point) < 0.42f || label.Contains("Shoreline", StringComparison.Ordinal) || label.Contains("Creek", StringComparison.Ordinal);
         }
 
         private static bool IsBridgeApproach(Vector2 point)
         {
-            return Vector2.Distance(point, new Vector2(22f, -18f)) < 15f
-                || DistanceToSegment(point, new Vector2(14f, -29f), new Vector2(32f, -7f)) < 6.5f;
+            return Vector2.Distance(point, new Vector2(22f, -18f)) < 20f
+                || DistanceToSegment(point, new Vector2(11f, -32f), new Vector2(35f, -4f)) < 10.5f;
+        }
+
+        private static bool IsGuideNpcSpace(Vector2 point)
+        {
+            return Vector2.Distance(point, new Vector2(-18f, -108f)) < 9f;
+        }
+
+        private static float NormalizeRockScale(string assetName, string label, float requestedScale)
+        {
+            if (assetName.StartsWith("Rock_Medium", StringComparison.Ordinal))
+            {
+                float max = label.Contains("Ridge", StringComparison.Ordinal) || label.Contains("Rise", StringComparison.Ordinal) ? 1.18f : 0.95f;
+                return Mathf.Clamp(requestedScale, 0.58f, max);
+            }
+
+            return Mathf.Clamp(requestedScale, 0.38f, label.Contains("Shoreline", StringComparison.Ordinal) ? 0.86f : 0.72f);
+        }
+
+        private static void NormalizeRockBounds(GameObject rock, string assetName, string label)
+        {
+            Bounds bounds = CalculateWorldRendererBounds(rock);
+            float maxDimension = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
+            if (maxDimension <= 0.01f)
+            {
+                return;
+            }
+
+            float target = RockTargetMaxDimension(assetName, label);
+            float multiplier = Mathf.Clamp(target / maxDimension, 0.45f, 1.25f);
+            rock.transform.localScale *= multiplier;
+        }
+
+        private static float RockTargetMaxDimension(string assetName, string label)
+        {
+            if (assetName.StartsWith("Rock_Medium", StringComparison.Ordinal))
+            {
+                if (label.Contains("Ridge", StringComparison.Ordinal) || label.Contains("Rise", StringComparison.Ordinal))
+                {
+                    return 2.65f;
+                }
+
+                if (label.Contains("Shoreline", StringComparison.Ordinal) || label.Contains("Creek", StringComparison.Ordinal))
+                {
+                    return 1.65f;
+                }
+
+                return 1.95f;
+            }
+
+            return label.Contains("Shoreline", StringComparison.Ordinal) || label.Contains("Creek", StringComparison.Ordinal) ? 0.95f : 0.75f;
+        }
+
+        private static Bounds CalculateWorldRendererBounds(GameObject root)
+        {
+            Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+            Bounds bounds = new(root.transform.position, Vector3.one * 0.1f);
+            bool hasBounds = false;
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (renderers[i] == null || !renderers[i].enabled)
+                {
+                    continue;
+                }
+
+                if (!hasBounds)
+                {
+                    bounds = renderers[i].bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(renderers[i].bounds);
+                }
+            }
+
+            return bounds;
+        }
+
+        private static Bounds CalculateLocalRendererBounds(GameObject root)
+        {
+            Bounds world = CalculateWorldRendererBounds(root);
+            Vector3 min = new(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            Vector3 max = new(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            for (int x = 0; x <= 1; x++)
+            {
+                for (int y = 0; y <= 1; y++)
+                {
+                    for (int z = 0; z <= 1; z++)
+                    {
+                        Vector3 worldCorner = new(
+                            x == 0 ? world.min.x : world.max.x,
+                            y == 0 ? world.min.y : world.max.y,
+                            z == 0 ? world.min.z : world.max.z);
+                        Vector3 local = root.transform.InverseTransformPoint(worldCorner);
+                        min = Vector3.Min(min, local);
+                        max = Vector3.Max(max, local);
+                    }
+                }
+            }
+
+            Bounds localBounds = new();
+            localBounds.SetMinMax(min, max);
+            return localBounds;
         }
 
         private static void ApplyGlareBlockerCorrection()
         {
             foreach (Light light in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                if (light.type == LightType.Directional && light.intensity > 1.15f)
+                if (light.type == LightType.Directional && light.intensity > 0.92f)
                 {
-                    light.intensity = 1.05f;
+                    light.intensity = 0.9f;
                     EditorUtility.SetDirty(light);
                 }
             }
 
-            if (RenderSettings.skybox != null && RenderSettings.skybox.HasProperty("_Exposure") && RenderSettings.skybox.GetFloat("_Exposure") > 1.05f)
+            if (RenderSettings.skybox != null && RenderSettings.skybox.HasProperty("_Exposure") && RenderSettings.skybox.GetFloat("_Exposure") > 0.9f)
             {
-                RenderSettings.skybox.SetFloat("_Exposure", 1.05f);
+                RenderSettings.skybox.SetFloat("_Exposure", 0.9f);
                 EditorUtility.SetDirty(RenderSettings.skybox);
             }
         }
