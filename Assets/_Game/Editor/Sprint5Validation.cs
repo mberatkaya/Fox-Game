@@ -266,8 +266,8 @@ namespace TilkiOyunu.Foundation.Editor
                 errors.Add("Card Matching is missing CardMatchingAudioFeedback.");
             }
 
-            RequireBridgeRailCollider("Bridge Left Rail Collider", -1.5f, errors);
-            RequireBridgeRailCollider("Bridge Right Rail Collider", 1.5f, errors);
+            RequireBridgeRailCollider("Bridge Left Rail Collider", -1.95f, errors);
+            RequireBridgeRailCollider("Bridge Right Rail Collider", 1.95f, errors);
 
             ValidateCardMatchingPanel(errors);
             ValidateInitialPresentation(errors);
@@ -1028,13 +1028,13 @@ namespace TilkiOyunu.Foundation.Editor
                 errors.Add($"{name} must stay under Small Bridge.");
             }
 
-            if (Mathf.Abs(rail.transform.localPosition.x - expectedX) > 0.001f || Mathf.Abs(rail.transform.localPosition.y - 0.56f) > 0.001f)
+            if (Mathf.Abs(rail.transform.localPosition.x - expectedX) > 0.001f || Mathf.Abs(rail.transform.localPosition.y - 0.6f) > 0.001f)
             {
                 errors.Add($"{name} has drifted from the calibrated bridge rail position.");
             }
 
             BoxCollider collider = rail.GetComponent<BoxCollider>();
-            if (collider == null || collider.isTrigger || Vector3.Distance(collider.size, new Vector3(0.18f, 0.9f, 4.45f)) > 0.001f)
+            if (collider == null || collider.isTrigger || Vector3.Distance(collider.size, new Vector3(0.2f, 1f, 27.2f)) > 0.001f)
             {
                 errors.Add($"{name} must be a solid BoxCollider sized for fox body blocking.");
             }

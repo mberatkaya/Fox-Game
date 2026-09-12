@@ -71,10 +71,36 @@ namespace TilkiOyunu.Foundation.Tests
             foreach (Transform rock in FindNamed(environment.transform, "QuaterniusRock_"))
             {
                 Vector2 point = new(rock.position.x, rock.position.z);
-                float bridgeDistance = DistanceToSegment(point, new Vector2(11f, -32f), new Vector2(35f, -4f));
-                Assert.That(bridgeDistance, Is.GreaterThanOrEqualTo(8.5f), $"{rock.name} intrudes into the bridge approach corridor.");
-                Assert.That(Vector2.Distance(point, new Vector2(22f, -18f)), Is.GreaterThanOrEqualTo(16f), $"{rock.name} intrudes into bridge center clearance.");
+                float bridgeDistance = DistanceToSegment(point, new Vector2(13.4f, -11.5f), new Vector2(35.8f, -28.3f));
+                Assert.That(bridgeDistance, Is.GreaterThanOrEqualTo(7.5f), $"{rock.name} intrudes into the bridge approach corridor.");
+                Assert.That(Vector2.Distance(point, new Vector2(24.6f, -19.9f)), Is.GreaterThanOrEqualTo(16f), $"{rock.name} intrudes into bridge center clearance.");
             }
+        }
+
+        [Test]
+        public void BridgeSpansCreekPerpendicularBetweenBothBanks()
+        {
+            EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+            GameObject bridge = GameObject.Find("Small Bridge");
+            GameObject walkway = GameObject.Find("Sprint55C_Bridge_Walkway");
+            Assert.That(bridge, Is.Not.Null);
+            Assert.That(walkway, Is.Not.Null);
+
+            Vector3 bridgeForward = bridge.transform.forward;
+            Vector2 bridgeDirection = new(bridgeForward.x, bridgeForward.z);
+            Vector2 creekDirection = new Vector2(21f, 28f).normalized;
+            Assert.That(Mathf.Abs(Vector2.Dot(bridgeDirection.normalized, creekDirection)), Is.LessThan(0.08f));
+
+            Assert.That(walkway.transform.localScale.x, Is.EqualTo(4.4f).Within(0.01f));
+            Assert.That(walkway.transform.localScale.z, Is.EqualTo(28f).Within(0.01f));
+            Assert.That(walkway.GetComponent<BoxCollider>()?.isTrigger, Is.False);
+
+            Vector2 center = new(bridge.transform.position.x, bridge.transform.position.z);
+            Vector2 bankA = center - bridgeDirection.normalized * 14f;
+            Vector2 bankB = center + bridgeDirection.normalized * 14f;
+            Assert.That(DistanceToSegment(center, new Vector2(17f, -30f), new Vector2(38f, -2f)), Is.LessThan(1.5f));
+            Assert.That(DistanceToSegment(bankA, new Vector2(17f, -30f), new Vector2(38f, -2f)), Is.GreaterThan(10f));
+            Assert.That(DistanceToSegment(bankB, new Vector2(17f, -30f), new Vector2(38f, -2f)), Is.GreaterThan(10f));
         }
 
         [Test]

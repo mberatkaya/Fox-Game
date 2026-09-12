@@ -561,8 +561,8 @@ namespace TilkiOyunu.Foundation.Editor
             GameObject bridge = GameObject.Find("Small Bridge");
             if (bridge != null)
             {
-                EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", new Vector3(-1.5f, 0.56f, 0f));
-                EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", new Vector3(1.5f, 0.56f, 0f));
+                EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", new Vector3(-1.95f, 0.6f, 0f));
+                EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", new Vector3(1.95f, 0.6f, 0f));
             }
 
             EditorSceneManager.SaveScene(scene);
@@ -811,7 +811,7 @@ namespace TilkiOyunu.Foundation.Editor
 
             collider.isTrigger = false;
             collider.center = Vector3.zero;
-            collider.size = new Vector3(0.18f, 0.9f, 4.45f);
+            collider.size = new Vector3(0.2f, 1f, 27.2f);
         }
 
         private static void RemoveAllVisualChildren(Transform visualRoot)

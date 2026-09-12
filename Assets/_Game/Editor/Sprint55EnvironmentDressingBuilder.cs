@@ -20,6 +20,14 @@ namespace TilkiOyunu.Foundation.Editor
         private const int DetailResolution = 256;
         private const int DetailResolutionPerPatch = 8;
         private const float TerrainOrigin = -TerrainSize * 0.5f;
+        private static readonly Vector2 BridgeCenter = new(24.6f, -19.9f);
+        private static readonly Vector2 BridgeBankA = new(13.4f, -11.5f);
+        private static readonly Vector2 BridgeBankB = new(35.8f, -28.3f);
+        private const float BridgeYaw = 126.87f;
+        private const float BridgeDeckWidth = 4.4f;
+        private const float BridgeDeckLength = 28f;
+        private const float BridgeElevation = 0.98f;
+        private const float BridgeRailX = 1.95f;
 
         private static readonly string[] TreeAssetNames =
         {
@@ -457,15 +465,15 @@ namespace TilkiOyunu.Foundation.Editor
             PlacePlantRing(bushes, terrain, bushAssets, new Vector2(0f, -150f), "SpawnMeadowEdge", 36, 48f, 66f, 8101, 0.8f, 1.25f);
             PlacePlantRing(flowers, terrain, flowerAssets, new Vector2(0f, -150f), "SpawnFlowers", 26, 18f, 36f, 8102, 0.85f, 1.2f);
             PlacePlantRing(bushes, terrain, bushAssets, new Vector2(-18f, -108f), "NPCGroveUnderstory", 32, 19f, 38f, 8103, 0.75f, 1.15f);
-            PlacePlantRing(bushes, terrain, bushAssets, new Vector2(22f, -18f), "BridgeReeds", 36, 11f, 25f, 8104, 0.7f, 1.2f);
+            PlacePlantRing(bushes, terrain, bushAssets, BridgeCenter, "BridgeReeds", 36, 11f, 25f, 8104, 0.7f, 1.2f);
             PlacePlantRing(bushes, terrain, bushAssets, new Vector2(136f, 56f), "LakeReeds", 48, 45f, 64f, 8105, 0.75f, 1.25f);
             PlacePlantRing(flowers, terrain, flowerAssets, new Vector2(-158f, -44f), "HeartGardenFlowers", 54, 12f, 38f, 8106, 0.85f, 1.35f);
             PlacePlantRing(bushes, terrain, bushAssets, new Vector2(-58f, 84f), "LightGroveFerns", 36, 22f, 48f, 8107, 0.85f, 1.3f);
             PlacePlantRing(bushes, terrain, bushAssets, new Vector2(18f, 145f), "FinalHillLowPlants", 24, 26f, 54f, 8108, 0.75f, 1.1f);
 
             PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-18f, -108f), new Vector2(60f, -62f), "NpcToMemoryPathEdge", 44, 9f, 16f, 8301, 0.75f, 1.18f);
-            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(60f, -62f), new Vector2(22f, -18f), "MemoryToBridgePathEdge", 36, 8f, 15f, 8302, 0.72f, 1.12f);
-            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(22f, -18f), new Vector2(24f, 62f), "BridgeToLightPathEdge", 46, 10f, 18f, 8303, 0.8f, 1.22f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(60f, -62f), BridgeCenter, "MemoryToBridgePathEdge", 36, 8f, 15f, 8302, 0.72f, 1.12f);
+            PlacePlantBand(bushes, terrain, bushAssets, BridgeCenter, new Vector2(24f, 62f), "BridgeToLightPathEdge", 46, 10f, 18f, 8303, 0.8f, 1.22f);
             PlacePlantBand(bushes, terrain, bushAssets, new Vector2(6f, 30f), new Vector2(-58f, 84f), "LightGroveLayeredUnderstory", 54, 12f, 22f, 8304, 0.85f, 1.3f);
             PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-94f, 4f), new Vector2(-58f, 84f), "HeartToLightTransition", 38, 10f, 19f, 8305, 0.75f, 1.18f);
             PlaceTreeBaseDressing(bushes, terrain, bushAssets);
@@ -567,7 +575,7 @@ namespace TilkiOyunu.Foundation.Editor
             Transform bridgeRoot = environment.Find("Bridge");
             GameObject bridge = FindSceneObjectIncludingInactive("Small Bridge") ?? new GameObject("Small Bridge");
             bridge.transform.SetParent(bridgeRoot, true);
-            bridge.transform.SetPositionAndRotation(WithTerrainY(new Vector3(22f, 0f, -18f), terrain, 0.72f), Quaternion.Euler(0f, 34f, 0f));
+            bridge.transform.SetPositionAndRotation(WithTerrainY(new Vector3(BridgeCenter.x, 0f, BridgeCenter.y), terrain, BridgeElevation), Quaternion.Euler(0f, BridgeYaw, 0f));
             bridge.transform.localScale = Vector3.one;
             bridge.SetActive(true);
 
@@ -583,30 +591,30 @@ namespace TilkiOyunu.Foundation.Editor
             Material wood = EnsureMaterial("Sprint55C_BridgeWarmWood", new Color(0.49f, 0.34f, 0.19f));
             Material darkWood = EnsureMaterial("Sprint55C_BridgeDarkWood", new Color(0.31f, 0.22f, 0.15f));
 
-            GameObject walkway = CreateCube(bridge.transform, "Sprint55C_Bridge_Walkway", new Vector3(0f, 0.12f, 0f), new Vector3(4.05f, 0.25f, 8.2f), wood);
+            GameObject walkway = CreateCube(bridge.transform, "Sprint55C_Bridge_Walkway", new Vector3(0f, 0.14f, 0f), new Vector3(BridgeDeckWidth, 0.28f, BridgeDeckLength), wood);
             BoxCollider walkwayCollider = walkway.GetComponent<BoxCollider>();
             walkwayCollider.isTrigger = false;
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 13; i++)
             {
-                float z = Mathf.Lerp(-3.35f, 3.35f, i / 6f);
-                CreateCube(bridge.transform, $"Sprint55C_Bridge_Plank_{i + 1:00}", new Vector3(0f, 0.32f, z), new Vector3(4.25f, 0.12f, 0.38f), i % 2 == 0 ? wood : darkWood);
+                float z = Mathf.Lerp(-12.6f, 12.6f, i / 12f);
+                CreateCube(bridge.transform, $"Sprint55C_Bridge_Plank_{i + 1:00}", new Vector3(0f, 0.34f, z), new Vector3(BridgeDeckWidth + 0.25f, 0.12f, 0.48f), i % 2 == 0 ? wood : darkWood);
             }
 
-            CreateCube(bridge.transform, "Sprint55C_Bridge_LeftRailVisual", new Vector3(-1.8f, 0.76f, 0f), new Vector3(0.16f, 0.2f, 7.8f), darkWood);
-            CreateCube(bridge.transform, "Sprint55C_Bridge_RightRailVisual", new Vector3(1.8f, 0.76f, 0f), new Vector3(0.16f, 0.2f, 7.8f), darkWood);
-            for (int i = 0; i < 4; i++)
+            CreateCube(bridge.transform, "Sprint55C_Bridge_LeftRailVisual", new Vector3(-BridgeRailX, 0.82f, 0f), new Vector3(0.18f, 0.22f, BridgeDeckLength - 0.8f), darkWood);
+            CreateCube(bridge.transform, "Sprint55C_Bridge_RightRailVisual", new Vector3(BridgeRailX, 0.82f, 0f), new Vector3(0.18f, 0.22f, BridgeDeckLength - 0.8f), darkWood);
+            for (int i = 0; i < 6; i++)
             {
-                float z = Mathf.Lerp(-3.4f, 3.4f, i / 3f);
-                CreateCube(bridge.transform, $"Sprint55C_Bridge_LeftPost_{i + 1:00}", new Vector3(-1.82f, 0.52f, z), new Vector3(0.22f, 0.92f, 0.22f), darkWood);
-                CreateCube(bridge.transform, $"Sprint55C_Bridge_RightPost_{i + 1:00}", new Vector3(1.82f, 0.52f, z), new Vector3(0.22f, 0.92f, 0.22f), darkWood);
+                float z = Mathf.Lerp(-12.2f, 12.2f, i / 5f);
+                CreateCube(bridge.transform, $"Sprint55C_Bridge_LeftPost_{i + 1:00}", new Vector3(-BridgeRailX, 0.55f, z), new Vector3(0.24f, 0.98f, 0.24f), darkWood);
+                CreateCube(bridge.transform, $"Sprint55C_Bridge_RightPost_{i + 1:00}", new Vector3(BridgeRailX, 0.55f, z), new Vector3(0.24f, 0.98f, 0.24f), darkWood);
             }
 
-            CreateCube(bridge.transform, "Sprint55C_Bridge_LeftSupport", new Vector3(-1.25f, -0.42f, -2.9f), new Vector3(0.28f, 1.0f, 0.28f), darkWood);
-            CreateCube(bridge.transform, "Sprint55C_Bridge_RightSupport", new Vector3(1.25f, -0.42f, 2.9f), new Vector3(0.28f, 1.0f, 0.28f), darkWood);
-            CreateCube(bridge.transform, "Sprint55C_Bridge_UnderBeam", new Vector3(0f, -0.08f, 0f), new Vector3(3.1f, 0.18f, 7.5f), darkWood);
-            EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", -1.5f);
-            EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", 1.5f);
+            CreateCube(bridge.transform, "Sprint55C_Bridge_LeftSupport", new Vector3(-1.35f, -0.46f, -10.6f), new Vector3(0.3f, 1.15f, 0.3f), darkWood);
+            CreateCube(bridge.transform, "Sprint55C_Bridge_RightSupport", new Vector3(1.35f, -0.46f, 10.6f), new Vector3(0.3f, 1.15f, 0.3f), darkWood);
+            CreateCube(bridge.transform, "Sprint55C_Bridge_UnderBeam", new Vector3(0f, -0.08f, 0f), new Vector3(3.25f, 0.2f, BridgeDeckLength - 1.2f), darkWood);
+            EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", -BridgeRailX);
+            EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", BridgeRailX);
         }
 
         private static void DressMemoryVisuals(Transform environment, Terrain terrain)
@@ -786,7 +794,7 @@ namespace TilkiOyunu.Foundation.Editor
                 rail.SetParent(bridge, false);
             }
 
-            rail.localPosition = new Vector3(localX, 0.56f, 0f);
+            rail.localPosition = new Vector3(localX, 0.6f, 0f);
             rail.localRotation = Quaternion.identity;
             rail.localScale = Vector3.one;
             BoxCollider collider = rail.GetComponent<BoxCollider>();
@@ -795,7 +803,7 @@ namespace TilkiOyunu.Foundation.Editor
                 collider = rail.gameObject.AddComponent<BoxCollider>();
             }
             collider.isTrigger = false;
-            collider.size = new Vector3(0.18f, 0.9f, 4.45f);
+            collider.size = new Vector3(0.2f, 1f, BridgeDeckLength - 0.8f);
             collider.center = Vector3.zero;
         }
 
@@ -865,8 +873,8 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static bool IsBridgeApproach(Vector2 point)
         {
-            return Vector2.Distance(point, new Vector2(22f, -18f)) < 20f
-                || DistanceToSegment(point, new Vector2(11f, -32f), new Vector2(35f, -4f)) < 10.5f;
+            return Vector2.Distance(point, BridgeCenter) < 16f
+                || DistanceToSegment(point, BridgeBankA, BridgeBankB) < 7.5f;
         }
 
         private static bool IsGuideNpcSpace(Vector2 point)
@@ -1030,7 +1038,7 @@ namespace TilkiOyunu.Foundation.Editor
                 return false;
             }
 
-            if (Vector2.Distance(point, new Vector2(0f, -150f)) < 26f || Vector2.Distance(point, new Vector2(22f, -18f)) < 16f)
+            if (Vector2.Distance(point, new Vector2(0f, -150f)) < 26f || Vector2.Distance(point, BridgeCenter) < 16f)
             {
                 return false;
             }
@@ -1248,10 +1256,10 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static float PathInfluence(Vector2 point)
         {
-            Vector2[] main = { new(0f, -150f), new(-18f, -108f), new(60f, -62f), new(22f, -18f), new(24f, 62f), new(18f, 145f) };
+            Vector2[] main = { new(0f, -150f), new(-18f, -108f), new(60f, -62f), BridgeCenter, new(24f, 62f), new(18f, 145f) };
             Vector2[] heart = { new(-18f, -108f), new(-84f, -92f), new(-158f, -44f), new(-94f, 4f), new(-58f, 84f) };
-            Vector2[] light = { new(22f, -18f), new(6f, 30f), new(-58f, 84f) };
-            Vector2[] lake = { new(22f, -18f), new(82f, 16f), new(136f, 56f), new(74f, 88f) };
+            Vector2[] light = { BridgeCenter, new(6f, 30f), new(-58f, 84f) };
+            Vector2[] lake = { BridgeCenter, new(82f, 16f), new(136f, 56f), new(74f, 88f) };
             float distance = Mathf.Min(DistanceToPolyline(point, main), DistanceToPolyline(point, heart), DistanceToPolyline(point, light), DistanceToPolyline(point, lake));
             return Mathf.SmoothStep(1f, 0f, Mathf.InverseLerp(4f, 12f, distance));
         }

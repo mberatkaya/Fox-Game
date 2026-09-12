@@ -187,8 +187,8 @@ namespace TilkiOyunu.Foundation.Tests
         public void ForestBridgeHasBodyBlockingRailColliders()
         {
             EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
-            AssertBridgeRailCollider("Bridge Left Rail Collider", -1.5f);
-            AssertBridgeRailCollider("Bridge Right Rail Collider", 1.5f);
+            AssertBridgeRailCollider("Bridge Left Rail Collider", -1.95f);
+            AssertBridgeRailCollider("Bridge Right Rail Collider", 1.95f);
         }
 
         [Test]
@@ -466,12 +466,12 @@ namespace TilkiOyunu.Foundation.Tests
             Assert.That(rail, Is.Not.Null);
             Assert.That(rail.transform.parent.name, Is.EqualTo("Small Bridge"));
             Assert.That(rail.transform.localPosition.x, Is.EqualTo(expectedX).Within(0.001f));
-            Assert.That(rail.transform.localPosition.y, Is.EqualTo(0.56f).Within(0.001f));
+            Assert.That(rail.transform.localPosition.y, Is.EqualTo(0.6f).Within(0.001f));
 
             BoxCollider collider = rail.GetComponent<BoxCollider>();
             Assert.That(collider, Is.Not.Null);
             Assert.That(collider.isTrigger, Is.False);
-            Assert.That(collider.size, Is.EqualTo(new Vector3(0.18f, 0.9f, 4.45f)));
+            Assert.That(collider.size, Is.EqualTo(new Vector3(0.2f, 1f, 27.2f)));
         }
 
         private static void AssertInactiveSceneObject(string name)

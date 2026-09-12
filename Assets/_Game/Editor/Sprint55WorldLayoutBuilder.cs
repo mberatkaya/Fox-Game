@@ -19,6 +19,10 @@ namespace TilkiOyunu.Foundation.Editor
         private const string TreePackRoot = "Assets/TreePackVol.1";
         private const float TerrainOrigin = -TerrainSize * 0.5f;
         private const int MinimumTreeCollectionInstances = 300;
+        private const float BridgeYaw = 126.87f;
+        private const float BridgeDeckLength = 28f;
+        private const float BridgeDeckWidth = 4.4f;
+        private const float BridgeRailX = 1.95f;
 
         private static readonly string[] TreeCollectionPrefabPaths =
         {
@@ -61,7 +65,7 @@ namespace TilkiOyunu.Foundation.Editor
             new("LM_NPCGrove", new Vector3(-18f, 0f, -108f)),
             new("LM_MemoryRoute_A", new Vector3(60f, 0f, -62f)),
             new("LM_MemoryRoute_B", new Vector3(-76f, 0f, 18f)),
-            new("LM_Bridge", new Vector3(22f, 0f, -18f)),
+            new("LM_Bridge", new Vector3(24.6f, 0f, -19.9f)),
             new("LM_Lake", new Vector3(136f, 0f, 56f)),
             new("LM_LightGrove", new Vector3(-58f, 0f, 84f)),
             new("LM_HeartGarden", new Vector3(-158f, 0f, -44f)),
@@ -309,9 +313,9 @@ namespace TilkiOyunu.Foundation.Editor
             GameObject bridge = GameObject.Find("Small Bridge");
             if (bridge != null)
             {
-                Vector3 bridgePosition = WithTerrainY(AnchorPosition("LM_Bridge"), terrain, 0.72f);
-                bridge.transform.SetPositionAndRotation(bridgePosition, Quaternion.Euler(0f, 34f, 0f));
-                bridge.transform.localScale = new Vector3(1.15f, 1f, 2.65f);
+                Vector3 bridgePosition = WithTerrainY(AnchorPosition("LM_Bridge"), terrain, 0.98f);
+                bridge.transform.SetPositionAndRotation(bridgePosition, Quaternion.Euler(0f, BridgeYaw, 0f));
+                bridge.transform.localScale = Vector3.one;
             }
         }
 
@@ -336,13 +340,13 @@ namespace TilkiOyunu.Foundation.Editor
                 GameObject walkway = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 walkway.name = "Bridge Walkway";
                 walkway.transform.SetParent(bridge.transform, false);
-                walkway.transform.localPosition = new Vector3(0f, 0.18f, 0f);
-                walkway.transform.localScale = new Vector3(3.4f, 0.26f, 4.65f);
+                walkway.transform.localPosition = new Vector3(0f, 0.14f, 0f);
+                walkway.transform.localScale = new Vector3(BridgeDeckWidth, 0.28f, BridgeDeckLength);
                 walkway.GetComponent<Renderer>().sharedMaterial = bridgeMaterial;
             }
 
-            EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", -1.5f);
-            EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", 1.5f);
+            EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", -BridgeRailX);
+            EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", BridgeRailX);
             bridge.SetActive(true);
             return bridge;
         }
@@ -356,7 +360,7 @@ namespace TilkiOyunu.Foundation.Editor
                 rail.SetParent(bridge, false);
             }
 
-            rail.localPosition = new Vector3(localX, 0.56f, 0f);
+            rail.localPosition = new Vector3(localX, 0.6f, 0f);
             rail.localRotation = Quaternion.identity;
             rail.localScale = Vector3.one;
             BoxCollider collider = rail.GetComponent<BoxCollider>();
@@ -366,7 +370,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             collider.isTrigger = false;
-            collider.size = new Vector3(0.18f, 0.9f, 4.45f);
+            collider.size = new Vector3(0.2f, 1f, BridgeDeckLength - 0.8f);
             collider.center = Vector3.zero;
         }
 
@@ -621,7 +625,7 @@ namespace TilkiOyunu.Foundation.Editor
                 return false;
             }
 
-            if (Vector2.Distance(point, new Vector2(22f, -18f)) < 14f)
+            if (Vector2.Distance(point, new Vector2(24.6f, -19.9f)) < 14f)
             {
                 return false;
             }
@@ -705,7 +709,7 @@ namespace TilkiOyunu.Foundation.Editor
         {
             Vector2[] main =
             {
-                new(0f, -150f), new(-18f, -108f), new(60f, -62f), new(22f, -18f),
+                new(0f, -150f), new(-18f, -108f), new(60f, -62f), new(24.6f, -19.9f),
                 new(24f, 62f), new(18f, 145f)
             };
 
@@ -716,12 +720,12 @@ namespace TilkiOyunu.Foundation.Editor
 
             Vector2[] light =
             {
-                new(22f, -18f), new(6f, 30f), new(-58f, 84f)
+                new(24.6f, -19.9f), new(6f, 30f), new(-58f, 84f)
             };
 
             Vector2[] lake =
             {
-                new(22f, -18f), new(82f, 16f), new(136f, 56f), new(74f, 88f)
+                new(24.6f, -19.9f), new(82f, 16f), new(136f, 56f), new(74f, 88f)
             };
 
             float distance = Mathf.Min(DistanceToPolyline(point, main), DistanceToPolyline(point, heart), DistanceToPolyline(point, light), DistanceToPolyline(point, lake));
