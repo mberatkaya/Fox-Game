@@ -47,7 +47,11 @@ namespace TilkiOyunu.Foundation.Editor
         private const string IdleClipName = "Fox_Idle";
         private const string WalkClipName = "Fox_Walk_InPlace";
         private const string RunClipName = "Fox_Run_InPlace";
+        private const string JumpClipName = "Fox_Jump";
         private const string AirClipName = "Fox_Jump_InAir";
+        private const string FallClipName = "Fox_Falling";
+        private const string IdleSitClipName = "Fox_Sit2_Idle";
+        private const string IdleBreakClipName = "Fox_Sit_Idle_Break";
 
         [MenuItem("Tilki Oyunu/Sprint 5.5/Report Fox Character Data")]
         public static void ReportFoxCharacterData()
@@ -108,6 +112,8 @@ namespace TilkiOyunu.Foundation.Editor
             AddAnimatorParameter(controller, "Speed", AnimatorControllerParameterType.Float);
             AddAnimatorParameter(controller, "Grounded", AnimatorControllerParameterType.Bool);
             AddAnimatorParameter(controller, "VerticalVelocity", AnimatorControllerParameterType.Float);
+            AddAnimatorParameter(controller, "IdleSit", AnimatorControllerParameterType.Trigger);
+            AddAnimatorParameter(controller, "IdleBreak", AnimatorControllerParameterType.Trigger);
 
             AnimatorStateMachine stateMachine = controller.layers[0].stateMachine;
             ClearStateMachine(stateMachine);
@@ -115,7 +121,10 @@ namespace TilkiOyunu.Foundation.Editor
             AnimationClip idle = RequireClip(IdleClipName);
             AnimationClip walk = RequireClip(WalkClipName);
             AnimationClip run = RequireClip(RunClipName);
-            AnimationClip air = FindClip(AirClipName) ?? RequireClip("Fox_Jump");
+            AnimationClip jump = FindClip(JumpClipName) ?? FindClip(AirClipName) ?? RequireClip(RunClipName);
+            AnimationClip fall = FindClip(FallClipName) ?? FindClip(AirClipName) ?? jump;
+            AnimationClip idleSit = FindClip(IdleSitClipName);
+            AnimationClip idleBreak = FindClip(IdleBreakClipName);
 
             AnimatorState locomotionState = stateMachine.AddState("Locomotion", new Vector3(240f, 120f, 0f));
             BlendTree locomotion = new()
@@ -138,14 +147,43 @@ namespace TilkiOyunu.Foundation.Editor
             children[2].timeScale = RunPlaybackSpeed;
             locomotion.children = children;
 
-            AnimatorState airState = stateMachine.AddState("Air", new Vector3(520f, 120f, 0f));
-            airState.motion = air;
-            airState.speed = 1f;
-            airState.writeDefaultValues = true;
+            AnimatorState jumpState = stateMachine.AddState("Jump", new Vector3(520f, 80f, 0f));
+            jumpState.motion = jump;
+            jumpState.speed = 1f;
+            jumpState.writeDefaultValues = true;
+
+            AnimatorState fallState = stateMachine.AddState("Fall", new Vector3(760f, 150f, 0f));
+            fallState.motion = fall;
+            fallState.speed = 1f;
+            fallState.writeDefaultValues = true;
 
             stateMachine.defaultState = locomotionState;
-            AddGroundedTransition(locomotionState, airState, false, 0.08f);
-            AddGroundedTransition(airState, locomotionState, true, 0.12f);
+            AddGroundedTransition(locomotionState, jumpState, false, 0.06f);
+            AddFloatTransition(jumpState, fallState, "VerticalVelocity", AnimatorConditionMode.Less, -0.08f, 0.08f);
+            AddGroundedTransition(jumpState, locomotionState, true, 0.08f);
+            AddGroundedTransition(fallState, locomotionState, true, 0.1f);
+
+            if (idleSit != null)
+            {
+                AnimatorState idleSitState = stateMachine.AddState("Secondary Idle Sit", new Vector3(240f, 310f, 0f));
+                idleSitState.motion = idleSit;
+                idleSitState.writeDefaultValues = true;
+                AddTriggerTransition(stateMachine, idleSitState, "IdleSit", 0.12f);
+                AddExitTransition(idleSitState, locomotionState, 0.82f, 0.16f);
+                AddFloatTransition(idleSitState, locomotionState, "Speed", AnimatorConditionMode.Greater, 0.05f, 0.08f);
+                AddGroundedTransition(idleSitState, jumpState, false, 0.06f);
+            }
+
+            if (idleBreak != null)
+            {
+                AnimatorState idleBreakState = stateMachine.AddState("Secondary Idle Break", new Vector3(520f, 310f, 0f));
+                idleBreakState.motion = idleBreak;
+                idleBreakState.writeDefaultValues = true;
+                AddTriggerTransition(stateMachine, idleBreakState, "IdleBreak", 0.12f);
+                AddExitTransition(idleBreakState, locomotionState, 0.88f, 0.16f);
+                AddFloatTransition(idleBreakState, locomotionState, "Speed", AnimatorConditionMode.Greater, 0.05f, 0.08f);
+                AddGroundedTransition(idleBreakState, jumpState, false, 0.06f);
+            }
 
             EditorUtility.SetDirty(controller);
             return controller;
@@ -255,7 +293,7 @@ namespace TilkiOyunu.Foundation.Editor
                         $"frameRate={Format(clip.frameRate)}",
                         $"frames={Format(clip.length * clip.frameRate)}",
                         $"loop={settings.loopTime}",
-                        $"used={IsProductionClip(clip.name)}",
+                        $"usage={DescribeClipUsage(clip.name)}",
                         $"rootCurves={clip.hasRootCurves}",
                         $"genericRoot={clip.hasGenericRootTransform}",
                         $"motionCurves={clip.hasMotionCurves}"));
@@ -309,6 +347,8 @@ namespace TilkiOyunu.Foundation.Editor
             RequireClip(IdleClipName);
             RequireClip(WalkClipName);
             RequireClip(RunClipName);
+            RequireClip(JumpClipName);
+            RequireClip(FallClipName);
         }
 
         private static void ConfigureFoxImporterLoopSettings()
@@ -458,6 +498,9 @@ namespace TilkiOyunu.Foundation.Editor
             SetObject(animationDriver, "animator", animator);
             SetFloat(animationDriver, "runSpeed", SprintSpeed);
             SetFloat(animationDriver, "dampSeconds", AnimatorDampSeconds);
+            SetFloat(animationDriver, "secondaryIdleDelay", 6f);
+            SetFloat(animationDriver, "secondaryIdleChance", 0.32f);
+            SetFloat(animationDriver, "secondaryIdleCooldown", 9f);
 
             AssignFoxMaterial(toonFox);
         }
@@ -722,7 +765,29 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static bool IsProductionClip(string clipName)
         {
-            return clipName == IdleClipName || clipName == WalkClipName || clipName == RunClipName || clipName == AirClipName;
+            return DescribeClipUsage(clipName) != "Available for future use";
+        }
+
+        private static string DescribeClipUsage(string clipName)
+        {
+            return clipName switch
+            {
+                IdleClipName => "Primary grounded idle",
+                WalkClipName => "Grounded locomotion walk",
+                RunClipName => "Grounded locomotion run",
+                JumpClipName => "Jump ascent",
+                AirClipName => "Airborne hold fallback candidate",
+                FallClipName => "Falling descent",
+                IdleSitClipName => "Secondary long-idle personality",
+                IdleBreakClipName => "Secondary long-idle personality",
+                "Fox_Sit1" => "Future final-camp rest candidate",
+                "Fox_Sit3_StandUp" => "Future final-camp exit candidate",
+                "Fox_Sit_No" => "Future dialogue reaction candidate",
+                "Fox_Sit_Yes" => "Future dialogue reaction candidate",
+                _ => clipName.Contains("Attack") || clipName.Contains("Somersault")
+                    ? "Not used without gameplay reason"
+                    : "Available for future use"
+            };
         }
 
         private static void EnsureBridgeRailCollider(Transform parent, string name, Vector3 localPosition)
@@ -838,6 +903,38 @@ namespace TilkiOyunu.Foundation.Editor
             transition.hasFixedDuration = true;
             transition.canTransitionToSelf = false;
             transition.AddCondition(grounded ? AnimatorConditionMode.If : AnimatorConditionMode.IfNot, 0f, "Grounded");
+        }
+
+        private static void AddFloatTransition(AnimatorState from, AnimatorState to, string parameter, AnimatorConditionMode mode, float threshold, float duration)
+        {
+            AnimatorStateTransition transition = from.AddTransition(to);
+            transition.hasExitTime = false;
+            transition.duration = duration;
+            transition.hasFixedDuration = true;
+            transition.canTransitionToSelf = false;
+            transition.AddCondition(mode, threshold, parameter);
+        }
+
+        private static void AddTriggerTransition(AnimatorStateMachine stateMachine, AnimatorState to, string trigger, float duration)
+        {
+            AnimatorStateTransition transition = stateMachine.AddAnyStateTransition(to);
+            transition.hasExitTime = false;
+            transition.duration = duration;
+            transition.hasFixedDuration = true;
+            transition.canTransitionToSelf = false;
+            transition.AddCondition(AnimatorConditionMode.If, 0f, trigger);
+            transition.AddCondition(AnimatorConditionMode.If, 0f, "Grounded");
+            transition.AddCondition(AnimatorConditionMode.Less, 0.04f, "Speed");
+        }
+
+        private static void AddExitTransition(AnimatorState from, AnimatorState to, float exitTime, float duration)
+        {
+            AnimatorStateTransition transition = from.AddTransition(to);
+            transition.hasExitTime = true;
+            transition.exitTime = exitTime;
+            transition.duration = duration;
+            transition.hasFixedDuration = true;
+            transition.canTransitionToSelf = false;
         }
 
         private static void ClearStateMachine(AnimatorStateMachine stateMachine)

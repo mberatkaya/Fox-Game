@@ -114,3 +114,6 @@ MonoBehaviour:
   animator: {fileID: 360072991079062686}
   runSpeed: 6.1
   dampSeconds: 0.1
+  secondaryIdleDelay: 6
+  secondaryIdleChance: 0.32
+  secondaryIdleCooldown: 9
