@@ -75,6 +75,8 @@ namespace TilkiOyunu.Foundation.Editor
             RequireClip(errors, "Fox_Idle");
             RequireClip(errors, "Fox_Walk_InPlace");
             RequireClip(errors, "Fox_Run_InPlace");
+            RequireClip(errors, "Fox_Jump");
+            RequireClip(errors, "Fox_Falling");
             ValidateFoxAnimationImport(errors);
             ValidateFoxAnimatorController(errors);
 
@@ -202,6 +204,8 @@ namespace TilkiOyunu.Foundation.Editor
             RequireAnimatorParameter(controller, "Speed", AnimatorControllerParameterType.Float, errors);
             RequireAnimatorParameter(controller, "Grounded", AnimatorControllerParameterType.Bool, errors);
             RequireAnimatorParameter(controller, "VerticalVelocity", AnimatorControllerParameterType.Float, errors);
+            RequireAnimatorParameter(controller, "IdleSit", AnimatorControllerParameterType.Trigger, errors);
+            RequireAnimatorParameter(controller, "IdleBreak", AnimatorControllerParameterType.Trigger, errors);
 
             AnimatorState locomotion = controller.layers[0].stateMachine.defaultState;
             if (locomotion == null || locomotion.name != "Locomotion" || locomotion.motion is not BlendTree blendTree)
@@ -219,6 +223,16 @@ namespace TilkiOyunu.Foundation.Editor
             RequireBlendChild(blendTree, 0, "Fox_Idle", 0f, 1f, errors);
             RequireBlendChild(blendTree, 1, "Fox_Walk_InPlace", 0.59f, 1.08f, errors);
             RequireBlendChild(blendTree, 2, "Fox_Run_InPlace", 1f, 1.16f, errors);
+
+            if (FindAnimatorState(controller.layers[0].stateMachine, "Jump") == null)
+            {
+                errors.Add("Fox AnimatorController must use the actual Toon Fox jump clip for jump ascent.");
+            }
+
+            if (FindAnimatorState(controller.layers[0].stateMachine, "Fall") == null)
+            {
+                errors.Add("Fox AnimatorController must use the actual Toon Fox falling clip for falling descent.");
+            }
         }
 
         private static void ValidateForestScene(List<string> errors)
@@ -670,6 +684,12 @@ namespace TilkiOyunu.Foundation.Editor
                 errors.Add($"Sprint 5.5-C should use about 150-300 production trees; found {treeCount}.");
             }
 
+            int treeColliderCount = CountTreeColliders(environment.transform);
+            if (treeColliderCount != treeCount)
+            {
+                errors.Add($"Sprint 5.5-C.1 requires all production trees to have trunk colliders; found {treeColliderCount}/{treeCount}.");
+            }
+
             int variants = CountTreeVariants(environment.transform);
             if (variants < 10)
             {
@@ -679,6 +699,12 @@ namespace TilkiOyunu.Foundation.Editor
             if (CountNamedChildren(environment.transform, "QuaterniusRock_") < 80)
             {
                 errors.Add("Sprint 5.5-C needs rock clusters supporting shoreline, slopes, and boundaries.");
+            }
+
+            int blockingRockColliders = CountBlockingRockColliders(environment.transform);
+            if (blockingRockColliders < 35)
+            {
+                errors.Add($"Sprint 5.5-C.1 requires medium/large production rocks to block movement; found {blockingRockColliders} blocking rock colliders.");
             }
 
             if (CountNamedChildren(environment.transform, "QuaterniusPlant_") < 50)
@@ -755,6 +781,28 @@ namespace TilkiOyunu.Foundation.Editor
             for (int i = 0; i < root.childCount; i++)
             {
                 count += CountNamedChildren(root.GetChild(i), prefix);
+            }
+
+            return count;
+        }
+
+        private static int CountTreeColliders(Transform root)
+        {
+            int count = root.name.StartsWith("QuaterniusTree_") && root.GetComponent<Collider>() != null ? 1 : 0;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                count += CountTreeColliders(root.GetChild(i));
+            }
+
+            return count;
+        }
+
+        private static int CountBlockingRockColliders(Transform root)
+        {
+            int count = root.name.StartsWith("QuaterniusRock_") && root.GetComponent<BoxCollider>() != null ? 1 : 0;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                count += CountBlockingRockColliders(root.GetChild(i));
             }
 
             return count;
@@ -898,6 +946,28 @@ namespace TilkiOyunu.Foundation.Editor
             {
                 errors.Add($"Fox Locomotion BlendTree child {index} playback speed must be {timeScale:0.###}.");
             }
+        }
+
+        private static AnimatorState FindAnimatorState(AnimatorStateMachine stateMachine, string stateName)
+        {
+            foreach (ChildAnimatorState child in stateMachine.states)
+            {
+                if (child.state != null && child.state.name == stateName)
+                {
+                    return child.state;
+                }
+            }
+
+            foreach (ChildAnimatorStateMachine childMachine in stateMachine.stateMachines)
+            {
+                AnimatorState found = FindAnimatorState(childMachine.stateMachine, stateName);
+                if (found != null)
+                {
+                    return found;
+                }
+            }
+
+            return null;
         }
 
         private static float MeasureToonFoxGroundedRendererMinY()
