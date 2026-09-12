@@ -11,7 +11,7 @@ namespace TilkiOyunu.Foundation.Editor
     {
         public const string MegaKitRoot = "Assets/ThirdParty/Quaternius/StylizedNatureMegaKit";
         public const string EnvironmentMaterialFolder = "Assets/_Game/Art/Environment/Sprint55C";
-        public const string ScreenshotFolder = "Documentation/Sprint55C/Screenshots";
+        public const string ScreenshotFolder = "Documentation/Sprint55C1/Screenshots";
         public const string EnvironmentRootPath = "World/Environment";
         public const string TerrainName = "Sprint55B_PrimaryTerrain";
 
@@ -98,6 +98,7 @@ namespace TilkiOyunu.Foundation.Editor
             BuildRocksAndShoreline(environment, terrain);
             BuildBushesAndFlowers(environment, terrain);
             BuildProductionBridge(environment, terrain);
+            ApplyGlareBlockerCorrection();
             DressMemoryVisuals(environment, terrain);
             DressLightPathNodes();
             HidePrototypeVisuals();
@@ -118,6 +119,8 @@ namespace TilkiOyunu.Foundation.Editor
             int rockCount = CountNamedChildren(environment != null ? environment.transform : null, "QuaterniusRock_");
             int plantCount = CountNamedChildren(environment != null ? environment.transform : null, "QuaterniusPlant_");
             int flowerCount = CountNamedChildren(environment != null ? environment.transform : null, "QuaterniusFlower_");
+            int treeColliderCount = CountProductionTreeColliders(environment != null ? environment.transform : null);
+            int blockingRockCount = CountBlockingRockColliders(environment != null ? environment.transform : null);
             HashSet<string> treeVariants = CollectTreeVariants(environment != null ? environment.transform : null);
 
             Terrain terrain = GameObject.Find(TerrainName)?.GetComponent<Terrain>();
@@ -129,9 +132,12 @@ namespace TilkiOyunu.Foundation.Editor
                 + $"RockCount={rockCount}\n"
                 + $"PlantCount={plantCount}\n"
                 + $"FlowerCount={flowerCount}\n"
+                + $"TreeColliderCount={treeColliderCount}\n"
+                + $"BlockingRockColliderCount={blockingRockCount}\n"
                 + $"TerrainLayers={FormatTerrainLayers(terrain)}\n"
                 + $"GrassDetailPrototypes={detailPrototypes}\n"
                 + $"Bridge={GameObject.Find("Small Bridge") != null}\n"
+                + $"GlareCorrection={BuildGlareReport()}\n"
                 + "SPRINT55C_ENVIRONMENT_REPORT_END";
         }
 
@@ -182,6 +188,10 @@ namespace TilkiOyunu.Foundation.Editor
                 material.shader = shader;
             }
 
+            SetMaterialFloatIfPresent(material, "_Metallic", 0f);
+            SetMaterialFloatIfPresent(material, "_Smoothness", 0.035f);
+            SetMaterialFloatIfPresent(material, "_SpecularHighlights", 0f);
+            SetMaterialFloatIfPresent(material, "_EnvironmentReflections", 0f);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -231,6 +241,8 @@ namespace TilkiOyunu.Foundation.Editor
             layer.name = name;
             layer.diffuseTexture = texture;
             layer.tileSize = new Vector2(name.Contains("Path") ? 16f : 22f, name.Contains("Path") ? 16f : 22f);
+            layer.metallic = 0f;
+            layer.smoothness = 0.02f;
             EditorUtility.SetDirty(layer);
             return layer;
         }
@@ -370,10 +382,7 @@ namespace TilkiOyunu.Foundation.Editor
                 instance.transform.localScale = Vector3.one * scale;
                 RemoveColliders(instance);
                 ApplyNatureMaterials(instance, assets[assetIndex].name);
-                if (placed % 13 == 0 || IsBoundary(point))
-                {
-                    AddTreeTrunkCollider(instance, scale);
-                }
+                AddTreeTrunkCollider(instance, scale);
 
                 placed++;
             }
@@ -422,8 +431,13 @@ namespace TilkiOyunu.Foundation.Editor
                 float angle = Deterministic01(seed + i * 17) * Mathf.PI * 2f;
                 float radius = Mathf.Lerp(2f, 10f, Deterministic01(seed + i * 29));
                 Vector2 point = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+                if (IsBridgeApproach(point))
+                {
+                    point += (point - new Vector2(22f, -18f)).normalized * 8f;
+                }
+
                 GameObject asset = assets[(seed + i * 3) % assets.Count];
-                GameObject instance = InstantiateAsset(asset, clusterRoot, $"QuaterniusRock_{label}_{i + 1:00}");
+                GameObject instance = InstantiateAsset(asset, clusterRoot, $"QuaterniusRock_{asset.name}_{label}_{i + 1:00}");
                 float scale = Mathf.Lerp(minScale, maxScale, Deterministic01(seed + i * 43));
                 instance.transform.SetPositionAndRotation(
                     WithTerrainY(new Vector3(point.x, 0f, point.y), terrain, -0.02f),
@@ -431,6 +445,10 @@ namespace TilkiOyunu.Foundation.Editor
                 instance.transform.localScale = Vector3.one * scale;
                 RemoveColliders(instance);
                 ApplyNatureMaterials(instance, "Rock");
+                if (ShouldBlockRock(asset.name, scale, label))
+                {
+                    AddRockCollider(instance, scale);
+                }
             }
         }
 
@@ -449,6 +467,13 @@ namespace TilkiOyunu.Foundation.Editor
             PlacePlantRing(flowers, terrain, flowerAssets, new Vector2(-158f, -44f), "HeartGardenFlowers", 42, 12f, 38f, 8106, 0.85f, 1.35f);
             PlacePlantRing(bushes, terrain, bushAssets, new Vector2(-58f, 84f), "LightGroveFerns", 22, 22f, 48f, 8107, 0.85f, 1.3f);
             PlacePlantRing(bushes, terrain, bushAssets, new Vector2(18f, 145f), "FinalHillLowPlants", 16, 26f, 54f, 8108, 0.75f, 1.1f);
+
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-18f, -108f), new Vector2(60f, -62f), "NpcToMemoryPathEdge", 30, 9f, 16f, 8301, 0.75f, 1.18f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(60f, -62f), new Vector2(22f, -18f), "MemoryToBridgePathEdge", 24, 8f, 15f, 8302, 0.72f, 1.12f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(22f, -18f), new Vector2(24f, 62f), "BridgeToLightPathEdge", 34, 10f, 18f, 8303, 0.8f, 1.22f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(6f, 30f), new Vector2(-58f, 84f), "LightGroveLayeredUnderstory", 38, 12f, 22f, 8304, 0.85f, 1.3f);
+            PlacePlantBand(bushes, terrain, bushAssets, new Vector2(-94f, 4f), new Vector2(-58f, 84f), "HeartToLightTransition", 28, 10f, 19f, 8305, 0.75f, 1.18f);
+            PlaceTreeBaseDressing(bushes, terrain, bushAssets);
         }
 
         private static void PlacePlantRing(Transform root, Terrain terrain, IReadOnlyList<GameObject> assets, Vector2 center, string label, int count, float innerRadius, float outerRadius, int seed, float minScale, float maxScale)
@@ -473,6 +498,72 @@ namespace TilkiOyunu.Foundation.Editor
                 instance.transform.localScale = Vector3.one * Mathf.Lerp(minScale, maxScale, Deterministic01(seed + i * 53));
                 RemoveColliders(instance);
                 ApplyNatureMaterials(instance, asset.name);
+            }
+        }
+
+        private static void PlacePlantBand(Transform root, Terrain terrain, IReadOnlyList<GameObject> assets, Vector2 start, Vector2 end, string label, int count, float innerOffset, float outerOffset, int seed, float minScale, float maxScale)
+        {
+            Transform clusterRoot = EnsureChild(root, label).transform;
+            Vector2 segment = end - start;
+            Vector2 tangent = segment.sqrMagnitude > 0.01f ? segment.normalized : Vector2.up;
+            Vector2 normal = new(-tangent.y, tangent.x);
+            for (int i = 0; i < count; i++)
+            {
+                float along = Mathf.Lerp(0.08f, 0.92f, Deterministic01(seed + i * 23));
+                float side = Deterministic01(seed + i * 29) > 0.5f ? 1f : -1f;
+                float offset = Mathf.Lerp(innerOffset, outerOffset, Deterministic01(seed + i * 31)) * side;
+                Vector2 point = Vector2.Lerp(start, end, along) + normal * offset;
+                point += tangent * Mathf.Lerp(-3f, 3f, Deterministic01(seed + i * 37));
+                if (PathInfluence(point) > 0.28f || LakeInfluence(point) > 0.14f || CreekInfluence(point) > 0.22f)
+                {
+                    continue;
+                }
+
+                GameObject asset = assets[(seed + i * 7) % assets.Count];
+                bool isFlower = asset.name.Contains("Flower") || asset.name.Contains("Clover");
+                GameObject instance = InstantiateAsset(asset, clusterRoot, $"{(isFlower ? "QuaterniusFlower" : "QuaterniusPlant")}_{label}_{i + 1:00}");
+                instance.transform.SetPositionAndRotation(
+                    WithTerrainY(new Vector3(point.x, 0f, point.y), terrain, 0f),
+                    Quaternion.Euler(0f, Deterministic01(seed + i * 47) * 360f, 0f));
+                instance.transform.localScale = Vector3.one * Mathf.Lerp(minScale, maxScale, Deterministic01(seed + i * 53));
+                RemoveColliders(instance);
+                ApplyNatureMaterials(instance, asset.name);
+            }
+        }
+
+        private static void PlaceTreeBaseDressing(Transform root, Terrain terrain, IReadOnlyList<GameObject> assets)
+        {
+            Transform clusterRoot = EnsureChild(root, "TreeBaseDressing").transform;
+            Vector2[] centers =
+            {
+                new(52f, -78f), new(78f, -36f), new(42f, 20f), new(-78f, 52f), new(-42f, 92f),
+                new(112f, 86f), new(180f, 34f), new(-185f, -28f), new(10f, 178f), new(-20f, 134f)
+            };
+
+            int placed = 0;
+            for (int c = 0; c < centers.Length; c++)
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    int seed = 8500 + c * 97 + i * 13;
+                    float angle = Deterministic01(seed) * Mathf.PI * 2f;
+                    float radius = Mathf.Lerp(2.2f, 7.5f, Deterministic01(seed + 11));
+                    Vector2 point = centers[c] + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+                    if (PathInfluence(point) > 0.34f || LakeInfluence(point) > 0.13f || CreekInfluence(point) > 0.2f)
+                    {
+                        continue;
+                    }
+
+                    GameObject asset = assets[(seed + i * 5) % assets.Count];
+                    GameObject instance = InstantiateAsset(asset, clusterRoot, $"QuaterniusPlant_TreeBase_{placed + 1:000}");
+                    instance.transform.SetPositionAndRotation(
+                        WithTerrainY(new Vector3(point.x, 0f, point.y), terrain, 0f),
+                        Quaternion.Euler(0f, Deterministic01(seed + 19) * 360f, 0f));
+                    instance.transform.localScale = Vector3.one * Mathf.Lerp(0.72f, 1.18f, Deterministic01(seed + 23));
+                    RemoveColliders(instance);
+                    ApplyNatureMaterials(instance, asset.name);
+                    placed++;
+                }
             }
         }
 
@@ -516,6 +607,9 @@ namespace TilkiOyunu.Foundation.Editor
                 CreateCube(bridge.transform, $"Sprint55C_Bridge_RightPost_{i + 1:00}", new Vector3(1.82f, 0.52f, z), new Vector3(0.22f, 0.92f, 0.22f), darkWood);
             }
 
+            CreateCube(bridge.transform, "Sprint55C_Bridge_LeftSupport", new Vector3(-1.25f, -0.42f, -2.9f), new Vector3(0.28f, 1.0f, 0.28f), darkWood);
+            CreateCube(bridge.transform, "Sprint55C_Bridge_RightSupport", new Vector3(1.25f, -0.42f, 2.9f), new Vector3(0.28f, 1.0f, 0.28f), darkWood);
+            CreateCube(bridge.transform, "Sprint55C_Bridge_UnderBeam", new Vector3(0f, -0.08f, 0f), new Vector3(3.1f, 0.18f, 7.5f), darkWood);
             EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", -1.5f);
             EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", 1.5f);
         }
@@ -633,9 +727,12 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             Capture(camera, "01_spawn_meadow.png", new Vector3(0f, 18f, -186f), new Vector3(0f, 10f, -142f));
-            Capture(camera, "02_forest_path.png", new Vector3(42f, 22f, -88f), new Vector3(25f, 12f, -38f));
-            Capture(camera, "03_lake_bridge.png", new Vector3(2f, 18f, -48f), new Vector3(28f, 9f, -16f));
-            Capture(camera, "04_final_hill_approach.png", new Vector3(-24f, 34f, 86f), new Vector3(18f, 39f, 145f));
+            Capture(camera, "02_dense_forest_path.png", new Vector3(62f, 20f, -82f), new Vector3(31f, 11f, -38f));
+            Capture(camera, "03_bridge_lake.png", new Vector3(3f, 17f, -46f), new Vector3(25f, 9f, -17f));
+            Capture(camera, "04_light_grove.png", new Vector3(-20f, 25f, 34f), new Vector3(-58f, 15f, 84f));
+            Capture(camera, "05_heart_garden.png", new Vector3(-120f, 22f, -86f), new Vector3(-158f, 11f, -44f));
+            Capture(camera, "06_final_hill.png", new Vector3(-28f, 34f, 88f), new Vector3(18f, 39f, 145f));
+            Capture(camera, "07_npc_candidate.png", new Vector3(-38f, 18f, -136f), new Vector3(-18f, 9f, -108f));
             AssetDatabase.Refresh();
         }
 
@@ -717,6 +814,77 @@ namespace TilkiOyunu.Foundation.Editor
             collider.center = new Vector3(0f, collider.height * 0.5f, 0f);
             collider.direction = 1;
             collider.isTrigger = false;
+        }
+
+        private static bool ShouldBlockRock(string assetName, float scale, string label)
+        {
+            if (assetName.StartsWith("Rock_Medium", StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            return scale >= 1.18f && (label.Contains("Shoreline", StringComparison.Ordinal) || label.Contains("Ridge", StringComparison.Ordinal) || label.Contains("Rise", StringComparison.Ordinal));
+        }
+
+        private static void AddRockCollider(GameObject rock, float scale)
+        {
+            BoxCollider collider = rock.GetComponent<BoxCollider>();
+            if (collider == null)
+            {
+                collider = rock.AddComponent<BoxCollider>();
+            }
+
+            float inverseScale = 1f / Mathf.Max(scale, 0.01f);
+            collider.center = new Vector3(0f, 0.36f * inverseScale, 0f);
+            collider.size = new Vector3(1.35f * inverseScale, 0.78f * inverseScale, 1.2f * inverseScale);
+            collider.isTrigger = false;
+        }
+
+        private static bool IsBridgeApproach(Vector2 point)
+        {
+            return Vector2.Distance(point, new Vector2(22f, -18f)) < 15f
+                || DistanceToSegment(point, new Vector2(14f, -29f), new Vector2(32f, -7f)) < 6.5f;
+        }
+
+        private static void ApplyGlareBlockerCorrection()
+        {
+            foreach (Light light in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (light.type == LightType.Directional && light.intensity > 1.15f)
+                {
+                    light.intensity = 1.05f;
+                    EditorUtility.SetDirty(light);
+                }
+            }
+
+            if (RenderSettings.skybox != null && RenderSettings.skybox.HasProperty("_Exposure") && RenderSettings.skybox.GetFloat("_Exposure") > 1.05f)
+            {
+                RenderSettings.skybox.SetFloat("_Exposure", 1.05f);
+                EditorUtility.SetDirty(RenderSettings.skybox);
+            }
+        }
+
+        private static string BuildGlareReport()
+        {
+            Light sun = null;
+            foreach (Light light in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (light.type == LightType.Directional)
+                {
+                    sun = light;
+                    break;
+                }
+            }
+
+            Material terrainMaterial = AssetDatabase.LoadAssetAtPath<Material>($"{EnvironmentMaterialFolder}/Sprint55C_Terrain_URP.mat");
+            string smoothness = terrainMaterial != null && terrainMaterial.HasProperty("_Smoothness")
+                ? terrainMaterial.GetFloat("_Smoothness").ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                : "unavailable";
+            string metallic = terrainMaterial != null && terrainMaterial.HasProperty("_Metallic")
+                ? terrainMaterial.GetFloat("_Metallic").ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)
+                : "unavailable";
+            string sunIntensity = sun != null ? sun.intensity.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) : "missing";
+            return $"terrainSmoothness={smoothness};terrainMetallic={metallic};directionalIntensity={sunIntensity};rootCause=terrainSpecularResponse";
         }
 
         private static bool IsTreePlacementAllowed(Vector2 point, Vector2 clusterCenter, float clearingRadius)
@@ -851,8 +1019,12 @@ namespace TilkiOyunu.Foundation.Editor
 
             if (material.HasProperty("_Smoothness"))
             {
-                material.SetFloat("_Smoothness", 0.22f);
+                material.SetFloat("_Smoothness", 0.14f);
             }
+
+            SetMaterialFloatIfPresent(material, "_Metallic", 0f);
+            SetMaterialFloatIfPresent(material, "_SpecularHighlights", 0f);
+            SetMaterialFloatIfPresent(material, "_EnvironmentReflections", 0.35f);
 
             if (material.HasProperty("_Surface"))
             {
@@ -861,6 +1033,14 @@ namespace TilkiOyunu.Foundation.Editor
 
             EditorUtility.SetDirty(material);
             return material;
+        }
+
+        private static void SetMaterialFloatIfPresent(Material material, string propertyName, float value)
+        {
+            if (material != null && material.HasProperty(propertyName))
+            {
+                material.SetFloat(propertyName, value);
+            }
         }
 
         private static void AssignMaterialIfFound(string objectName, Material material)
@@ -1137,6 +1317,38 @@ namespace TilkiOyunu.Foundation.Editor
             for (int i = 0; i < root.childCount; i++)
             {
                 count += CountNamedChildren(root.GetChild(i), prefix);
+            }
+
+            return count;
+        }
+
+        private static int CountProductionTreeColliders(Transform root)
+        {
+            if (root == null)
+            {
+                return 0;
+            }
+
+            int count = root.name.StartsWith("QuaterniusTree_", StringComparison.Ordinal) && root.GetComponent<Collider>() != null ? 1 : 0;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                count += CountProductionTreeColliders(root.GetChild(i));
+            }
+
+            return count;
+        }
+
+        private static int CountBlockingRockColliders(Transform root)
+        {
+            if (root == null)
+            {
+                return 0;
+            }
+
+            int count = root.name.StartsWith("QuaterniusRock_", StringComparison.Ordinal) && root.GetComponent<BoxCollider>() != null ? 1 : 0;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                count += CountBlockingRockColliders(root.GetChild(i));
             }
 
             return count;
