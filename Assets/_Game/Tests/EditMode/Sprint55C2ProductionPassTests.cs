@@ -36,11 +36,15 @@ namespace TilkiOyunu.Foundation.Tests
             AssertPlaceholderHidden(npc.transform.Find("Guide Body"));
             AssertPlaceholderHidden(npc.transform.Find("Guide Head"));
             Assert.That(npc.transform.Find("VisualRoot/NPC_Guide_Visual"), Is.Not.Null);
-            Assert.That(npc.transform.Find("NPC_Guide_PhysicalBlocker")?.GetComponent<CapsuleCollider>()?.isTrigger, Is.False);
+            CapsuleCollider blocker = npc.transform.Find("NPC_Guide_PhysicalBlocker")?.GetComponent<CapsuleCollider>();
+            Assert.That(blocker, Is.Not.Null);
+            Assert.That(blocker.isTrigger, Is.False);
+            Assert.That(blocker.height, Is.GreaterThanOrEqualTo(2.1f));
+            Assert.That(blocker.radius, Is.GreaterThanOrEqualTo(0.44f));
         }
 
         [Test]
-        public void GuideNpcPrefabHasHumanoidAvatarAndRelaxedIdle()
+        public void GuideNpcPrefabHasHumanoidAvatarRelaxedIdleAndReadableForestSilhouette()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Game/Prefabs/NPC/NPC_Guide_Visual.prefab");
             Assert.That(prefab, Is.Not.Null);
@@ -59,6 +63,11 @@ namespace TilkiOyunu.Foundation.Tests
             AnimationClip idle = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/_Game/Animations/NPC/GuideNpc_RelaxedIdle.anim");
             Assert.That(idle, Is.Not.Null);
             Assert.That(idle.length, Is.GreaterThan(2.5f));
+            Assert.That(prefab.transform.Find("AnimatedRoot/GuideStaff"), Is.Not.Null);
+            Assert.That(prefab.transform.Find("AnimatedRoot/GuideBeacon"), Is.Not.Null);
+            Assert.That(prefab.transform.Find("AnimatedRoot/GuideVisibilityRing"), Is.Not.Null);
+            Assert.That(prefab.transform.Find("AnimatedRoot/GuideShoulderFern_Left"), Is.Not.Null);
+            Assert.That(CalculateRendererBounds(prefab).size.y, Is.GreaterThanOrEqualTo(2.3f));
         }
 
         [Test]
