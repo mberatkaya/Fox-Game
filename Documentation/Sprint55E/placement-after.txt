@@ -1,0 +1,210 @@
+PlayerSpawnPoint | Player Spawn Point | world=(0.000, 9.721, -150.000) | terrainY=9,481
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Player Spawn Point
+  m_Script -> Assets/_Game/Scripts/Character/PlayerSpawnPoint.cs (PlayerSpawnPoint)
+  player -> PlayerFox/FoxController
+FoxController | PlayerFox | world=(0.000, 9.721, -150.000) | terrainY=9,481
+  m_CorrespondingSourceObject -> PlayerFox/FoxController
+  m_PrefabInstance ->  ()
+  m_PrefabAsset -> NULL
+  m_GameObject -> PlayerFox
+  m_Script -> Assets/_Game/Scripts/Character/FoxController.cs (FoxController)
+  inputActions -> Assets/_Game/Settings/TilkiInputActions.inputactions (TilkiInputActions)
+  cameraTransform -> Main Camera/Transform
+  groundProbe -> PlayerFox/Ground Probe/Transform
+GuideNpc | NPC_Guide | world=(-18.000, 9.648, -108.000) | terrainY=9,648
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> NPC_Guide
+  m_Script -> Assets/_Game/Scripts/Dialogue/GuideNpc.cs (GuideNpc)
+  collectMemoriesQuest -> Assets/_Game/Data/Quests/01_AnilariTopla.asset (01_AnilariTopla)
+  lightPathQuest -> Assets/_Game/Data/Quests/Quest_LightPath.asset (Quest_LightPath)
+  cardMatchingQuest -> Assets/_Game/Data/Quests/Quest_CardMatching.asset (Quest_CardMatching)
+  introDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_Intro.asset (Dialogue_Guide_Intro)
+  activeDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_Active.asset (Dialogue_Guide_Active)
+  readyToTurnInDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_TurnIn.asset (Dialogue_Guide_TurnIn)
+  completedDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_Completed.asset (Dialogue_Guide_Completed)
+  lightPathIntroDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_LightPath_Intro.asset (Dialogue_Guide_LightPath_Intro)
+  lightPathActiveDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_LightPath_Active.asset (Dialogue_Guide_LightPath_Active)
+  lightPathTurnInDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_LightPath_TurnIn.asset (Dialogue_Guide_LightPath_TurnIn)
+  lightPathCompletedDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_LightPath_Completed.asset (Dialogue_Guide_LightPath_Completed)
+  cardMatchingIntroDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_CardMatching_Intro.asset (Dialogue_Guide_CardMatching_Intro)
+  cardMatchingActiveDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_CardMatching_Active.asset (Dialogue_Guide_CardMatching_Active)
+  cardMatchingTurnInDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_CardMatching_TurnIn.asset (Dialogue_Guide_CardMatching_TurnIn)
+  cardMatchingCompletedDialogue -> Assets/_Game/Data/Dialogues/Dialogue_Guide_CardMatching_Completed.asset (Dialogue_Guide_CardMatching_Completed)
+  dialogueUI -> Sprint 2 UI Canvas/Dialogue Panel/DialoguePanelUI
+MemoryCollectible | MemoryCollectible_01 | world=(18.000, 12.072, -86.000) | terrainY=11,522
+  m_CorrespondingSourceObject -> MemoryCollectible/MemoryCollectible
+  m_PrefabInstance ->  ()
+  m_PrefabAsset -> NULL
+  m_GameObject -> MemoryCollectible_01
+  m_Script -> Assets/_Game/Scripts/Collectibles/MemoryCollectible.cs (MemoryCollectible)
+  memory -> Assets/_Game/Data/Memories/Memory_01.asset (Memory_01)
+  quest -> Assets/_Game/Data/Quests/01_AnilariTopla.asset (01_AnilariTopla)
+  feedbackUI -> Sprint 2 UI Canvas/Memory Feedback Panel/MemoryFeedbackUI
+  audioFeedback -> MemoryCollectible_01/MemoryAudioFeedback
+  renderers.Array.data[0] -> MemoryCollectible_01/Sprint55C_MemoryVisual/MeshRenderer
+MemoryCollectible | MemoryCollectible_03 | world=(92.250, 17.731, 43.098) | terrainY=17,181
+  m_CorrespondingSourceObject -> MemoryCollectible/MemoryCollectible
+  m_PrefabInstance ->  ()
+  m_PrefabAsset -> NULL
+  m_GameObject -> MemoryCollectible_03
+  m_Script -> Assets/_Game/Scripts/Collectibles/MemoryCollectible.cs (MemoryCollectible)
+  memory -> Assets/_Game/Data/Memories/Memory_03.asset (Memory_03)
+  quest -> Assets/_Game/Data/Quests/01_AnilariTopla.asset (01_AnilariTopla)
+  feedbackUI -> Sprint 2 UI Canvas/Memory Feedback Panel/MemoryFeedbackUI
+  audioFeedback -> MemoryCollectible_03/MemoryAudioFeedback
+  renderers.Array.data[0] -> MemoryCollectible_03/Sprint55C_MemoryVisual/MeshRenderer
+MemoryCollectible | MemoryCollectible_02 | world=(60.000, 12.721, -62.000) | terrainY=12,171
+  m_CorrespondingSourceObject -> MemoryCollectible/MemoryCollectible
+  m_PrefabInstance ->  ()
+  m_PrefabAsset -> NULL
+  m_GameObject -> MemoryCollectible_02
+  m_Script -> Assets/_Game/Scripts/Collectibles/MemoryCollectible.cs (MemoryCollectible)
+  memory -> Assets/_Game/Data/Memories/Memory_02.asset (Memory_02)
+  quest -> Assets/_Game/Data/Quests/01_AnilariTopla.asset (01_AnilariTopla)
+  feedbackUI -> Sprint 2 UI Canvas/Memory Feedback Panel/MemoryFeedbackUI
+  audioFeedback -> MemoryCollectible_02/MemoryAudioFeedback
+  renderers.Array.data[0] -> MemoryCollectible_02/Sprint55C_MemoryVisual/MeshRenderer
+MemoryCollectible | MemoryCollectible_05 | world=(8.000, 41.383, 112.000) | terrainY=40,833
+  m_CorrespondingSourceObject -> MemoryCollectible/MemoryCollectible
+  m_PrefabInstance ->  ()
+  m_PrefabAsset -> NULL
+  m_GameObject -> MemoryCollectible_05
+  m_Script -> Assets/_Game/Scripts/Collectibles/MemoryCollectible.cs (MemoryCollectible)
+  memory -> Assets/_Game/Data/Memories/Memory_05.asset (Memory_05)
+  quest -> Assets/_Game/Data/Quests/01_AnilariTopla.asset (01_AnilariTopla)
+  feedbackUI -> Sprint 2 UI Canvas/Memory Feedback Panel/MemoryFeedbackUI
+  audioFeedback -> MemoryCollectible_05/MemoryAudioFeedback
+  renderers.Array.data[0] -> MemoryCollectible_05/Sprint55C_MemoryVisual/MeshRenderer
+MemoryCollectible | MemoryCollectible_04 | world=(-76.000, 16.426, 18.000) | terrainY=15,876
+  m_CorrespondingSourceObject -> MemoryCollectible/MemoryCollectible
+  m_PrefabInstance ->  ()
+  m_PrefabAsset -> NULL
+  m_GameObject -> MemoryCollectible_04
+  m_Script -> Assets/_Game/Scripts/Collectibles/MemoryCollectible.cs (MemoryCollectible)
+  memory -> Assets/_Game/Data/Memories/Memory_04.asset (Memory_04)
+  quest -> Assets/_Game/Data/Quests/01_AnilariTopla.asset (01_AnilariTopla)
+  feedbackUI -> Sprint 2 UI Canvas/Memory Feedback Panel/MemoryFeedbackUI
+  audioFeedback -> MemoryCollectible_04/MemoryAudioFeedback
+  renderers.Array.data[0] -> MemoryCollectible_04/Sprint55C_MemoryVisual/MeshRenderer
+LightPathController | Light Path Area | world=(-58.000, 26.740, 84.000) | terrainY=26,740
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Light Path Area
+  m_Script -> Assets/_Game/Scripts/Minigames/LightPathController.cs (LightPathController)
+  quest -> Assets/_Game/Data/Quests/Quest_LightPath.asset (Quest_LightPath)
+  nodes.Array.data[0] -> Light Path Area/LightPathNode_00/LightPathNode
+  nodes.Array.data[1] -> Light Path Area/LightPathNode_01/LightPathNode
+  nodes.Array.data[2] -> Light Path Area/LightPathNode_02/LightPathNode
+  nodes.Array.data[3] -> Light Path Area/LightPathNode_03/LightPathNode
+  nodes.Array.data[4] -> Light Path Area/LightPathNode_04/LightPathNode
+LightPathStart | Light Path Area/LightPathStart | world=(-58.000, 25.426, 70.000) | terrainY=24,876
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Light Path Area/LightPathStart
+  m_Script -> Assets/_Game/Scripts/Minigames/LightPathStart.cs (LightPathStart)
+  controller -> Light Path Area/LightPathController
+LightPathNode | Light Path Area/LightPathNode_00 | world=(-65.000, 25.605, 77.000) | terrainY=24,955
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Light Path Area/LightPathNode_00
+  m_Script -> Assets/_Game/Scripts/Minigames/LightPathNode.cs (LightPathNode)
+  controller -> Light Path Area/LightPathController
+  visualRoot -> Light Path Area/LightPathNode_00/Node Glow/Transform
+LightPathNode | Light Path Area/LightPathNode_02 | world=(-63.000, 27.735, 94.000) | terrainY=27,085
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Light Path Area/LightPathNode_02
+  m_Script -> Assets/_Game/Scripts/Minigames/LightPathNode.cs (LightPathNode)
+  controller -> Light Path Area/LightPathController
+  visualRoot -> Light Path Area/LightPathNode_02/Node Glow/Transform
+LightPathNode | Light Path Area/LightPathNode_01 | world=(-68.000, 26.273, 86.000) | terrainY=25,623
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Light Path Area/LightPathNode_01
+  m_Script -> Assets/_Game/Scripts/Minigames/LightPathNode.cs (LightPathNode)
+  controller -> Light Path Area/LightPathController
+  visualRoot -> Light Path Area/LightPathNode_01/Node Glow/Transform
+LightPathNode | Light Path Area/LightPathNode_03 | world=(-53.000, 29.203, 94.000) | terrainY=28,553
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Light Path Area/LightPathNode_03
+  m_Script -> Assets/_Game/Scripts/Minigames/LightPathNode.cs (LightPathNode)
+  controller -> Light Path Area/LightPathController
+  visualRoot -> Light Path Area/LightPathNode_03/Node Glow/Transform
+LightPathNode | Light Path Area/LightPathNode_04 | world=(-47.000, 28.928, 86.000) | terrainY=28,278
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Light Path Area/LightPathNode_04
+  m_Script -> Assets/_Game/Scripts/Minigames/LightPathNode.cs (LightPathNode)
+  controller -> Light Path Area/LightPathController
+  visualRoot -> Light Path Area/LightPathNode_04/Node Glow/Transform
+CardMatchingController | Heart Garden | world=(-158.000, 19.011, -44.000) | terrainY=18,491
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Heart Garden
+  m_Script -> Assets/_Game/Scripts/Minigames/CardMatchingController.cs (CardMatchingController)
+  quest -> Assets/_Game/Data/Quests/Quest_CardMatching.asset (Quest_CardMatching)
+  panel -> Sprint 2 UI Canvas/Card Matching Panel/CardMatchingPanelUI
+CardMatchingStart | Heart Garden/CardMatchingStart | world=(-158.000, 19.146, -44.800) | terrainY=18,446
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Heart Garden/CardMatchingStart
+  m_Script -> Assets/_Game/Scripts/Minigames/CardMatchingStart.cs (CardMatchingStart)
+  controller -> Heart Garden/CardMatchingController
+FinalCampController | Sprint 1 Forest Blockout/Camp Placeholder | world=(18.000, 49.162, 145.000) | terrainY=49,112
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Sprint 1 Forest Blockout/Camp Placeholder
+  m_Script -> Assets/_Game/Scripts/Gameplay/FinalCampController.cs (FinalCampController)
+  renderers.Array.data[0] -> Sprint 1 Forest Blockout/Camp Placeholder/Camp Fire Base/MeshRenderer
+  lights.Array.data[0] -> Sprint 1 Forest Blockout/Camp Placeholder/Warm Camp Light/Light
+  finalSequence -> Sprint 1 Forest Blockout/Camp Placeholder/FinalSequenceController
+FinalSequenceController | Sprint 1 Forest Blockout/Camp Placeholder | world=(18.000, 49.162, 145.000) | terrainY=49,112
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Sprint 1 Forest Blockout/Camp Placeholder
+  m_Script -> Assets/_Game/Scripts/Gameplay/FinalSequenceController.cs (FinalSequenceController)
+  finalMessage -> Assets/_Game/Data/Config/FinalMessage.asset (FinalMessage)
+  finalPanel -> Sprint 2 UI Canvas/Final Message Panel/FinalMessagePanelUI
+  inputLock -> Sprint 2 UI Canvas/GameplayInputLock
+  gameplayCamera -> Main Camera/Camera
+  cameraController -> Main Camera/ThirdPersonCameraController
+  cameraFocus -> Sprint 1 Forest Blockout/Camp Placeholder/Final Camera Focus/Transform
+  campLight -> Sprint 1 Forest Blockout/Camp Placeholder/Warm Camp Light/Light
+  audioSource -> Sprint 1 Forest Blockout/Camp Placeholder/AudioSource
+  completionClip -> Assets/ThirdParty/OpenGameArt/SFX/Chimes/bell_ding3.wav (bell_ding3)
+ForestGameplayBootstrap | Forest Gameplay Bootstrap | world=(0.000, 0.000, 0.000) | terrainY=18,783
+  m_CorrespondingSourceObject -> NULL
+  m_PrefabInstance -> NULL
+  m_PrefabAsset -> NULL
+  m_GameObject -> Forest Gameplay Bootstrap
+  m_Script -> Assets/_Game/Scripts/Character/ForestGameplayBootstrap.cs (ForestGameplayBootstrap)
+  spawnPoint -> Player Spawn Point/PlayerSpawnPoint
+  player -> PlayerFox/FoxController
+  cameraController -> Main Camera/ThirdPersonCameraController
+LANDMARKS
+World/Landmarks/LM_Lake | (136.000, 4.639, 56.000)
+World/Landmarks/LM_FinalHill | (18.000, 49.192, 145.000)
+World/Landmarks/LM_MemoryRoute_B | (-76.000, 15.956, 18.000)
+World/Landmarks/LM_LightGrove | (-58.000, 26.820, 84.000)
+World/Landmarks/LM_Bridge | (22.000, 8.898, -18.000)
+World/Landmarks/LM_SpawnMeadow | (0.000, 9.561, -150.000)
+World/Landmarks/LM_MemoryRoute_A | (60.000, 12.251, -62.000)
+World/Landmarks/LM_NPCGrove | (-18.000, 9.728, -108.000)
+World/Landmarks/LM_HeartGarden | (-158.000, 18.571, -44.000)
