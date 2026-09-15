@@ -1,0 +1,44 @@
+{
+  "before": {
+    "EditMode": {
+      "result": "Passed",
+      "total": "65",
+      "passed": "65",
+      "failed": "0",
+      "skipped": "0",
+      "start-time": "2026-09-14 22:25:46Z",
+      "end-time": "2026-09-14 22:25:51Z"
+    },
+    "PlayMode": {
+      "result": "Passed",
+      "total": "18",
+      "passed": "18",
+      "failed": "0",
+      "skipped": "0",
+      "start-time": "2026-09-14 22:26:06Z",
+      "end-time": "2026-09-14 22:26:24Z"
+    },
+    "SprintValidation": "PASS"
+  },
+  "after": {
+    "EditMode": {
+      "result": "Passed",
+      "total": "71",
+      "passed": "71",
+      "failed": "0",
+      "skipped": "0",
+      "start-time": "2026-09-15 12:10:43Z",
+      "end-time": "2026-09-15 12:10:49Z"
+    },
+    "PlayMode": {
+      "result": "Passed",
+      "total": "18",
+      "passed": "18",
+      "failed": "0",
+      "skipped": "0",
+      "start-time": "2026-09-15 12:11:05Z",
+      "end-time": "2026-09-15 12:11:22Z"
+    },
+    "SprintValidation": "PASS"
+  }
+}
