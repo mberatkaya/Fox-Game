@@ -15,5 +15,5 @@ MonoBehaviour:
   id: guide_card_matching_intro
   speaker: Rehber
   lines:
-  - "Bah\xE7ede k\xFC\xE7\xFCk bir oyun var."
-  - "E\u015Fini bulan kartlar gibi, baz\u0131 anlar da yerini bulur."
+  - "Kalp Bahçesi’nde birbirini bekleyen kartlar var. Yerini haritana işaretledim."
+  - "Bahçeye vardığında F’ye bas ve aynı simgeleri eşleştir."

@@ -5,7 +5,8 @@
     "TilkiOyunu.Foundation",
     "UnityEngine.TerrainModule",
     "UnityEngine.TerrainPhysicsModule",
-    "UnityEngine.TestRunner"
+    "UnityEngine.TestRunner",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

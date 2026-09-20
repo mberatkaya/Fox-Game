@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Quest_CardMatching
   m_EditorClassIdentifier:
   id: card_matching
-  title: "Kalp Bah\xE7esi"
+  title: "Kalpleri Eşleştir"
   description: "Bah\xE7edeki kartlar\u0131n e\u015Flerini bul."
   objectiveType: 2
   targetId: heart_garden

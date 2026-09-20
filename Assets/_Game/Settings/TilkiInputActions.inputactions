@@ -40,6 +40,12 @@
                     "type": "Button",
                     "id": "57378143-dc2d-46ee-b5a4-f2a39d40b64f",
                     "expectedControlType": "Button"
+                },
+                {
+                    "name": "WorldMap",
+                    "type": "Button",
+                    "id": "4d5993e2-14b9-4c08-9cd7-3d6e6731ae27",
+                    "expectedControlType": "Button"
                 }
             ],
             "bindings": [
@@ -132,6 +138,11 @@
                     "id": "2a7fb699-ea53-4ef4-8aaa-03f7f843bdc1",
                     "path": "<Gamepad>/start",
                     "action": "Pause"
+                },
+                {
+                    "id": "beca9779-caa1-4d26-ba67-78c8547a906b",
+                    "path": "<Keyboard>/m",
+                    "action": "WorldMap"
                 }
             ]
         }

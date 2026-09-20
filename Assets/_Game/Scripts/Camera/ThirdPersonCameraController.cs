@@ -28,6 +28,7 @@ namespace TilkiOyunu.Foundation
         private bool lookInputLocked;
 
         public Transform Target => target;
+        public InputActionAsset InputActions => inputActions;
         public bool IsExternalControlActive => externalControl;
         public bool IsLookInputLocked => lookInputLocked;
 

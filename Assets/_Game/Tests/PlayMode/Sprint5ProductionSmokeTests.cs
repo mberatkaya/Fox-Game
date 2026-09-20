@@ -106,7 +106,8 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<FinalMessagePanelUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<MemoryFeedbackUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<LightPathHUD>(FindObjectsInactive.Include));
-            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<QuestHUD>(FindObjectsInactive.Include));
+            var questHud = Object.FindFirstObjectByType<QuestHUD>(FindObjectsInactive.Include);
+            Assert.That(questHud.GetComponent<CanvasGroup>().alpha, Is.EqualTo(1f), "Fresh-save navigation must show the Guide destination.");
         }
 
         [UnityTest]

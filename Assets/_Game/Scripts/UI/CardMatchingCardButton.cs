@@ -55,6 +55,10 @@ namespace TilkiOyunu.Foundation
 
             if (label != null)
             {
+                label.textWrappingMode = TextWrappingModes.NoWrap;
+                label.enableAutoSizing = true;
+                label.fontSizeMin = 14;
+                label.fontSizeMax = 30;
                 label.text = view.State == CardMatchingCardState.Hidden ? "?" : view.Symbol;
                 label.color = view.State == CardMatchingCardState.Hidden ? Color.white : Color.black;
             }

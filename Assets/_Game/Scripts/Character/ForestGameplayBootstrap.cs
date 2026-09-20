@@ -10,6 +10,8 @@ namespace TilkiOyunu.Foundation
 
         private void Start()
         {
+            if (FindFirstObjectByType<QuestMapUI>() == null)
+                new GameObject("Quest Navigation", typeof(RectTransform), typeof(QuestMapUI));
             if (spawnPoint != null && player != null)
             {
                 player.TeleportTo(spawnPoint.transform);

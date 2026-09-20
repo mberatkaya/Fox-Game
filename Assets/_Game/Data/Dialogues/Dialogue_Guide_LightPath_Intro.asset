@@ -15,5 +15,5 @@ MonoBehaviour:
   id: guide_light_path_intro
   speaker: Rehber
   lines:
-  - "\u015Eimdi \u0131\u015F\u0131klar\u0131 takip et."
-  - "Her do\u011Fru ad\u0131m seni biraz daha yakla\u015Ft\u0131racak."
+  - "Işık Korusu’nu haritana işaretledim. Işıkları sırayla takip et; ulaştığın her ışık bir sonrakini belirginleştirecek."
+  - "Acele etme. Hazır olduğunda başlangıçta F’ye bas. O zaman 75 saniyen başlayacak."

@@ -22282,7 +22282,7 @@ MonoBehaviour:
   progressText: {fileID: 555892690}
   timerText: {fileID: 536563553}
   feedbackText: {fileID: 879190171}
-  feedbackSeconds: 2.5
+  feedbackSeconds: 7
 --- !u!114 &442687114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23090,9 +23090,9 @@ MonoBehaviour:
   completedColor: {r: 1, g: 0.55, b: 0.22, a: 1}
   inactiveLightIntensity: 0.1
   availableLightIntensity: 2.4
-  completedLightIntensity: 0.75
+  completedLightIntensity: 0.25
   inactiveScale: {x: 0.85, y: 0.85, z: 0.85}
-  availableScale: {x: 1.18, y: 1.18, z: 1.18}
+  availableScale: {x: 2, y: 2, z: 2}
   completedScale: {x: 1, y: 1, z: 1}
 --- !u!4 &456085927
 Transform:
@@ -29259,9 +29259,9 @@ MonoBehaviour:
   completedColor: {r: 1, g: 0.55, b: 0.22, a: 1}
   inactiveLightIntensity: 0.1
   availableLightIntensity: 2.4
-  completedLightIntensity: 0.75
+  completedLightIntensity: 0.25
   inactiveScale: {x: 0.85, y: 0.85, z: 0.85}
-  availableScale: {x: 1.18, y: 1.18, z: 1.18}
+  availableScale: {x: 2, y: 2, z: 2}
   completedScale: {x: 1, y: 1, z: 1}
 --- !u!4 &569690425
 Transform:
@@ -38540,9 +38540,9 @@ MonoBehaviour:
   completedColor: {r: 1, g: 0.55, b: 0.22, a: 1}
   inactiveLightIntensity: 0.1
   availableLightIntensity: 2.4
-  completedLightIntensity: 0.75
+  completedLightIntensity: 0.25
   inactiveScale: {x: 0.85, y: 0.85, z: 0.85}
-  availableScale: {x: 1.18, y: 1.18, z: 1.18}
+  availableScale: {x: 2, y: 2, z: 2}
   completedScale: {x: 1, y: 1, z: 1}
 --- !u!4 &750456141
 Transform:
@@ -60256,7 +60256,7 @@ MonoBehaviour:
   - {fileID: 750456140}
   - {fileID: 1605591128}
   - {fileID: 569690424}
-  durationSeconds: 40
+  durationSeconds: 75
 --- !u!4 &1101642607
 Transform:
   m_ObjectHideFlags: 0
@@ -85941,9 +85941,9 @@ MonoBehaviour:
   completedColor: {r: 1, g: 0.55, b: 0.22, a: 1}
   inactiveLightIntensity: 0.1
   availableLightIntensity: 2.4
-  completedLightIntensity: 0.75
+  completedLightIntensity: 0.25
   inactiveScale: {x: 0.85, y: 0.85, z: 0.85}
-  availableScale: {x: 1.18, y: 1.18, z: 1.18}
+  availableScale: {x: 2, y: 2, z: 2}
   completedScale: {x: 1, y: 1, z: 1}
 --- !u!4 &1605591129
 Transform:
@@ -88631,9 +88631,9 @@ MonoBehaviour:
   completedColor: {r: 1, g: 0.55, b: 0.22, a: 1}
   inactiveLightIntensity: 0.1
   availableLightIntensity: 2.4
-  completedLightIntensity: 0.75
+  completedLightIntensity: 0.25
   inactiveScale: {x: 0.85, y: 0.85, z: 0.85}
-  availableScale: {x: 1.18, y: 1.18, z: 1.18}
+  availableScale: {x: 2, y: 2, z: 2}
   completedScale: {x: 1, y: 1, z: 1}
 --- !u!4 &1661401594
 Transform:

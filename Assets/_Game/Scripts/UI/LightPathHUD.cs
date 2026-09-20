@@ -11,7 +11,7 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private TMP_Text progressText;
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private TMP_Text feedbackText;
-        [SerializeField, Min(0.5f)] private float feedbackSeconds = 2.5f;
+        [SerializeField, Min(0.5f)] private float feedbackSeconds = 7f;
 
         private float hideFeedbackAt;
         private int currentProgress;
@@ -69,7 +69,7 @@ namespace TilkiOyunu.Foundation
             SetFeedback(string.Empty);
             if (titleText != null)
             {
-                titleText.text = "Işık Yolu";
+                titleText.text = "Işıkların İzinde";
             }
         }
 
