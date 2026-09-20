@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:17Z" duration="3,0498098">
+  <test-suite type="TestSuite" id="1037" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:17Z" duration="3.049810" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1030" name="TilkiOyunu.Foundation.PlayModeTests.dll" fullname="C:/Users/mbkay/Repo/TilkiOyunu/Library/ScriptAssemblies/TilkiOyunu.Foundation.PlayModeTests.dll" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:17Z" duration="3.043256" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="18224" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1031" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:17Z" duration="3.041183" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1032" name="Foundation" fullname="TilkiOyunu.Foundation" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:17Z" duration="3.039413" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="SetUpFixture" id="1001" name="PlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.ProductionSaveProtection" classname="TilkiOyunu.Foundation.PlayModeTests.ProductionSaveProtection" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:17Z" duration="3.037208" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1011" name="Sprint55E1MapPlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:17Z" duration="3.026257" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1013" name="AcceptanceWaitsForExplicitStartAndMapPreservesTimerAndNextNode" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests.AcceptanceWaitsForExplicitStartAndMapPreservesTimerAndNextNode" methodname="AcceptanceWaitsForExplicitStartAndMapPreservesTimerAndNextNode" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" runstate="Runnable" seed="229245241" result="Passed" start-time="2026-09-20 22:38:14Z" end-time="2026-09-20 22:38:16Z" duration="1.959127" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1012" name="MapKeysLockMovementLookAndRestoreOwnedStateEvenOnDisable" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests.MapKeysLockMovementLookAndRestoreOwnedStateEvenOnDisable" methodname="MapKeysLockMovementLookAndRestoreOwnedStateEvenOnDisable" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" runstate="Runnable" seed="381055041" result="Passed" start-time="2026-09-20 22:38:16Z" end-time="2026-09-20 22:38:17Z" duration="1.055175" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+Saving results to: C:/Users/mbkay/AppData/LocalLow/DefaultCompany/TilkiOyunu\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

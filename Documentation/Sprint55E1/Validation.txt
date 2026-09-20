@@ -1,0 +1,8 @@
+EditMode: Passed; passed=79, failed=0, total=79; end=2026-09-20 22:39:23Z
+PlayMode: Passed; passed=21, failed=0, total=21; end=2026-09-20 22:35:42Z
+Focused: Passed; passed=2, failed=0, total=2; end=2026-09-20 22:38:17Z
+Sprint5Validation.ValidateFromCommandLine: PASS
+All commands used Unity 6000.0.23f1 at C:/Program Files/Unity/Hub/Editor/6000.0.23f1/Editor/Unity.exe.
+PlayMode: -runTests -testPlatform PlayMode; focused: -testFilter Sprint55E1MapPlayModeTests.
+EditMode: -batchmode -nographics -runTests -testPlatform EditMode.
+Original core quest/save/services source unchanged. Normal-input E2E quality gate NOT passed.
