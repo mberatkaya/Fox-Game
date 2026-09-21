@@ -60,6 +60,7 @@
                     "name": "up",
                     "id": "748b0c13-c0e8-42b7-a231-2a2f547d07dd",
                     "path": "<Keyboard>/w",
+                    "groups": "KeyboardMouse",
                     "action": "Move",
                     "isPartOfComposite": true
                 },
@@ -67,6 +68,7 @@
                     "name": "down",
                     "id": "69f6733e-3f68-4638-841a-b1444c33f2aa",
                     "path": "<Keyboard>/s",
+                    "groups": "KeyboardMouse",
                     "action": "Move",
                     "isPartOfComposite": true
                 },
@@ -74,6 +76,7 @@
                     "name": "left",
                     "id": "42e79997-16e2-4b01-b0c0-f45d6bd0607d",
                     "path": "<Keyboard>/a",
+                    "groups": "KeyboardMouse",
                     "action": "Move",
                     "isPartOfComposite": true
                 },
@@ -81,67 +84,80 @@
                     "name": "right",
                     "id": "aef94018-0bb5-4627-bb60-9ff320b0a037",
                     "path": "<Keyboard>/d",
+                    "groups": "KeyboardMouse",
                     "action": "Move",
                     "isPartOfComposite": true
                 },
                 {
                     "id": "a9fc3731-fbe9-4021-b685-8d37d11c5467",
                     "path": "<Gamepad>/leftStick",
+                    "groups": "Gamepad",
                     "action": "Move"
                 },
                 {
                     "id": "3eca456c-6149-40a0-8f15-e4b596b88262",
                     "path": "<Mouse>/delta",
+                    "groups": "KeyboardMouse",
                     "action": "Look"
                 },
                 {
                     "id": "1eeac857-4449-4ba8-b50d-c8e2d4fa7eb2",
                     "path": "<Gamepad>/rightStick",
+                    "groups": "Gamepad",
                     "action": "Look"
                 },
                 {
                     "id": "123a95c2-f7da-4dc9-a4a8-9f891ac716bf",
                     "path": "<Keyboard>/space",
+                    "groups": "KeyboardMouse",
                     "action": "Jump"
                 },
                 {
                     "id": "a87f8d92-4ec0-4efb-b1e7-72666d1532d3",
                     "path": "<Gamepad>/buttonSouth",
+                    "groups": "Gamepad",
                     "action": "Jump"
                 },
                 {
                     "id": "53fb473e-1b3d-4af7-ab86-7e2c3b909131",
                     "path": "<Keyboard>/leftShift",
+                    "groups": "KeyboardMouse",
                     "action": "Sprint"
                 },
                 {
                     "id": "a8db3a98-0495-48cb-9e67-e3b477ce38d2",
                     "path": "<Gamepad>/leftStickPress",
+                    "groups": "Gamepad",
                     "action": "Sprint"
                 },
                 {
                     "id": "4f523ca2-a14c-4ddf-924c-8e16d6bad75a",
                     "path": "<Keyboard>/f",
+                    "groups": "KeyboardMouse",
                     "action": "Interact"
                 },
                 {
                     "id": "2591da94-3387-4283-9ce6-52dfda8adab0",
                     "path": "<Gamepad>/buttonWest",
+                    "groups": "Gamepad",
                     "action": "Interact"
                 },
                 {
                     "id": "f5f07903-1253-4424-a484-93d8a1173486",
                     "path": "<Keyboard>/escape",
+                    "groups": "KeyboardMouse",
                     "action": "Pause"
                 },
                 {
                     "id": "2a7fb699-ea53-4ef4-8aaa-03f7f843bdc1",
                     "path": "<Gamepad>/start",
+                    "groups": "Gamepad",
                     "action": "Pause"
                 },
                 {
                     "id": "beca9779-caa1-4d26-ba67-78c8547a906b",
                     "path": "<Keyboard>/m",
+                    "groups": "KeyboardMouse",
                     "action": "WorldMap"
                 }
             ]

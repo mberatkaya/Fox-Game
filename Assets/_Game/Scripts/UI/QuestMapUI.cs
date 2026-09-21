@@ -25,6 +25,7 @@ namespace TilkiOyunu.Foundation
         private RawImage miniTerrain;
         private TMP_Text destinationText;
         private Transform playerTransform;
+        private Vector2 miniCenter;
         private MapMarker lastDestination;
         private int lastDistance = -1;
         public bool IsOpen { get; private set; }
@@ -81,6 +82,8 @@ namespace TilkiOyunu.Foundation
             float size = Mathf.Max(max.x - min.x, max.y - min.y) + 48f;
             Vector2 center = (min + max) / 2;
             worldBounds = new Rect(center - Vector2.one * size / 2, Vector2.one * size);
+            if (playerTransform != null)
+                miniCenter = new Vector2(playerTransform.position.x, playerTransform.position.z);
         }
 
         private static void Encapsulate(Vector3 p, ref Vector2 min, ref Vector2 max)
@@ -297,7 +300,7 @@ namespace TilkiOyunu.Foundation
             return Vector2.one * inset + uv * (1 - inset * 2);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             if (mini == null || !GameServices.HasCurrent) return;
             if (toggleAction != null && toggleAction.WasPressedThisFrame()) SetOpen(!IsOpen);
@@ -305,8 +308,13 @@ namespace TilkiOyunu.Foundation
             var quests = GameServices.Current.Quest;
             Vector3 playerPosition = playerTransform != null ? playerTransform.position : Vector3.zero;
             float span = Mathf.Min(150f, worldBounds.width);
-            Vector2 center = new(Mathf.Clamp(playerPosition.x, worldBounds.xMin + span / 2, worldBounds.xMax - span / 2),
-                Mathf.Clamp(playerPosition.z, worldBounds.yMin + span / 2, worldBounds.yMax - span / 2));
+            // Keep the north-up neighborhood stable while the fox moves within it.
+            // Scroll only at the inner edge, retaining local objectives and edge guidance.
+            float travel = span * .3f;
+            miniCenter.x = Mathf.Clamp(miniCenter.x, playerPosition.x - travel, playerPosition.x + travel);
+            miniCenter.y = Mathf.Clamp(miniCenter.y, playerPosition.z - travel, playerPosition.z + travel);
+            Vector2 center = new(Mathf.Clamp(miniCenter.x, worldBounds.xMin + span / 2, worldBounds.xMax - span / 2),
+                Mathf.Clamp(miniCenter.y, worldBounds.yMin + span / 2, worldBounds.yMax - span / 2));
             var nearbyBounds = new Rect(center - Vector2.one * span / 2, Vector2.one * span);
             miniTerrain.uvRect = new Rect((nearbyBounds.xMin - worldBounds.xMin) / worldBounds.width,
                 (nearbyBounds.yMin - worldBounds.yMin) / worldBounds.height, span / worldBounds.width, span / worldBounds.height);

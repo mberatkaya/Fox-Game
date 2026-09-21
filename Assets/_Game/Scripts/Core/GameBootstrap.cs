@@ -3,6 +3,7 @@ using UnityEngine.Audio;
 
 namespace TilkiOyunu.Foundation
 {
+    [DefaultExecutionOrder(-1000)]
     public sealed class GameBootstrap : MonoBehaviour
     {
         [SerializeField] private GameContentConfig contentConfig;
