@@ -1,11 +1,13 @@
 {
   "name": "TilkiOyunu.Foundation.PlayModeTests",
   "rootNamespace": "TilkiOyunu.Foundation.PlayModeTests",
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
   "references": [
     "TilkiOyunu.Foundation",
     "UnityEngine.TerrainModule",
     "UnityEngine.TerrainPhysicsModule",
-    "UnityEngine.TestRunner",
     "Unity.InputSystem",
     "UnityEngine.UI",
     "Unity.TextMeshPro",
