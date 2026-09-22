@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
@@ -24,8 +25,8 @@ namespace TilkiOyunu.Foundation.Editor
         private const string NatureRoot = "Assets/ThirdParty/Quaternius/StylizedNatureMegaKit";
         private const string GuideFlowerPath = NatureRoot + "/Flower_4_Group.fbx";
         private const string GuideFernPath = NatureRoot + "/Fern_1.fbx";
-        private const string GuideCloverPath = NatureRoot + "/Clover_1.fbx";
-        private const float GuideModelScale = 1.55f;
+        private const float GuideModelScale = 2f;
+        private const float GuideAccessoryScale = GuideModelScale / 1.55f;
         private const float GuideGroundClearance = 0.03f;
 
         [MenuItem("Tilki Oyunu/Sprint 5.5/C.2 Apply Guide NPC Production Visual")]
@@ -71,7 +72,7 @@ namespace TilkiOyunu.Foundation.Editor
                 + $"AvatarValid={(avatar != null && avatar.isValid)}\n"
                 + $"AvatarHuman={(avatar != null && avatar.isHuman)}\n"
                 + $"VisualHeight={CalculatePrefabHeight(prefab):0.00}\n"
-                + $"HasForestProps={(prefab != null && prefab.transform.Find("AnimatedRoot/GuideStaff") != null && prefab.transform.Find("AnimatedRoot/GuideBeacon") != null)}\n"
+                + $"HasForestProps={(prefab != null && prefab.GetComponentsInChildren<Transform>(true).Any(t => t.name == "GuideStaff") && prefab.GetComponentsInChildren<Transform>(true).Any(t => t.name == "GuideBeacon"))}\n"
                 + $"Prefab={(prefab != null)}\n"
                 + "SPRINT55C2_GUIDE_NPC_REPORT_END";
         }
@@ -111,7 +112,12 @@ namespace TilkiOyunu.Foundation.Editor
             sway.AddKey(new Keyframe(3f, -1.25f));
             clip.SetCurve("AnimatedRoot", typeof(Transform), "localPosition.y", bob);
             clip.SetCurve("AnimatedRoot", typeof(Transform), "localEulerAnglesRaw.y", sway);
-            AnimationUtility.SetAnimationClipSettings(clip, new AnimationClipSettings { loopTime = true, loopBlend = true });
+            AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(clip);
+            settings.startTime = 0f;
+            settings.stopTime = 3f;
+            settings.loopTime = true;
+            settings.loopBlend = true;
+            AnimationUtility.SetAnimationClipSettings(clip, settings);
             EditorUtility.SetDirty(clip);
             return clip;
         }
@@ -146,11 +152,8 @@ namespace TilkiOyunu.Foundation.Editor
                 Animator animator = root.AddComponent<Animator>();
                 animator.runtimeAnimatorController = controller;
                 animator.applyRootMotion = false;
-                Avatar avatar = AssetDatabase.LoadAssetAtPath<Avatar>(GuideModelPath);
-                if (avatar != null && avatar.isValid)
-                {
-                    animator.avatar = avatar;
-                }
+                // This controller animates transforms, not humanoid muscles or body translation.
+                animator.avatar = null;
 
                 Transform animatedRoot = new GameObject("AnimatedRoot").transform;
                 animatedRoot.SetParent(root.transform, false);
@@ -158,12 +161,12 @@ namespace TilkiOyunu.Foundation.Editor
                 Transform characterRig = new GameObject("GuideCharacterRig").transform;
                 characterRig.SetParent(animatedRoot, false);
                 characterRig.localPosition = Vector3.zero;
-                characterRig.localRotation = Quaternion.identity;
+                characterRig.localRotation = Quaternion.Euler(0f, 180f, 0f);
                 characterRig.localScale = Vector3.one * GuideModelScale;
 
                 AddModelChild(characterRig, GuideModelPath, "QuaterniusGuideBody", body, Vector3.zero, Vector3.one);
                 AddModelChild(characterRig, GuideHairPath, "QuaterniusGuideHair", hair, Vector3.zero, Vector3.one);
-                AddModelChild(characterRig, GuideEyebrowsPath, "QuaterniusGuideEyebrows", hair, Vector3.zero, Vector3.one);
+                ConfigureGuideRig(characterRig);
                 AlignRendererBottom(characterRig, GuideGroundClearance);
                 AddForestGuideProps(animatedRoot, cloak, accent, staff);
 
@@ -175,34 +178,26 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
+        private static void ConfigureGuideRig(Transform characterRig)
+        {
+            Transform body = characterRig.Find("QuaterniusGuideBody");
+            Animator sourceAnimator = body.GetComponent<Animator>();
+            sourceAnimator.enabled = false;
+            var bones = body.GetComponentsInChildren<Transform>().ToDictionary(bone => bone.name);
+            Transform hair = characterRig.Find("QuaterniusGuideHair");
+            foreach (SkinnedMeshRenderer renderer in hair.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                renderer.bones = renderer.bones.Select(bone => bones[bone.name]).ToArray();
+                renderer.rootBone = bones[renderer.rootBone.name];
+            }
+
+            Transform unusedHairRig = hair.Find("Armature");
+            if (unusedHairRig != null) UnityEngine.Object.DestroyImmediate(unusedHairRig.gameObject);
+        }
+
         private static void AddForestGuideProps(Transform animatedRoot, Material cloak, Material accent, Material staff)
         {
-            GameObject cloakBack = CreatePrimitiveChild(animatedRoot, PrimitiveType.Cube, "GuideLeafCloak_Back", new Vector3(0f, 1.35f, -0.22f), new Vector3(1.1f, 1.85f, 0.08f), cloak);
-            cloakBack.transform.localRotation = Quaternion.Euler(-5f, 0f, 0f);
-            GameObject cloakHem = CreatePrimitiveChild(animatedRoot, PrimitiveType.Cube, "GuideLeafCloak_Hem", new Vector3(0f, 0.56f, -0.22f), new Vector3(1.32f, 0.24f, 0.1f), cloak);
-            cloakHem.transform.localRotation = Quaternion.Euler(-3f, 0f, 0f);
-
-            Transform staffRoot = new GameObject("GuideStaff").transform;
-            staffRoot.SetParent(animatedRoot, false);
-            staffRoot.localPosition = new Vector3(0.92f, 1.18f, 0.08f);
-            staffRoot.localRotation = Quaternion.Euler(0f, 0f, -8f);
-            staffRoot.localScale = Vector3.one;
-            CreatePrimitiveChild(staffRoot, PrimitiveType.Cylinder, "GuideStaff_Shaft", Vector3.zero, new Vector3(0.09f, 2.05f, 0.09f), staff);
-            CreatePrimitiveChild(staffRoot, PrimitiveType.Sphere, "GuideStaff_GlowSeed", new Vector3(0f, 2.08f, 0f), new Vector3(0.3f, 0.3f, 0.3f), accent);
-            AddNatureChild(staffRoot, GuideFlowerPath, "GuideStaff_FlowerAccent", accent, new Vector3(0f, 2.1f, 0f), Quaternion.Euler(0f, 32f, 0f), Vector3.one * 0.36f);
-
-            AddNatureChild(animatedRoot, GuideFernPath, "GuideShoulderFern_Left", cloak, new Vector3(-0.52f, 1.86f, -0.1f), Quaternion.Euler(18f, -38f, 18f), Vector3.one * 0.3f);
-            AddNatureChild(animatedRoot, GuideFernPath, "GuideShoulderFern_Right", cloak, new Vector3(0.52f, 1.86f, -0.1f), Quaternion.Euler(18f, 38f, -18f), Vector3.one * 0.3f);
-            AddNatureChild(animatedRoot, GuideCloverPath, "GuideGroundClover", cloak, new Vector3(-0.18f, 0.02f, 0.18f), Quaternion.Euler(0f, 24f, 0f), Vector3.one * 0.42f);
-
-            GameObject beacon = CreatePrimitiveChild(animatedRoot, PrimitiveType.Sphere, "GuideBeacon", new Vector3(0f, 3.08f, 0f), new Vector3(0.24f, 0.24f, 0.24f), accent);
-            Light light = beacon.AddComponent<Light>();
-            light.type = LightType.Point;
-            light.color = new Color(1f, 0.68f, 0.28f);
-            light.intensity = 1.25f;
-            light.range = 4.8f;
-
-            CreatePrimitiveChild(animatedRoot, PrimitiveType.Cylinder, "GuideVisibilityRing", new Vector3(0f, 0.035f, 0f), new Vector3(1.8f, 0.025f, 1.8f), accent);
+            GuideNpcOutfitBuilder.Build(animatedRoot, cloak, accent, staff, GuideFernPath, GuideFlowerPath);
         }
 
         private static void AddModelChild(Transform parent, string path, string name, Material material, Vector3 localPosition, Vector3 localScale)
@@ -226,7 +221,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
-        private static void AddNatureChild(Transform parent, string path, string name, Material material, Vector3 localPosition, Quaternion localRotation, Vector3 localScale)
+        internal static void AddNatureChild(Transform parent, string path, string name, Material material, Vector3 localPosition, Quaternion localRotation, Vector3 localScale)
         {
             GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if (asset == null)
@@ -252,7 +247,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
         }
 
-        private static GameObject CreatePrimitiveChild(Transform parent, PrimitiveType primitiveType, string name, Vector3 localPosition, Vector3 localScale, Material material)
+        internal static GameObject CreatePrimitiveChild(Transform parent, PrimitiveType primitiveType, string name, Vector3 localPosition, Vector3 localScale, Material material)
         {
             GameObject primitive = GameObject.CreatePrimitive(primitiveType);
             primitive.name = name;
@@ -279,20 +274,23 @@ namespace TilkiOyunu.Foundation.Editor
 
         private static void AlignRendererBottom(Transform root, float localGroundClearance)
         {
-            Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-            if (renderers.Length == 0)
+            float bottom = float.PositiveInfinity;
+            Mesh mesh = new Mesh();
+            try
             {
-                return;
+                foreach (SkinnedMeshRenderer renderer in root.GetComponentsInChildren<SkinnedMeshRenderer>())
+                {
+                    // Imported culling bounds include empty space below the feet.
+                    renderer.BakeMesh(mesh, true);
+                    foreach (Vector3 vertex in mesh.vertices)
+                        bottom = Mathf.Min(bottom, root.parent.InverseTransformPoint(renderer.transform.TransformPoint(vertex)).y);
+                }
             }
-
-            Bounds bounds = renderers[0].bounds;
-            for (int i = 1; i < renderers.Length; i++)
-            {
-                bounds.Encapsulate(renderers[i].bounds);
-            }
+            finally { UnityEngine.Object.DestroyImmediate(mesh); }
+            if (float.IsPositiveInfinity(bottom)) throw new InvalidOperationException("Guide has no skinned geometry to ground.");
 
             Vector3 localPosition = root.localPosition;
-            localPosition.y += localGroundClearance - bounds.min.y;
+            localPosition.y += localGroundClearance - bottom;
             root.localPosition = localPosition;
         }
 
@@ -337,6 +335,13 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             EnsurePhysicalBlocker(npc.transform);
+            Terrain terrain = UnityEngine.Object.FindFirstObjectByType<Terrain>();
+            if (terrain != null)
+            {
+                Vector3 position = npc.transform.position;
+                position.y = terrain.transform.position.y + terrain.SampleHeight(position);
+                npc.transform.position = position;
+            }
             EditorUtility.SetDirty(npc);
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -375,9 +380,16 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             collider.isTrigger = false;
-            collider.radius = 0.62f;
-            collider.height = 3.05f;
-            collider.center = new Vector3(0f, 1.525f, 0f);
+            collider.radius = 0.62f * GuideAccessoryScale;
+            collider.height = 3.05f * GuideAccessoryScale;
+            collider.center = Vector3.up * (collider.height * 0.5f);
+            CapsuleCollider interaction = npc.GetComponent<CapsuleCollider>();
+            if (interaction != null)
+            {
+                interaction.radius = collider.radius + 0.05f;
+                interaction.height = collider.height;
+                interaction.center = collider.center;
+            }
         }
 
         private static Material EnsureMaterial(string path, Color color)

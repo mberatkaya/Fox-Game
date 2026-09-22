@@ -26,7 +26,6 @@ namespace TilkiOyunu.Foundation.Editor
         private const float BridgeYaw = 126.87f;
         private const float BridgeDeckWidth = 4.4f;
         private const float BridgeDeckLength = 28f;
-        private const float BridgeElevation = 2.85f;
         private const float BridgeRailX = 1.95f;
 
         private static readonly string[] TreeAssetNames =
@@ -89,6 +88,17 @@ namespace TilkiOyunu.Foundation.Editor
         {
             CaptureEnvironmentReviewScreenshots();
             EditorApplication.Exit(0);
+        }
+
+        [MenuItem("Tilki Oyunu/Sprint 5.5/C.2 Align Bridge And Remove Prototype Dressing")]
+        public static void ApplyBridgeAndPrototypeCleanup()
+        {
+            UnityEngine.SceneManagement.Scene scene = EditorSceneManager.OpenScene(SceneIds.ForestPath, OpenSceneMode.Single);
+            BuildProductionBridge(GameObject.Find("Environment").transform, RequireTerrain());
+            HidePrototypeVisuals();
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
         }
 
         public static void ApplyEnvironmentDressing()
@@ -575,8 +585,7 @@ namespace TilkiOyunu.Foundation.Editor
             Transform bridgeRoot = environment.Find("Bridge");
             GameObject bridge = FindSceneObjectIncludingInactive("Small Bridge") ?? new GameObject("Small Bridge");
             bridge.transform.SetParent(bridgeRoot, true);
-            bridge.transform.SetPositionAndRotation(WithTerrainY(new Vector3(BridgeCenter.x, 0f, BridgeCenter.y), terrain, BridgeElevation), Quaternion.Euler(0f, BridgeYaw, 0f));
-            bridge.transform.localScale = Vector3.one;
+            ForestBridgePlacement.AlignToBanks(bridge.transform, terrain, new Vector3(BridgeCenter.x, 0f, BridgeCenter.y), BridgeYaw, BridgeDeckLength, BridgeDeckWidth);
             bridge.SetActive(true);
 
             for (int i = bridge.transform.childCount - 1; i >= 0; i--)
@@ -615,6 +624,19 @@ namespace TilkiOyunu.Foundation.Editor
             CreateCube(bridge.transform, "Sprint55C_Bridge_UnderBeam", new Vector3(0f, -0.08f, 0f), new Vector3(3.25f, 0.2f, BridgeDeckLength - 1.2f), darkWood);
             EnsureBridgeRailCollider(bridge.transform, "Bridge Left Rail Collider", -BridgeRailX);
             EnsureBridgeRailCollider(bridge.transform, "Bridge Right Rail Collider", BridgeRailX);
+            BuildBridgeApproach(bridge.transform, terrain, -1f, wood);
+            BuildBridgeApproach(bridge.transform, terrain, 1f, wood);
+        }
+
+        private static void BuildBridgeApproach(Transform bridge, Terrain terrain, float side, Material wood)
+        {
+            Vector3 inner = bridge.TransformPoint(new Vector3(0f, 0.28f, side * (BridgeDeckLength * 0.5f - 0.2f)));
+            Vector3 outer = bridge.TransformPoint(new Vector3(0f, 0.28f, side * (BridgeDeckLength * 0.5f + 3f)));
+            outer.y = terrain.transform.position.y + terrain.SampleHeight(outer) + 0.04f;
+            Quaternion rotation = Quaternion.LookRotation(outer - inner, Vector3.up);
+            GameObject ramp = CreateCube(bridge, side < 0f ? "Sprint55C_Bridge_ApproachA" : "Sprint55C_Bridge_ApproachB",
+                Vector3.zero, new Vector3(BridgeDeckWidth, 0.28f, Vector3.Distance(inner, outer)), wood);
+            ramp.transform.SetPositionAndRotation((inner + outer) * 0.5f - rotation * (Vector3.up * 0.14f), rotation);
         }
 
         private static void DressMemoryVisuals(Transform environment, Terrain terrain)
@@ -705,7 +727,8 @@ namespace TilkiOyunu.Foundation.Editor
                 "GB_SpawnMeadow_Readability", "GB_NPCGrove_Readability", "GB_FinalHill_Summit",
                 "GB_FutureForestMass_CentralFold", "GB_FutureForestMass_LightGroveSouth",
                 "GB_FutureForestMass_LakeWest", "GB_FutureForestMass_FinalApproach",
-                "GB_NaturalEdge_NorthRidge", "GB_NaturalEdge_WestRise"
+                "GB_NaturalEdge_NorthRidge", "GB_NaturalEdge_WestRise",
+                "Garden Platform", "Garden Center Glow"
             };
 
             foreach (string name in prototypeObjects)
@@ -714,6 +737,7 @@ namespace TilkiOyunu.Foundation.Editor
             }
 
             DestroySceneObjectsByPrefix("Traversal Tree ");
+            DestroySceneObjectsByPrefix("Garden Flower ");
 
             Material water = EnsureMaterial("Sprint55C_SimpleWater", new Color(0.22f, 0.48f, 0.56f, 0.7f));
             AssignMaterialIfFound("GB_Lake_TempWater", water);
