@@ -56,6 +56,7 @@ namespace TilkiOyunu.Foundation
             if (label != null)
             {
                 label.textWrappingMode = TextWrappingModes.NoWrap;
+                label.alignment = TextAlignmentOptions.Center;
                 label.enableAutoSizing = true;
                 label.fontSizeMin = 14;
                 label.fontSizeMax = 30;
