@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="24" result="Passed" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:31:17Z" duration="104,9321635">
+  <test-suite type="TestSuite" id="1041" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:31:17Z" duration="104.932164" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1034" name="TilkiOyunu.Foundation.PlayModeTests.dll" fullname="C:/Users/mbkay/Repo/TilkiOyunu/Library/ScriptAssemblies/TilkiOyunu.Foundation.PlayModeTests.dll" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:31:17Z" duration="104.928260" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="22220" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1035" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:31:17Z" duration="104.927704" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1036" name="Foundation" fullname="TilkiOyunu.Foundation" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:31:17Z" duration="104.927284" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="SetUpFixture" id="1001" name="PlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.ProductionSaveProtection" classname="TilkiOyunu.Foundation.PlayModeTests.ProductionSaveProtection" runstate="Runnable" testcasecount="24" result="Passed" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:31:17Z" duration="104.926427" total="24" passed="24" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1002" name="Sprint1BootstrapPlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint1BootstrapPlayModeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint1BootstrapPlayModeTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:29:34Z" duration="1.127919" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1003" name="BootstrapLoadsForestGameplayPrototype" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint1BootstrapPlayModeTests.BootstrapLoadsForestGameplayPrototype" methodname="BootstrapLoadsForestGameplayPrototype" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint1BootstrapPlayModeTests" runstate="Runnable" seed="212321409" result="Passed" start-time="2026-09-22 15:29:33Z" end-time="2026-09-22 15:29:34Z" duration="1.118024" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1004" name="Sprint2ForestQuestPlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint2ForestQuestPlayModeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint2ForestQuestPlayModeTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 15:29:34Z" end-time="2026-09-22 15:29:34Z" duration="0.776831" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1005" name="ForestContainsSprint2QuestDependencies" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint2ForestQuestPlayModeTests.ForestContainsSprint2QuestDependencies" methodname="ForestContainsSprint2QuestDependencies" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint2ForestQuestPlayModeTests" runstate="Runnable" seed="1664120356" result="Passed" start-time="2026-09-22 15:29:34Z" end-time="2026-09-22 15:29:34Z" duration="0.772792" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1006" name="Sprint3ForestLightPathPlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint3ForestLightPathPlayModeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint3ForestLightPathPlayModeTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 15:29:34Z" end-time="2026-09-22 15:29:35Z" duration="0.761934" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1007" name="ForestContainsSprint3LightPathDependencies" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint3ForestLightPathPlayModeTests.ForestContainsSprint3LightPathDependencies" methodname="ForestContainsSprint3LightPathDependencies" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint3ForestLightPathPlayModeTests" runstate="Runnable" seed="730657213" result="Passed" start-time="2026-09-22 15:29:34Z" end-time="2026-09-22 15:29:35Z" duration="0.760470" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1008" name="Sprint4ForestCardMatchingPlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint4ForestCardMatchingPlayModeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint4ForestCardMatchingPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-22 15:29:35Z" end-time="2026-09-22 15:29:37Z" duration="1.583770" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1010" name="CardMatchingFlowUnlocksFinalCamp" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint4ForestCardMatchingPlayModeTests.CardMatchingFlowUnlocksFinalCamp" methodname="CardMatchingFlowUnlocksFinalCamp" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint4ForestCardMatchingPlayModeTests" runstate="Runnable" seed="1213047787" result="Passed" start-time="2026-09-22 15:29:35Z" end-time="2026-09-22 15:29:36Z" duration="0.818308" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1009" name="ForestContainsSprint4CardMatchingDependencies" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint4ForestCardMatchingPlayModeTests.ForestContainsSprint4CardMatchingDependencies" methodname="ForestContainsSprint4CardMatchingDependencies" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint4ForestCardMatchingPlayModeTests" runstate="Runnable" seed="1928990988" result="Passed" start-time="2026-09-22 15:29:36Z" end-time="2026-09-22 15:29:37Z" duration="0.763612" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1011" name="Sprint55E11RuntimeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-22 15:29:37Z" end-time="2026-09-22 15:29:39Z" duration="2.003861" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1014" name="BootstrapMapAndInteractionBindings" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests.BootstrapMapAndInteractionBindings" methodname="BootstrapMapAndInteractionBindings" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" runstate="Runnable" seed="1560052121" result="Passed" start-time="2026-09-22 15:29:37Z" end-time="2026-09-22 15:29:38Z" duration="0.851539" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1013" name="BootstrapSupportsProductionInput" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests.BootstrapSupportsProductionInput" methodname="BootstrapSupportsProductionInput" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" runstate="Runnable" seed="474581312" result="Passed" start-time="2026-09-22 15:29:38Z" end-time="2026-09-22 15:29:38Z" duration="0.780292" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1012" name="DirectForestSupportsProductionInput" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests.DirectForestSupportsProductionInput" methodname="DirectForestSupportsProductionInput" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" runstate="Runnable" seed="1531524957" result="Passed" start-time="2026-09-22 15:29:38Z" end-time="2026-09-22 15:29:39Z" duration="0.369900" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1015" name="Sprint55E1MapPlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-22 15:29:39Z" end-time="2026-09-22 15:29:41Z" duration="2.144951" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1017" name="AcceptanceWaitsForExplicitStartAndMapPreservesTimerAndNextNode" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests.AcceptanceWaitsForExplicitStartAndMapPreservesTimerAndNextNode" methodname="AcceptanceWaitsForExplicitStartAndMapPreservesTimerAndNextNode" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" runstate="Runnable" seed="1071786782" result="Passed" start-time="2026-09-22 15:29:39Z" end-time="2026-09-22 15:29:40Z" duration="1.368818" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1016" name="MapKeysLockMovementLookAndRestoreOwnedStateEvenOnDisable" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests.MapKeysLockMovementLookAndRestoreOwnedStateEvenOnDisable" methodname="MapKeysLockMovementLookAndRestoreOwnedStateEvenOnDisable" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E1MapPlayModeTests" runstate="Runnable" seed="1266350027" result="Passed" start-time="2026-09-22 15:29:40Z" end-time="2026-09-22 15:29:41Z" duration="0.775095" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1018" name="Sprint55GameplayIntegrationTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55GameplayIntegrationTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55GameplayIntegrationTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-22 15:29:41Z" end-time="2026-09-22 15:31:04Z" duration="82.699332" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1019" name="ActualMemoryIdsMinigamesTurnInsAndReloadsReachFinalCompletion" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55GameplayIntegrationTests.ActualMemoryIdsMinigamesTurnInsAndReloadsReachFinalCompletion" methodname="ActualMemoryIdsMinigamesTurnInsAndReloadsReachFinalCompletion" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55GameplayIntegrationTests" runstate="Runnable" seed="788443145" result="Passed" start-time="2026-09-22 15:29:41Z" end-time="2026-09-22 15:31:04Z" duration="82.698178" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+[BOOT] Game services initialized.
+[BOOT] Game services initialized.
+[BOOT] Game services initialized.
+[BOOT] Game services initialized.
+[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1020" name="Sprint5ProductionSmokeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-22 15:31:04Z" end-time="2026-09-22 15:31:17Z" duration="13.810473" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1021" name="BootstrapForestContainsProductionPolish" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.BootstrapForestContainsProductionPolish" methodname="BootstrapForestContainsProductionPolish" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1732540054" result="Passed" start-time="2026-09-22 15:31:04Z" end-time="2026-09-22 15:31:04Z" duration="0.753450" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1027" name="CardMatchingFocusRecoversWhenSelectedCardIsMatched" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.CardMatchingFocusRecoversWhenSelectedCardIsMatched" methodname="CardMatchingFocusRecoversWhenSelectedCardIsMatched" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="362701769" result="Passed" start-time="2026-09-22 15:31:04Z" end-time="2026-09-22 15:31:05Z" duration="0.782949" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1026" name="CardMatchingPanelUnlocksCursorFocusesUiAndRestoresInput" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.CardMatchingPanelUnlocksCursorFocusesUiAndRestoresInput" methodname="CardMatchingPanelUnlocksCursorFocusesUiAndRestoresInput" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="811152389" result="Passed" start-time="2026-09-22 15:31:05Z" end-time="2026-09-22 15:31:06Z" duration="0.773214" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1023" name="CompletedQuestChainAllowsFinalSequenceToOpen" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.CompletedQuestChainAllowsFinalSequenceToOpen" methodname="CompletedQuestChainAllowsFinalSequenceToOpen" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1462320330" result="Passed" start-time="2026-09-22 15:31:06Z" end-time="2026-09-22 15:31:07Z" duration="0.769690" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1031" name="EnvironmentVisualLayerIsColliderFree" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.EnvironmentVisualLayerIsColliderFree" methodname="EnvironmentVisualLayerIsColliderFree" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="743631329" result="Passed" start-time="2026-09-22 15:31:07Z" end-time="2026-09-22 15:31:08Z" duration="0.779442" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1028" name="FinalCompletionPersistsAfterReload" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.FinalCompletionPersistsAfterReload" methodname="FinalCompletionPersistsAfterReload" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1123790453" result="Passed" start-time="2026-09-22 15:31:08Z" end-time="2026-09-22 15:31:13Z" duration="5.962646" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1025" name="FinalSequenceDisableReleasesCameraAndInput" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.FinalSequenceDisableReleasesCameraAndInput" methodname="FinalSequenceDisableReleasesCameraAndInput" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1833245945" result="Passed" start-time="2026-09-22 15:31:13Z" end-time="2026-09-22 15:31:14Z" duration="0.751805" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1024" name="FinalSequenceOwnsCameraAndReleasesGameplayControl" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.FinalSequenceOwnsCameraAndReleasesGameplayControl" methodname="FinalSequenceOwnsCameraAndReleasesGameplayControl" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1871659568" result="Passed" start-time="2026-09-22 15:31:14Z" end-time="2026-09-22 15:31:15Z" duration="0.850842" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1030" name="FoxCanCrossRaisedBridgeInBothDirections" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.FoxCanCrossRaisedBridgeInBothDirections" methodname="FoxCanCrossRaisedBridgeInBothDirections" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1091817287" result="Passed" start-time="2026-09-22 15:31:15Z" end-time="2026-09-22 15:31:16Z" duration="0.807495" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1033" name="FoxObstacleSweepStopsBeforeSolidObjects" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.FoxObstacleSweepStopsBeforeSolidObjects" methodname="FoxObstacleSweepStopsBeforeSolidObjects" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="230076326" result="Passed" start-time="2026-09-22 15:31:16Z" end-time="2026-09-22 15:31:16Z" duration="0.003898" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="GuideStaysAboveTerrainAndTallerThanFoxDuringIdle" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.GuideStaysAboveTerrainAndTallerThanFoxDuringIdle" methodname="GuideStaysAboveTerrainAndTallerThanFoxDuringIdle" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="525030945" result="Passed" start-time="2026-09-22 15:31:16Z" end-time="2026-09-22 15:31:17Z" duration="0.798721" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+WORLD_SCALE guideHeight=3,550 foxHeight=1,046
+]]></output>
+              </test-case>
+              <test-case id="1022" name="InitialGameplayPresentationStateIsRenderable" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.InitialGameplayPresentationStateIsRenderable" methodname="InitialGameplayPresentationStateIsRenderable" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1595852782" result="Passed" start-time="2026-09-22 15:31:17Z" end-time="2026-09-22 15:31:17Z" duration="0.770247" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[BOOT] Game services initialized.
+]]></output>
+              </test-case>
+              <test-case id="1032" name="RepeatedJumpPressesDuringTakeoffDoNotStackImpulse" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests.RepeatedJumpPressesDuringTakeoffDoNotStackImpulse" methodname="RepeatedJumpPressesDuringTakeoffDoNotStackImpulse" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint5ProductionSmokeTests" runstate="Runnable" seed="1286143114" result="Passed" start-time="2026-09-22 15:31:17Z" end-time="2026-09-22 15:31:17Z" duration="0.003579" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/mbkay/AppData/LocalLow/DefaultCompany/TilkiOyunu\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
