@@ -14,7 +14,7 @@ Original Unity Version: 2019.4.10
 License: Standard Unity Asset Store EULA
 Files Imported: `Assets/Fox/FBXs/Fox.fbx`, `Assets/Fox/Prefabs/Fox.prefab`, `Assets/Fox/Animations/*.fbx`, `Assets/Fox/Materials/M_Fox.mat`, `Assets/Fox/Textures/T_Fox_BC.png`, `T_Fox_Normal.png`, `T_Fox_AO.png`
 Usage: Player character visual and animations under `PlayerFox/VisualRoot/ToonFox`
-Modified: Package source files are left in their imported `Assets/Fox` structure. Game-specific wrapper assets are `Assets/_Game/Prefabs/Characters/ToonFoxVisual.prefab`, `Assets/_Game/Art/Characters/FoxAnimatorController.controller`, and `Assets/_Game/Art/Characters/ToonFox_URP.mat`.
+Modified: Package source files remain in their imported `Assets/Fox` structure. Closure clears two unused metallic/specular texture slots in the original `M_Fox.mat` that referenced a texture absent from the imported subset; the production URP override is unchanged. Game-specific wrapper assets are `Assets/_Game/Prefabs/Characters/ToonFoxVisual.prefab`, `Assets/_Game/Art/Characters/FoxAnimatorController.controller`, and `Assets/_Game/Art/Characters/ToonFox_URP.mat`.
 Attribution Requirements: Follow the Standard Unity Asset Store EULA.
 Notes: Production locomotion uses `Fox_Idle`, `Fox_Walk_InPlace`, and `Fox_Run_InPlace`. Air state uses the included `Fox_Jump_InAir` clip. Root motion is disabled on the PlayerFox production animator; movement remains owned by `FoxController` and `CharacterController`.
 
@@ -89,6 +89,16 @@ Files Excluded: male full-body FBX, Godot/Unreal glTF/bin duplicates, Origin-at-
 Usage: Sprint 5.5-C.2 Guide NPC visual under `NPC_Guide/VisualRoot/NPC_Guide_Visual`. The existing scene `NPC_Guide` object remains the gameplay authority for dialogue trigger and interaction.
 Modified: Source FBX files are unedited. Unity import metadata sets the female full-body model to Humanoid and hair/eyebrows to Generic. Project-owned URP materials, animator, idle clip, production prefab, and scene wiring are under `Assets/_Game/Art/NPC`, `Assets/_Game/Animations/NPC`, and `Assets/_Game/Prefabs/NPC`. Sprint 5.5 follow-up scales the guide up for map readability and blends the Universal Base Character with already-imported Stylized Nature MegaKit fern/flower/clover accents, a staff, beacon, cloak, and visibility ring.
 Notes: The separate Quaternius Universal Animation Library was searched for locally during Sprint 5.5-C.2 but was not present in the repository or download folders, so no Universal Animation Library assets were imported. The guide uses a project-owned subtle idle animation until that library is available.
+
+Closure detail: the three `GuideNpc_Fitted*.asset` meshes are project-generated derivatives of the imported CC0 body/own cape and belt geometry. The fitted outfit, staff grip and shoulder accessories follow the body bones; the controller uses a three-second transform idle with the source humanoid animator disabled. The historical eyebrow model remains imported but is not used by the final guide prefab.
+
+## Tree Collection Pack 2017 (Historical Authoring Subset)
+
+Local Unity AssetOrigin metadata identifies Asset Store product ID `76974`, package version `3`, under `Assets/TreePackVol.1`. A 216-file subset was already tracked before closure and is still referenced by historical world builders and validation. Sprint 5.5-C removed `TreeCollectionForest` from the production Forest scene. The remaining untracked package content is not referenced by tracked serialized assets and is preserved locally, uncommitted. The local download includes `Doc/Readme.pdf`; no new license or author claim is inferred from the package name. No additional TreePack asset is introduced by closure.
+
+## Project-Owned Map, Objective and Atmosphere Assets
+
+Minimap/world-map UI, waffle objective presentation, bridge geometry, fitted guide clothing, terrain layers, URP material wrappers and atmosphere authoring live under `Assets/_Game`. They use the documented imported subsets where applicable; no additional Universal Animation Library or raw package import is part of closure.
 
 ## Kenney - UI Pack
 
