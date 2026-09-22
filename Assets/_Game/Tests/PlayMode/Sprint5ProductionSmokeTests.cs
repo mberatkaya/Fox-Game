@@ -291,6 +291,138 @@ namespace TilkiOyunu.Foundation.PlayModeTests
         }
 
         [UnityTest]
+        public IEnumerator GuideStaysAboveTerrainAndTallerThanFoxDuringIdle()
+        {
+            yield return LoadBootstrapToForest();
+            GameObject npc = GameObject.Find("NPC_Guide");
+            Transform visual = npc.transform.Find("VisualRoot/NPC_Guide_Visual");
+            Transform body = visual.Find("AnimatedRoot/GuideCharacterRig/QuaterniusGuideBody");
+            Transform hair = visual.Find("AnimatedRoot/GuideCharacterRig/QuaterniusGuideHair");
+            GameObject player = GameObject.Find("PlayerFox");
+            Terrain terrain = Object.FindFirstObjectByType<Terrain>();
+            Animator animator = visual.GetComponent<Animator>();
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            player.GetComponent<FoxController>().enabled = false;
+            CharacterController capsule = player.GetComponent<CharacterController>();
+            capsule.enabled = false;
+            Vector3 besideGuide = npc.transform.position - npc.transform.right * 1.8f;
+            besideGuide.y = terrain.transform.position.y + terrain.SampleHeight(besideGuide) + 0.04f;
+            player.transform.SetPositionAndRotation(besideGuide, npc.transform.rotation);
+            capsule.enabled = true;
+            Bounds fox = SkinnedBounds(player.transform.Find("VisualRoot/ToonFox"));
+            float lowestFeet = float.PositiveInfinity;
+            float highestFeet = float.NegativeInfinity;
+
+            for (int sample = 0; sample < 8; sample++)
+            {
+                animator.Update(0.5f);
+                yield return null;
+                Bounds human = SkinnedBounds(body);
+                lowestFeet = Mathf.Min(lowestFeet, human.min.y);
+                highestFeet = Mathf.Max(highestFeet, human.min.y);
+                Bounds hairstyle = SkinnedBounds(hair);
+                float ground = terrain.transform.position.y + terrain.SampleHeight(npc.transform.position);
+                Assert.That(human.min.y - ground, Is.InRange(-0.02f, 0.12f), "Animated feet must stay on the terrain.");
+                Assert.That(human.size.y, Is.GreaterThan(fox.size.y * 3.1f), "Compare visible meshes, not imported culling bounds or props.");
+                Assert.That(hairstyle.max.y - human.max.y, Is.InRange(-0.1f, 0.25f), "Hair must remain attached to the head.");
+                AssertGuideAccessoryFit(visual);
+            }
+            Assert.That(highestFeet - lowestFeet, Is.GreaterThan(0.01f), "Idle must keep moving without sinking the body.");
+            Debug.Log($"WORLD_SCALE guideHeight={SkinnedBounds(body).size.y:F3} foxHeight={fox.size.y:F3}");
+            CaptureWorldScaleReview("NPC Scale");
+            CaptureWorldScaleReview("NPC Outfit");
+        }
+
+        private static void AssertGuideAccessoryFit(Transform visual)
+        {
+            Transform frame = visual.Find("AnimatedRoot");
+            var bones = new Dictionary<string, Transform>();
+            foreach (Transform child in visual.GetComponentsInChildren<Transform>()) bones[child.name] = child;
+            Transform staff = bones["GuideStaff"];
+            Assert.That(staff.parent, Is.EqualTo(bones["hand_r"]));
+            Assert.That(Vector3.Distance(staff.position, bones["GuideStaffGrip"].position), Is.LessThan(0.01f));
+            foreach (string finger in new[] { "index", "middle", "pinky" })
+            {
+                Vector3 tip = bones[$"{finger}_04_leaf_r"].position;
+                float radialDistance = Vector3.ProjectOnPlane(tip - staff.position, staff.up).magnitude;
+                Assert.That(radialDistance, Is.LessThan(0.15f), $"{finger} must curl around the staff instead of pointing away.");
+            }
+            Assert.That(frame.InverseTransformPoint(bones["hand_r"].position).x, Is.GreaterThan(0.55f), "Right arm must remain outside the torso.");
+            Assert.That(frame.InverseTransformPoint(bones["hand_l"].position).x, Is.LessThan(-0.5f), "Left arm must remain outside the torso.");
+            Assert.That(Vector3.Distance(bones["GuideShoulderFern_Left"].position, bones["upperarm_l"].position), Is.LessThan(0.1f));
+            Assert.That(Vector3.Distance(bones["GuideShoulderFern_Right"].position, bones["upperarm_r"].position), Is.LessThan(0.1f));
+        }
+
+        [UnityTest]
+        public IEnumerator FoxCanCrossRaisedBridgeInBothDirections()
+        {
+            yield return LoadBootstrapToForest();
+            Transform bridge = GameObject.Find("Small Bridge").transform;
+            GameObject player = GameObject.Find("PlayerFox");
+            FoxController controller = player.GetComponent<FoxController>();
+            controller.enabled = false;
+            CharacterController capsule = player.GetComponent<CharacterController>();
+            Terrain terrain = Object.FindFirstObjectByType<Terrain>();
+            Vector3 forward = Vector3.ProjectOnPlane(bridge.forward, Vector3.up).normalized;
+
+            foreach (float direction in new[] { 1f, -1f })
+            {
+                capsule.enabled = false;
+                Vector3 start = bridge.TransformPoint(new Vector3(0f, 0f, -direction * 18f));
+                start.y = terrain.transform.position.y + terrain.SampleHeight(start) + 0.12f;
+                player.transform.position = start;
+                capsule.enabled = true;
+                Physics.SyncTransforms();
+                for (int step = 0; step < 450; step++)
+                {
+                    Vector3 motion = forward * (direction * 0.09f) + Vector3.down * 0.1f;
+                    capsule.Move(InvokeResolveObstacleMotion(controller, motion));
+                    float progress = bridge.InverseTransformPoint(player.transform.position).z;
+                    if (Mathf.Abs(progress) < 12f)
+                    {
+                        float localHeight = bridge.InverseTransformPoint(player.transform.position).y;
+                        Assert.That(localHeight, Is.InRange(0.2f, 0.8f), "Fox must remain supported by the deck.");
+                    }
+                    if (step % 20 == 0) yield return null;
+                }
+                float end = bridge.InverseTransformPoint(player.transform.position).z * direction;
+                Assert.That(end, Is.GreaterThan(17f), $"Fox stalled at {player.transform.position} travelling {direction}.");
+            }
+            CaptureWorldScaleReview("Bridge Banks");
+        }
+
+        private static Bounds SkinnedBounds(Transform root)
+        {
+            Bounds bounds = default;
+            bool hasVertex = false;
+            Mesh mesh = new Mesh();
+            try
+            {
+                foreach (SkinnedMeshRenderer renderer in root.GetComponentsInChildren<SkinnedMeshRenderer>())
+                {
+                    renderer.BakeMesh(mesh, true);
+                    foreach (Vector3 vertex in mesh.vertices)
+                    {
+                        Vector3 world = renderer.transform.TransformPoint(vertex);
+                        if (!hasVertex) { bounds = new Bounds(world, Vector3.zero); hasVertex = true; }
+                        else bounds.Encapsulate(world);
+                    }
+                }
+                Assert.That(hasVertex, Is.True, root.name);
+                return bounds;
+            }
+            finally { Object.DestroyImmediate(mesh); }
+        }
+
+        private static void CaptureWorldScaleReview(string view)
+        {
+#if UNITY_EDITOR
+            if (System.Environment.GetEnvironmentVariable("TILKI_CAPTURE_WORLD_SCALE") == "1")
+                Assert.That(UnityEditor.EditorApplication.ExecuteMenuItem($"Tilki Oyunu/Sprint 5.5/Review/{view}"), Is.True);
+#endif
+        }
+
+        [UnityTest]
         public IEnumerator EnvironmentVisualLayerIsColliderFree()
         {
             yield return LoadBootstrapToForest();

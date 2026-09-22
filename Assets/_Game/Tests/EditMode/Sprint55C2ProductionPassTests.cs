@@ -52,9 +52,12 @@ namespace TilkiOyunu.Foundation.Tests
             Animator animator = prefab.GetComponent<Animator>();
             Assert.That(animator, Is.Not.Null);
             Assert.That(animator.applyRootMotion, Is.False);
-            Assert.That(animator.avatar, Is.Not.Null);
-            Assert.That(animator.avatar.isValid, Is.True);
-            Assert.That(animator.avatar.isHuman, Is.True);
+            Assert.That(animator.avatar, Is.Null, "Transform-only idle must not reset the humanoid body translation.");
+            Animator bodyAnimator = prefab.transform.Find("AnimatedRoot/GuideCharacterRig/QuaterniusGuideBody").GetComponent<Animator>();
+            Assert.That(bodyAnimator.avatar, Is.Not.Null);
+            Assert.That(bodyAnimator.avatar.isValid, Is.True);
+            Assert.That(bodyAnimator.avatar.isHuman, Is.True);
+            Assert.That(bodyAnimator.enabled, Is.False);
 
             AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>("Assets/_Game/Animations/NPC/GuideNpcAnimator.controller");
             Assert.That(controller, Is.Not.Null);
@@ -63,10 +66,12 @@ namespace TilkiOyunu.Foundation.Tests
             AnimationClip idle = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/_Game/Animations/NPC/GuideNpc_RelaxedIdle.anim");
             Assert.That(idle, Is.Not.Null);
             Assert.That(idle.length, Is.GreaterThan(2.5f));
-            Assert.That(prefab.transform.Find("AnimatedRoot/GuideStaff"), Is.Not.Null);
-            Assert.That(prefab.transform.Find("AnimatedRoot/GuideBeacon"), Is.Not.Null);
+            Transform[] outfit = prefab.GetComponentsInChildren<Transform>(true);
+            Assert.That(outfit.Single(t => t.name == "GuideStaff").parent.name, Is.EqualTo("hand_r"));
+            Assert.That(outfit.Single(t => t.name == "GuideBeacon").parent.name, Is.EqualTo("spine_03"));
             Assert.That(prefab.transform.Find("AnimatedRoot/GuideVisibilityRing"), Is.Not.Null);
-            Assert.That(prefab.transform.Find("AnimatedRoot/GuideShoulderFern_Left"), Is.Not.Null);
+            Assert.That(outfit.Single(t => t.name == "GuideShoulderFern_Left").parent.name, Is.EqualTo("clavicle_l"));
+            Assert.That(outfit.Single(t => t.name == "GuideLeafCloak_Back").parent.name, Is.EqualTo("spine_03"));
             Transform guideBody = prefab.transform.Find("AnimatedRoot/GuideCharacterRig/QuaterniusGuideBody");
             Assert.That(guideBody, Is.Not.Null);
 
@@ -75,10 +80,10 @@ namespace TilkiOyunu.Foundation.Tests
             Transform foxVisual = foxPrefab.transform.Find("VisualRoot/ToonFox");
             Assert.That(foxVisual, Is.Not.Null);
 
-            Bounds guideBodyBounds = CalculateRendererBounds(guideBody.gameObject);
+            Bounds guideBodyBounds = CalculateRendererBounds(guideBody.gameObject, true);
             Bounds foxBounds = CalculateRendererBounds(foxVisual.gameObject);
-            Assert.That(guideBodyBounds.size.y, Is.InRange(2.45f, 3.25f), $"Guide body should read larger than the fox in gameplay, measured {guideBodyBounds.size.y:0.00}m.");
-            Assert.That(guideBodyBounds.size.y, Is.GreaterThan(foxBounds.size.y * 1.65f), $"Guide body {guideBodyBounds.size.y:0.00}m should be unmistakably taller than fox {foxBounds.size.y:0.00}m.");
+            Assert.That(guideBodyBounds.size.y, Is.InRange(3.3f, 4f), $"Guide body should read larger than the fox in gameplay, measured {guideBodyBounds.size.y:0.00}m.");
+            Assert.That(guideBodyBounds.size.y, Is.GreaterThan(foxBounds.size.y * 3.1f), $"Guide body {guideBodyBounds.size.y:0.00}m should be unmistakably taller than fox {foxBounds.size.y:0.00}m.");
             Assert.That(CalculateRendererBounds(prefab).size.y, Is.GreaterThanOrEqualTo(3.2f));
         }
 
@@ -127,6 +132,15 @@ namespace TilkiOyunu.Foundation.Tests
             Bounds waterBounds = CalculateRendererBounds(creekWater);
             Assert.That(walkwayBounds.min.y, Is.GreaterThan(waterBounds.max.y + 0.08f));
 
+            foreach (float end in new[] { -14f, 14f })
+            {
+                Vector3 deckEnd = bridge.transform.TransformPoint(new Vector3(0f, 0.28f, end));
+                float bankHeight = terrain.transform.position.y + terrain.SampleHeight(deckEnd);
+                Assert.That(deckEnd.y - bankHeight, Is.InRange(0f, 0.4f), "Bridge entrances should meet the dry banks.");
+            }
+            Assert.That(GameObject.Find("Sprint55C_Bridge_ApproachA")?.GetComponent<BoxCollider>(), Is.Not.Null);
+            Assert.That(GameObject.Find("Sprint55C_Bridge_ApproachB")?.GetComponent<BoxCollider>(), Is.Not.Null);
+
             Vector2 center = new(bridge.transform.position.x, bridge.transform.position.z);
             Vector2 bankA = center - bridgeDirection.normalized * 14f;
             Vector2 bankB = center + bridgeDirection.normalized * 14f;
@@ -174,7 +188,9 @@ namespace TilkiOyunu.Foundation.Tests
                 "Future Quest Area Marker",
                 "GB_SpawnMeadow_Readability",
                 "GB_NPCGrove_Readability",
-                "GB_FinalHill_Summit"
+                "GB_FinalHill_Summit",
+                "Garden Platform",
+                "Garden Center Glow"
             };
 
             foreach (string objectName in removedObjects)
@@ -183,6 +199,7 @@ namespace TilkiOyunu.Foundation.Tests
             }
 
             Assert.That(FindSceneObjectsByPrefix("Traversal Tree "), Is.Empty, "Sprint 1 handmade cylinder/sphere traversal trees should not remain in the runtime scene.");
+            Assert.That(FindSceneObjectsByPrefix("Garden Flower "), Is.Empty);
         }
 
         [Test]
@@ -219,9 +236,9 @@ namespace TilkiOyunu.Foundation.Tests
                 .ToArray();
         }
 
-        private static Bounds CalculateRendererBounds(GameObject root)
+        private static Bounds CalculateRendererBounds(GameObject root, bool skinnedOnly = false)
         {
-            Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+            Renderer[] renderers = skinnedOnly ? root.GetComponentsInChildren<SkinnedMeshRenderer>(true) : root.GetComponentsInChildren<Renderer>(true);
             Assert.That(renderers.Length, Is.GreaterThan(0), root.name);
             Bounds bounds = renderers[0].bounds;
             for (int i = 1; i < renderers.Length; i++)
