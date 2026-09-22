@@ -46,8 +46,8 @@ namespace TilkiOyunu.Foundation
             cameraController = FindFirstObjectByType<ThirdPersonCameraController>();
             lightPath = FindFirstObjectByType<LightPathController>();
             if (inputLock == null || cameraController == null) { enabled = false; return; }
-            toggleAction = cameraController.InputActions?.FindAction("Player/WorldMap", false)?.Clone();
-            cancelAction = cameraController.InputActions?.FindAction("Player/Pause", false)?.Clone();
+            toggleAction = cameraController.InputActions?.FindAction("Player/WorldMap", false);
+            cancelAction = cameraController.InputActions?.FindAction("Player/Pause", false);
             toggleAction?.Enable();
             cancelAction?.Enable();
             RegisterTargets();
@@ -303,8 +303,11 @@ namespace TilkiOyunu.Foundation
         private void LateUpdate()
         {
             if (mini == null || !GameServices.HasCurrent) return;
-            if (toggleAction != null && toggleAction.WasPressedThisFrame()) SetOpen(!IsOpen);
-            else if (IsOpen && cancelAction != null && cancelAction.WasPressedThisFrame()) SetOpen(false);
+            var settings = SettingsRuntime.Instance?.Applied;
+            mini.gameObject.SetActive(settings?.minimap ?? true);
+            if (!SettingsMenuUI.InputConsumed && toggleAction != null && toggleAction.WasPressedThisFrame()) SetOpen(!IsOpen);
+            else if (!SettingsMenuUI.InputConsumed && IsOpen && cancelAction != null && cancelAction.WasPressedThisFrame())
+            { SettingsMenuUI.ConsumeInput(); SetOpen(false); }
             var quests = GameServices.Current.Quest;
             Vector3 playerPosition = playerTransform != null ? playerTransform.position : Vector3.zero;
             float span = Mathf.Min(150f, worldBounds.width);
@@ -339,8 +342,10 @@ namespace TilkiOyunu.Foundation
                 var localUV = new Vector2((position.x - nearbyBounds.xMin) / span, (position.z - nearbyBounds.yMin) / span);
                 bool nearby = localUV.x >= 0 && localUV.x <= 1 && localUV.y >= 0 && localUV.y <= 1;
                 view.Mini.gameObject.SetActive(view.Target.IsVisible(quests, false, lightPath)
+                    && (settings == null || settings.objectiveMarkers || view.Target.Type == MapMarkerType.Player)
                     && (nearby || view == nearest || view.Target.Type == MapMarkerType.Player));
-                view.Full.gameObject.SetActive(view.Target.IsVisible(quests, true, lightPath));
+                view.Full.gameObject.SetActive(view.Target.IsVisible(quests, true, lightPath)
+                    && (settings == null || settings.objectiveMarkers || view.Target.Type == MapMarkerType.Player));
                 var uv = WorldToMap(position);
                 uv.x = Mathf.Clamp(uv.x, .035f, .965f); uv.y = Mathf.Clamp(uv.y, .035f, .965f);
                 localUV.x = Mathf.Clamp(localUV.x, .055f, .945f); localUV.y = Mathf.Clamp(localUV.y, .055f, .945f);
@@ -354,7 +359,7 @@ namespace TilkiOyunu.Foundation
                 view.Label.enabled = !futureLight;
                 view.MiniIcon.color = view.FullIcon.color = color;
                 float scale = highlighted ? 1.35f + Mathf.Sin(Time.unscaledTime * 3) * .08f : 1;
-                view.Mini.localScale = view.Full.localScale = Vector3.one * scale;
+                view.Mini.localScale = view.Full.localScale = Vector3.one * scale * (settings?.markerScale ?? 1);
                 if (view.Target.Type == MapMarkerType.Player)
                     view.Mini.localEulerAngles = view.Full.localEulerAngles = new Vector3(0, 0, -view.Target.transform.eulerAngles.y);
                 view.Label.text = highlighted && view.Target.Type == MapMarkerType.NPC ? "NPC’ye geri dön" : view.Target.Label;
@@ -386,13 +391,12 @@ namespace TilkiOyunu.Foundation
 
         private void OnDisable()
         {
-            SetOpen(false); toggleAction?.Disable(); cancelAction?.Disable();
+            SetOpen(false);
         }
 
         private void OnEnable() { toggleAction?.Enable(); cancelAction?.Enable(); }
         private void OnDestroy()
         {
-            toggleAction?.Dispose(); cancelAction?.Dispose();
             foreach (var asset in ownedAssets) if (asset != null) Destroy(asset);
         }
     }

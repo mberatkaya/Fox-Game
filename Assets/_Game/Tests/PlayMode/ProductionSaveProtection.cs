@@ -14,6 +14,9 @@ namespace TilkiOyunu.Foundation.PlayModeTests
         [OneTimeSetUp]
         public void Preserve()
         {
+            GameBootstrap.ShowMainMenuOnStart = false;
+            SettingsRuntime.ApplyDisplayOnStartup = false;
+            SettingsRuntime.SettingsPathOverride = Path.Combine(Path.GetTempPath(), "tilki-settings-playmode-" + System.Guid.NewGuid().ToString("N") + ".json");
             path = new SaveService().SavePath;
             backup = path + ".playmode-backup";
             Assert.That(File.Exists(backup), Is.False,
@@ -25,6 +28,10 @@ namespace TilkiOyunu.Foundation.PlayModeTests
         [OneTimeTearDown]
         public void Restore()
         {
+            GameBootstrap.ShowMainMenuOnStart = true;
+            SettingsRuntime.ApplyDisplayOnStartup = true;
+            if (File.Exists(SettingsRuntime.SettingsPathOverride)) File.Delete(SettingsRuntime.SettingsPathOverride);
+            SettingsRuntime.SettingsPathOverride = null;
             if (existed && File.Exists(backup))
             {
                 File.Copy(backup, path, true);
