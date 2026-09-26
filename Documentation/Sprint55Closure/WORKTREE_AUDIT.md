@@ -947,3 +947,17 @@ Preserve all entries below; generated caches, IDE state, test results and prior 
 - ASSET_NOTES now records the fitted derivatives, historical TreePack provenance without inventing a license, absent animation library, and project-owned UI/geometry.
 - GitHub repository: authenticated account mberatkaya; no protection/rulesets, statuses, check runs, workflow runs or required reviews on the parent/main branches at initial inspection. Required remote checks are therefore not configured (not described as a passing CI run). Existing convention is a merge commit; automatic branch deletion is disabled.
 - Baseline patch/hash inventory remains in ignored Logs/Sprint55Closure. Initial individual file counts include 10 modified + 662 untracked; there were 301 collapsed short-status entries. The initial categories sum to 672, with .meta split out as shown above. No initially dirty documentation file existed.
+
+## Clean checkout defect repaired during closure
+
+The first isolated import produced 72/95 passing EditMode tests and 23 failures caused by unreadable TerrainData. `*.asset text eol=lf` had removed two CRLF byte pairs from the binary terrain: the Git blob was 631,710 bytes, while the intact active-project file was 631,712 bytes. No existing dirty status exposed this because Git normalized that binary as text. A scan of tracked `.asset` files identified this terrain as the sole binary asset.
+
+Commits `29445b2` and `23429ed` add a specific binary exception and restore the intact source bytes. Byte-for-byte comparison of the committed terrain against the active project's original succeeds. The first rerun on the repaired committed checkout passed 95/95 EditMode tests. No terrain geometry was regenerated and no test was weakened. This supersedes the initial plan above to leave `.gitattributes` unchanged; no LFS policy was introduced.
+
+All 651 intentionally preserved initial files (650 untracked plus the modified TMP fallback) match their initial SHA-256 hashes after committing production work. Their paths and reasons are recorded in the initial inventory above. Required work committed: 17 production/metadata files, four existing test/support files, two new closure validator files, asset-note/audit documentation, fox source material reference cleanup, and binary terrain policy/data repair. The temporary detached candidate snapshot `25ba3b8` is local validation history only and is not part of the feature branch or either PR.
+
+## Windows player compilation defect repaired
+
+The first Windows development build failed because the PlayMode `.asmdef` was an ordinary runtime assembly, so player compilation included tests while UnityTest attributes were unavailable. Commit `994b0c6` marks it with the installed Unity test framework's `TestAssemblies` optional reference and removes the duplicate explicit TestRunner reference. The normal player excludes the test assembly; full EditMode/PlayMode suites are rerun to ensure discovery and coverage remain intact. No test assertions or production behavior were relaxed.
+
+Builds can serialize derived URP prefilter/runtime-setting data and tests can populate TMP caches in the isolated validation worktree. These generated differences are saved under ignored Logs before restoring only those known generated paths in that disposable worktree. The active user's TMP file is never restored or overwritten.
