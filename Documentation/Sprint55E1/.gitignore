@@ -1,0 +1,3 @@
+# Local diagnostic output; XML results and Validation.txt are the durable evidence.
+*.log
+ResumeDirty.txt

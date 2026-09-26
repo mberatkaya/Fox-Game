@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Memory_02
   m_EditorClassIdentifier: 
   id: memory_02
-  displayName: "G\xFCzel Yol"
-  shortText: "Birlikte g\xFClmek yolu biraz daha g\xFCzel yap\u0131yor."
+  displayName: "Süt"
+  shortText: "Birlikte yaptığımız waffle’dan bir hatıra."
   icon: {fileID: 0}
   worldPrefab: {fileID: 5958105457107828176, guid: 7b6cfae5bf095834e8d6efe484425d53, type: 3}

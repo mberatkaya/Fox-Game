@@ -1,0 +1,5 @@
+{
+  "name": "TilkiOyunu.Atmosphere.Tests",
+  "references": ["TilkiOyunu.Foundation", "Unity.RenderPipelines.Core.Runtime", "Unity.RenderPipelines.Universal.Runtime", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "includePlatforms": ["Editor"]
+}

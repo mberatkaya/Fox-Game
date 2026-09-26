@@ -15,6 +15,5 @@ MonoBehaviour:
   id: guide_turn_in
   speaker: Rehber
   lines:
-  - Hepsini buldun.
-  - "K\xFC\xE7\xFCk \u015Feylerin nas\u0131l da iz b\u0131rakt\u0131\u011F\u0131n\u0131
-    g\xF6rd\xFCn m\xFC?"
+  - "Şimdi hatırladım... Bu waffle, birlikte yediğimiz en güzel şeydi."
+  - "O günün sıcaklığı hâlâ burada."

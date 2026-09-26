@@ -1,0 +1,3 @@
+Opt-in production input observation; no injected events or gameplay actions.
+1: services=True; map=; mapEnabled=; lock=; lookLock=; focus=; update=ProcessEventsInDynamicUpdate
+2: services=True; map=False; mapEnabled=True; lock=False; lookLock=False; focus=; update=ProcessEventsInDynamicUpdate; Move=True; Look=True; Jump=True; Interact=True; WorldMap=True; Pause=True; mapOwnerAction=True; mapControls=1

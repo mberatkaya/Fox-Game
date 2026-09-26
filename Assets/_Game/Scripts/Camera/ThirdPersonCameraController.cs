@@ -28,6 +28,7 @@ namespace TilkiOyunu.Foundation
         private bool lookInputLocked;
 
         public Transform Target => target;
+        public InputActionAsset InputActions => inputActions;
         public bool IsExternalControlActive => externalControl;
         public bool IsLookInputLocked => lookInputLocked;
 
@@ -71,6 +72,9 @@ namespace TilkiOyunu.Foundation
             Vector2 look = lookInputLocked ? Vector2.zero : lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
             bool mouseLook = lookAction?.activeControl?.device is Mouse;
             float sensitivity = mouseLook ? mouseSensitivity : gamepadSensitivity * deltaTime;
+            var preferences = SettingsRuntime.Instance?.Applied;
+            sensitivity *= preferences?.sensitivity ?? 1f;
+            if (preferences != null && preferences.invertY) look.y = -look.y;
 
             yaw += look.x * sensitivity;
             pitch = Mathf.Clamp(pitch - look.y * sensitivity, minPitch, maxPitch);

@@ -28,6 +28,7 @@ namespace TilkiOyunu.Foundation
         private CursorLockMode previousCursorLockState;
         private bool previousCursorVisible;
         private bool cameraLookLocked;
+        private bool previousCameraLookLocked;
 
         public bool IsOpen => isOpen;
         public bool HasCursorOverride => hasCursorOverride;
@@ -54,6 +55,7 @@ namespace TilkiOyunu.Foundation
 
         private void OnDisable()
         {
+            controller?.CancelRun();
             if (closeButton != null)
             {
                 closeButton.onClick.RemoveListener(Close);
@@ -75,8 +77,9 @@ namespace TilkiOyunu.Foundation
 
         private void Update()
         {
-            if (isOpen && WasCancelPressed())
+            if (isOpen && !SettingsMenuUI.InputConsumed && WasCancelPressed())
             {
+                SettingsMenuUI.ConsumeInput();
                 Close();
             }
         }
@@ -298,6 +301,7 @@ namespace TilkiOyunu.Foundation
             ResolveCameraController();
             if (cameraController != null && !cameraLookLocked)
             {
+                previousCameraLookLocked = cameraController.IsLookInputLocked;
                 cameraController.SetLookInputLocked(true);
                 cameraLookLocked = true;
             }
@@ -307,7 +311,7 @@ namespace TilkiOyunu.Foundation
         {
             if (cameraController != null && cameraLookLocked)
             {
-                cameraController.SetLookInputLocked(false);
+                cameraController.SetLookInputLocked(previousCameraLookLocked);
                 cameraLookLocked = false;
             }
         }

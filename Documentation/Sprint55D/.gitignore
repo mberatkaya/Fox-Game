@@ -1,0 +1,8 @@
+*.log
+Baseline/Restored/
+Baseline/Forest.before.unity
+Baseline/user-changes*.patch
+atmosphere-only.patch
+PlayReview/*.png
+final-git-status.txt
+final-head.txt

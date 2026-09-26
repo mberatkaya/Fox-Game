@@ -32,7 +32,7 @@ Completing all three quests unlocks the Final Camp. The final interaction opens 
 
 ## Key Content
 
-- `Assets/_Game/Prefabs/Characters/PlayerFox.prefab` contains the gameplay root, `CharacterController`, interaction origin, camera target, and the Quaternius fox visual under `VisualRoot`.
+- `Assets/_Game/Prefabs/Characters/PlayerFox.prefab` contains the gameplay root, `CharacterController`, interaction origin, camera target, and the Pxltiger Toon Fox visual under `VisualRoot/ToonFox`.
 - `Assets/_Game/Data` contains editable quest, memory, dialogue, config, and final message ScriptableObjects.
 - `Assets/_Game/Scenes/Gameplay/Forest.unity` contains the current playable forest, quest/minigame objects, production visual layer, scene audio, UI, and final camp.
 - `Assets/ThirdParty` contains the narrow imported subset of approved CC0 assets used by Sprint 5.
@@ -43,9 +43,9 @@ Completing all three quests unlocks the Final Camp. The final interaction opens 
 
 ## Assets
 
-Third-party assets are CC0 and documented in `ASSET_NOTES.md`:
+Third-party assets are documented in `ASSET_NOTES.md`:
 
-- Quaternius Ultimate Animated Animal Pack: fox FBX
+- Unity Asset Store: Pxltiger Toon Fox player character, Standard Unity Asset Store EULA
 - Quaternius Ultimate Stylized Nature Pack: selected trees, rocks, bushes, grass, flowers, textures
 - Kenney UI Pack: selected UI sprites
 - Kenney Interface Sounds: selected UI sounds

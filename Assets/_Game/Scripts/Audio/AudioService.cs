@@ -45,8 +45,7 @@ namespace TilkiOyunu.Foundation
                 return;
             }
 
-            float clamped = Mathf.Clamp(normalizedVolume, 0.0001f, 1f);
-            mixer.SetFloat(parameterName, Mathf.Log10(clamped) * 20f);
+            mixer.SetFloat(parameterName, SettingsService.Decibels(normalizedVolume));
         }
     }
 }

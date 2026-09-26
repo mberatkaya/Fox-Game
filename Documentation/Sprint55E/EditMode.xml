@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="76" result="Passed" total="76" passed="76" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:36Z" duration="7,4990121">
+  <test-suite type="TestSuite" id="1000" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="76" result="Passed" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:36Z" duration="7.499012" total="76" passed="76" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1009" name="TilkiOyunu.Atmosphere.Tests.dll" fullname="C:/Users/mbkay/Repo/TilkiOyunu/Library/ScriptAssemblies/TilkiOyunu.Atmosphere.Tests.dll" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:30Z" duration="1.914429" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="7520" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1010" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:30Z" duration="1.913934" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1011" name="Foundation" fullname="TilkiOyunu.Foundation" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:30Z" duration="1.913787" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1012" name="Tests" fullname="TilkiOyunu.Foundation.Tests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:30Z" duration="1.913619" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1001" name="ForestAtmosphereTests" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:30Z" duration="1.912931" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1007" name="AudioRoutesThroughExistingMixerAndCampfireFadesToSilence" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests.AudioRoutesThroughExistingMixerAndCampfireFadesToSilence" methodname="AudioRoutesThroughExistingMixerAndCampfireFadesToSilence" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" seed="666284762" result="Passed" start-time="2026-09-15 20:51:28Z" end-time="2026-09-15 20:51:29Z" duration="0.528723" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1008" name="DistanceFogLeavesNearGameplayClearAndTerrainRemainsMatte" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests.DistanceFogLeavesNearGameplayClearAndTerrainRemainsMatte" methodname="DistanceFogLeavesNearGameplayClearAndTerrainRemainsMatte" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" seed="1925845494" result="Passed" start-time="2026-09-15 20:51:29Z" end-time="2026-09-15 20:51:29Z" duration="0.275961" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="ProductionVolumeIsConnectedAndKeepsGameplayClean" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests.ProductionVolumeIsConnectedAndKeepsGameplayClean" methodname="ProductionVolumeIsConnectedAndKeepsGameplayClean" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" seed="473099076" result="Passed" start-time="2026-09-15 20:51:29Z" end-time="2026-09-15 20:51:29Z" duration="0.258444" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1002" name="SunIsTheOnlyRealtimeShadowLight" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests.SunIsTheOnlyRealtimeShadowLight" methodname="SunIsTheOnlyRealtimeShadowLight" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" seed="2133578599" result="Passed" start-time="2026-09-15 20:51:29Z" end-time="2026-09-15 20:51:29Z" duration="0.257222" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="1006" name="WaterHasVisibleUpwardFacesAndValidUrpMaterial" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests.WaterHasVisibleUpwardFacesAndValidUrpMaterial" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-15 20:51:29Z" end-time="2026-09-15 20:51:30Z" duration="0.580098" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1004" name="WaterHasVisibleUpwardFacesAndValidUrpMaterial(&quot;GB_Lake_TempWater&quot;)" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests.WaterHasVisibleUpwardFacesAndValidUrpMaterial(&quot;GB_Lake_TempWater&quot;)" methodname="WaterHasVisibleUpwardFacesAndValidUrpMaterial" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" seed="431348974" result="Passed" start-time="2026-09-15 20:51:29Z" end-time="2026-09-15 20:51:30Z" duration="0.268611" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1005" name="WaterHasVisibleUpwardFacesAndValidUrpMaterial(&quot;GB_Creek_TempWater&quot;)" fullname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests.WaterHasVisibleUpwardFacesAndValidUrpMaterial(&quot;GB_Creek_TempWater&quot;)" methodname="WaterHasVisibleUpwardFacesAndValidUrpMaterial" classname="TilkiOyunu.Foundation.Tests.ForestAtmosphereTests" runstate="Runnable" seed="1398873495" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.258405" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1092" name="TilkiOyunu.Foundation.Tests.dll" fullname="C:/Users/mbkay/Repo/TilkiOyunu/Library/ScriptAssemblies/TilkiOyunu.Foundation.Tests.dll" runstate="Runnable" testcasecount="70" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:36Z" duration="5.579964" total="70" passed="70" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="7520" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1093" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="70" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:36Z" duration="5.577233" total="70" passed="70" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1094" name="Foundation" fullname="TilkiOyunu.Foundation" runstate="Runnable" testcasecount="70" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:36Z" duration="5.576571" total="70" passed="70" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1095" name="Tests" fullname="TilkiOyunu.Foundation.Tests" runstate="Runnable" testcasecount="70" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:36Z" duration="5.575925" total="70" passed="70" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1013" name="SaveServiceTests" fullname="TilkiOyunu.Foundation.Tests.SaveServiceTests" classname="TilkiOyunu.Foundation.Tests.SaveServiceTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.036451" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1018" name="CorruptSaveReturnsFreshData" fullname="TilkiOyunu.Foundation.Tests.SaveServiceTests.CorruptSaveReturnsFreshData" methodname="CorruptSaveReturnsFreshData" classname="TilkiOyunu.Foundation.Tests.SaveServiceTests" runstate="Runnable" seed="1809285276" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.016288" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[SAVE] Could not load save file. Starting a new save. JSON parse error: Missing a name for object member.
+]]></output>
+              </test-case>
+              <test-case id="1017" name="DeleteSaveRemovesFile" fullname="TilkiOyunu.Foundation.Tests.SaveServiceTests.DeleteSaveRemovesFile" methodname="DeleteSaveRemovesFile" classname="TilkiOyunu.Foundation.Tests.SaveServiceTests" runstate="Runnable" seed="93028598" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.001667" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1016" name="MissingSaveReturnsFreshData" fullname="TilkiOyunu.Foundation.Tests.SaveServiceTests.MissingSaveReturnsFreshData" methodname="MissingSaveReturnsFreshData" classname="TilkiOyunu.Foundation.Tests.SaveServiceTests" runstate="Runnable" seed="1250128569" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.000482" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1014" name="NewSaveSerializesToDisk" fullname="TilkiOyunu.Foundation.Tests.SaveServiceTests.NewSaveSerializesToDisk" methodname="NewSaveSerializesToDisk" classname="TilkiOyunu.Foundation.Tests.SaveServiceTests" runstate="Runnable" seed="1794400692" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.007736" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="SavedDataLoadsBack" fullname="TilkiOyunu.Foundation.Tests.SaveServiceTests.SavedDataLoadsBack" methodname="SavedDataLoadsBack" classname="TilkiOyunu.Foundation.Tests.SaveServiceTests" runstate="Runnable" seed="1777071643" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.008907" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1019" name="Sprint1GameplayFoundationTests" fullname="TilkiOyunu.Foundation.Tests.Sprint1GameplayFoundationTests" classname="TilkiOyunu.Foundation.Tests.Sprint1GameplayFoundationTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.007837" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1021" name="InputActionIdsMatchSprintOneInputAsset" fullname="TilkiOyunu.Foundation.Tests.Sprint1GameplayFoundationTests.InputActionIdsMatchSprintOneInputAsset" methodname="InputActionIdsMatchSprintOneInputAsset" classname="TilkiOyunu.Foundation.Tests.Sprint1GameplayFoundationTests" runstate="Runnable" seed="257228690" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.006572" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1020" name="MovementSettingsSanitizeKeepsPlayableValues" fullname="TilkiOyunu.Foundation.Tests.Sprint1GameplayFoundationTests.MovementSettingsSanitizeKeepsPlayableValues" methodname="MovementSettingsSanitizeKeepsPlayableValues" classname="TilkiOyunu.Foundation.Tests.Sprint1GameplayFoundationTests" runstate="Runnable" seed="1388241887" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.000596" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1022" name="Sprint2QuestServiceTests" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.044895" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1028" name="CollectedMemoryIdsArePreserved" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests.CollectedMemoryIdsArePreserved" methodname="CollectedMemoryIdsArePreserved" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" seed="785421037" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.011684" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1024" name="DuplicateMemoryIdDoesNotIncreaseProgress" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests.DuplicateMemoryIdDoesNotIncreaseProgress" methodname="DuplicateMemoryIdDoesNotIncreaseProgress" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" seed="1605122488" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.002246" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1025" name="FiveUniqueMemoriesReadyQuestForTurnIn" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests.FiveUniqueMemoriesReadyQuestForTurnIn" methodname="FiveUniqueMemoriesReadyQuestForTurnIn" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" seed="1516309169" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.009380" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="OldSaveMissingFieldsLoadsSafely" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests.OldSaveMissingFieldsLoadsSafely" methodname="OldSaveMissingFieldsLoadsSafely" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" seed="1576841085" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.006414" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1023" name="QuestStartsCorrectly" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests.QuestStartsCorrectly" methodname="QuestStartsCorrectly" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" seed="530878191" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.001645" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1027" name="SaveLoadQuestProgressIsPreserved" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests.SaveLoadQuestProgressIsPreserved" methodname="SaveLoadQuestProgressIsPreserved" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" seed="2125629888" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003904" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1026" name="TurnInCompletesQuest" fullname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests.TurnInCompletesQuest" methodname="TurnInCompletesQuest" classname="TilkiOyunu.Foundation.Tests.Sprint2QuestServiceTests" runstate="Runnable" seed="1142896005" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.008190" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1030" name="Sprint3LightPathTests" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.049702" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1037" name="AllNodesCompleteReadiesQuestForTurnIn" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.AllNodesCompleteReadiesQuestForTurnIn" methodname="AllNodesCompleteReadiesQuestForTurnIn" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="885295754" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.017211" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1033" name="CorrectNodeSequenceAdvancesProgress" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.CorrectNodeSequenceAdvancesProgress" methodname="CorrectNodeSequenceAdvancesProgress" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="232317394" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003551" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1035" name="DuplicateNodeActivationDoesNotDoubleCount" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.DuplicateNodeActivationDoesNotDoubleCount" methodname="DuplicateNodeActivationDoesNotDoubleCount" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="852681911" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003820" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1032" name="LightPathCanStartAfterMemoryQuestCompleted" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.LightPathCanStartAfterMemoryQuestCompleted" methodname="LightPathCanStartAfterMemoryQuestCompleted" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="860789820" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.002854" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1031" name="LightPathDoesNotStartBeforeMemoryQuestCompleted" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.LightPathDoesNotStartBeforeMemoryQuestCompleted" methodname="LightPathDoesNotStartBeforeMemoryQuestCompleted" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="1151251094" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.000685" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1038" name="NpcTurnInCompletesLightPathQuest" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.NpcTurnInCompletesLightPathQuest" methodname="NpcTurnInCompletesLightPathQuest" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="860702789" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003477" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1040" name="SaveLoadCompletedIsPreserved" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.SaveLoadCompletedIsPreserved" methodname="SaveLoadCompletedIsPreserved" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="182560122" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.004998" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1039" name="SaveLoadReadyToTurnInIsPreserved" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.SaveLoadReadyToTurnInIsPreserved" methodname="SaveLoadReadyToTurnInIsPreserved" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="1335037646" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003787" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1036" name="TimeoutResetsRun" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.TimeoutResetsRun" methodname="TimeoutResetsRun" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="414733068" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003504" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1034" name="WrongNodeResetsRun" fullname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests.WrongNodeResetsRun" methodname="WrongNodeResetsRun" classname="TilkiOyunu.Foundation.Tests.Sprint3LightPathTests" runstate="Runnable" seed="340104147" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003468" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1041" name="Sprint4CardMatchingTests" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.091323" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1044" name="CardDeckContainsExactlyFourPairs" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.CardDeckContainsExactlyFourPairs" methodname="CardDeckContainsExactlyFourPairs" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1439133502" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.010415" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1043" name="CardQuestCanStartAfterLightPathCompleted" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.CardQuestCanStartAfterLightPathCompleted" methodname="CardQuestCanStartAfterLightPathCompleted" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="2042264591" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.004017" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1042" name="CardQuestDoesNotStartBeforeLightPathCompleted" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.CardQuestDoesNotStartBeforeLightPathCompleted" methodname="CardQuestDoesNotStartBeforeLightPathCompleted" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1442480249" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.000784" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1051" name="FinalCampIsLockedWithOnlyTwoMainQuestsCompleted" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.FinalCampIsLockedWithOnlyTwoMainQuestsCompleted" methodname="FinalCampIsLockedWithOnlyTwoMainQuestsCompleted" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1875624353" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.003639" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1052" name="FinalCampUnlocksAfterThreeMainQuestsCompleted" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.FinalCampUnlocksAfterThreeMainQuestsCompleted" methodname="FinalCampUnlocksAfterThreeMainQuestsCompleted" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="765187807" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.012871" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1049" name="FourPairsReadyQuestForTurnIn" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.FourPairsReadyQuestForTurnIn" methodname="FourPairsReadyQuestForTurnIn" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1262561765" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.006039" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1048" name="MatchedPairDoesNotIncreaseProgressAgain" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.MatchedPairDoesNotIncreaseProgressAgain" methodname="MatchedPairDoesNotIncreaseProgressAgain" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1767162879" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.005138" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1046" name="MatchingPairBecomesMatched" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.MatchingPairBecomesMatched" methodname="MatchingPairBecomesMatched" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1415747196" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.004975" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1047" name="NonMatchReturnsToHiddenAfterDelayResolution" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.NonMatchReturnsToHiddenAfterDelayResolution" methodname="NonMatchReturnsToHiddenAfterDelayResolution" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1328968579" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.004995" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1050" name="NpcTurnInCompletesCardQuest" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.NpcTurnInCompletesCardQuest" methodname="NpcTurnInCompletesCardQuest" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="596705951" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.006302" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1054" name="ReloadFinalUnlockIsCalculatedFromCompletedQuests" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.ReloadFinalUnlockIsCalculatedFromCompletedQuests" methodname="ReloadFinalUnlockIsCalculatedFromCompletedQuests" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="1396211010" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.012609" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1045" name="SameCardCannotBeSelectedTwice" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.SameCardCannotBeSelectedTwice" methodname="SameCardCannotBeSelectedTwice" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="303756295" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.004503" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1053" name="SaveLoadThirdQuestStateIsPreserved" fullname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests.SaveLoadThirdQuestStateIsPreserved" methodname="SaveLoadThirdQuestStateIsPreserved" classname="TilkiOyunu.Foundation.Tests.Sprint4CardMatchingTests" runstate="Runnable" seed="433696401" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.011828" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1055" name="Sprint55C1CorrectivePassTests" fullname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests" classname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:31Z" duration="0.516808" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1058" name="FoxAnimatorKeepsRootMotionOffAndReferencesExtendedStates" fullname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests.FoxAnimatorKeepsRootMotionOffAndReferencesExtendedStates" methodname="FoxAnimatorKeepsRootMotionOffAndReferencesExtendedStates" classname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests" runstate="Runnable" seed="750836392" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.002577" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1056" name="ProductionTreesAllHaveSimpleTrunkColliders" fullname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests.ProductionTreesAllHaveSimpleTrunkColliders" methodname="ProductionTreesAllHaveSimpleTrunkColliders" classname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests" runstate="Runnable" seed="667064039" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:30Z" duration="0.256296" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1057" name="SolidRocksAndBridgeHaveBlockingColliders" fullname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests.SolidRocksAndBridgeHaveBlockingColliders" methodname="SolidRocksAndBridgeHaveBlockingColliders" classname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests" runstate="Runnable" seed="126452427" result="Passed" start-time="2026-09-15 20:51:30Z" end-time="2026-09-15 20:51:31Z" duration="0.256071" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1059" name="TerrainCorrectionKeepsGroundMatte" fullname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests.TerrainCorrectionKeepsGroundMatte" methodname="TerrainCorrectionKeepsGroundMatte" classname="TilkiOyunu.Foundation.Tests.Sprint55C1CorrectivePassTests" runstate="Runnable" seed="262961159" result="Passed" start-time="2026-09-15 20:51:31Z" end-time="2026-09-15 20:51:31Z" duration="0.000355" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1060" name="Sprint55C2ProductionPassTests" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-15 20:51:31Z" end-time="2026-09-15 20:51:32Z" duration="1.577052" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1064" name="BridgeCorridorIsClearOfGeneratedRocks" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.BridgeCorridorIsClearOfGeneratedRocks" methodname="BridgeCorridorIsClearOfGeneratedRocks" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="1982985764" result="Passed" start-time="2026-09-15 20:51:31Z" end-time="2026-09-15 20:51:31Z" duration="0.261443" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1065" name="BridgeSpansCreekPerpendicularBetweenBothBanks" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.BridgeSpansCreekPerpendicularBetweenBothBanks" methodname="BridgeSpansCreekPerpendicularBetweenBothBanks" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="81259610" result="Passed" start-time="2026-09-15 20:51:31Z" end-time="2026-09-15 20:51:31Z" duration="0.259097" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1063" name="GuideNpcPrefabHasHumanoidAvatarRelaxedIdleAndReadableForestSilhouette" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.GuideNpcPrefabHasHumanoidAvatarRelaxedIdleAndReadableForestSilhouette" methodname="GuideNpcPrefabHasHumanoidAvatarRelaxedIdleAndReadableForestSilhouette" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="1779095707" result="Passed" start-time="2026-09-15 20:51:31Z" end-time="2026-09-15 20:51:31Z" duration="0.004374" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1062" name="GuideNpcUsesProductionVisualAndKeepsGameplayObject" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.GuideNpcUsesProductionVisualAndKeepsGameplayObject" methodname="GuideNpcUsesProductionVisualAndKeepsGameplayObject" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="192821423" result="Passed" start-time="2026-09-15 20:51:31Z" end-time="2026-09-15 20:51:31Z" duration="0.255105" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1067" name="OldHandmadePrototypeMapDressingIsRemovedFromRuntimeScene" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.OldHandmadePrototypeMapDressingIsRemovedFromRuntimeScene" methodname="OldHandmadePrototypeMapDressingIsRemovedFromRuntimeScene" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="1376160441" result="Passed" start-time="2026-09-15 20:51:31Z" end-time="2026-09-15 20:51:32Z" duration="0.274168" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1066" name="ProductionRockScalesStayBelievableAndBlockingRocksHaveFitColliders" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.ProductionRockScalesStayBelievableAndBlockingRocksHaveFitColliders" methodname="ProductionRockScalesStayBelievableAndBlockingRocksHaveFitColliders" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="54361417" result="Passed" start-time="2026-09-15 20:51:32Z" end-time="2026-09-15 20:51:32Z" duration="0.259111" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1068" name="TreeTrunkCollidersCoverBodyWithoutCanopy" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.TreeTrunkCollidersCoverBodyWithoutCanopy" methodname="TreeTrunkCollidersCoverBodyWithoutCanopy" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="2052288387" result="Passed" start-time="2026-09-15 20:51:32Z" end-time="2026-09-15 20:51:32Z" duration="0.256528" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1061" name="UniversalBaseCharactersProductionSubsetIsOrganized" fullname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests.UniversalBaseCharactersProductionSubsetIsOrganized" methodname="UniversalBaseCharactersProductionSubsetIsOrganized" classname="TilkiOyunu.Foundation.Tests.Sprint55C2ProductionPassTests" runstate="Runnable" seed="1811584051" result="Passed" start-time="2026-09-15 20:51:32Z" end-time="2026-09-15 20:51:32Z" duration="0.003635" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1069" name="Sprint55GameplayPlacementTests" fullname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests" classname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-09-15 20:51:32Z" end-time="2026-09-15 20:51:34Z" duration="1.297336" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1074" name="ActivitiesUseLandmarksAndMemoriesUseDistinctRegions" fullname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests.ActivitiesUseLandmarksAndMemoriesUseDistinctRegions" methodname="ActivitiesUseLandmarksAndMemoriesUseDistinctRegions" classname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests" runstate="Runnable" seed="2067376470" result="Passed" start-time="2026-09-15 20:51:32Z" end-time="2026-09-15 20:51:33Z" duration="0.256191" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1072" name="InteractionLocationsAreGroundedAndHaveOpenApproaches" fullname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests.InteractionLocationsAreGroundedAndHaveOpenApproaches" methodname="InteractionLocationsAreGroundedAndHaveOpenApproaches" classname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests" runstate="Runnable" seed="1681995887" result="Passed" start-time="2026-09-15 20:51:33Z" end-time="2026-09-15 20:51:33Z" duration="0.262946" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1071" name="MinigamesAndFinaleKeepTheirSerializedReferences" fullname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests.MinigamesAndFinaleKeepTheirSerializedReferences" methodname="MinigamesAndFinaleKeepTheirSerializedReferences" classname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests" runstate="Runnable" seed="803380264" result="Passed" start-time="2026-09-15 20:51:33Z" end-time="2026-09-15 20:51:33Z" duration="0.256996" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1073" name="OrderedLightRouteHasClearWalkableSegments" fullname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests.OrderedLightRouteHasClearWalkableSegments" methodname="OrderedLightRouteHasClearWalkableSegments" classname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests" runstate="Runnable" seed="1126464572" result="Passed" start-time="2026-09-15 20:51:33Z" end-time="2026-09-15 20:51:33Z" duration="0.259585" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1070" name="ProductionInstancesAndPersistentIdsAreUnique" fullname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests.ProductionInstancesAndPersistentIdsAreUnique" methodname="ProductionInstancesAndPersistentIdsAreUnique" classname="TilkiOyunu.Foundation.Tests.Sprint55GameplayPlacementTests" runstate="Runnable" seed="436510413" result="Passed" start-time="2026-09-15 20:51:33Z" end-time="2026-09-15 20:51:34Z" duration="0.258776" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1075" name="Sprint5FinalPresentationTests" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:36Z" duration="1.952956" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1079" name="AudioServiceAcceptsMissingMixer" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.AudioServiceAcceptsMissingMixer" methodname="AudioServiceAcceptsMissingMixer" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="681982600" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:34Z" duration="0.003833" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[AUDIO] No AudioMixer assigned for MasterVolume.
+[AUDIO] No AudioMixer assigned for MusicVolume.
+[AUDIO] No AudioMixer assigned for AmbienceVolume.
+[AUDIO] No AudioMixer assigned for SFXVolume.
+]]></output>
+              </test-case>
+              <test-case id="1077" name="FinalCanBeginWhenUnlocked" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FinalCanBeginWhenUnlocked" methodname="FinalCanBeginWhenUnlocked" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="2058973476" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:34Z" duration="0.006250" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1076" name="FinalCannotBeginWhileLocked" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FinalCannotBeginWhileLocked" methodname="FinalCannotBeginWhileLocked" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="1495253165" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:34Z" duration="0.000700" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1078" name="FinalCompletionPersists" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FinalCompletionPersists" methodname="FinalCompletionPersists" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="933826756" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:34Z" duration="0.013044" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1086" name="ForestBridgeHasBodyBlockingRailColliders" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.ForestBridgeHasBodyBlockingRailColliders" methodname="ForestBridgeHasBodyBlockingRailColliders" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="1517265026" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:34Z" duration="0.259654" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1085" name="ForestCameraFramesFoxUpperBody" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.ForestCameraFramesFoxUpperBody" methodname="ForestCameraFramesFoxUpperBody" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="1701154554" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:34Z" duration="0.263054" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1087" name="ForestHasSprint55BTerrainGraybox" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.ForestHasSprint55BTerrainGraybox" methodname="ForestHasSprint55BTerrainGraybox" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="1200339689" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:34Z" duration="0.259635" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1090" name="ForestSprint55BLandmarksHaveWorldScaleAndElevation" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.ForestSprint55BLandmarksHaveWorldScaleAndElevation" methodname="ForestSprint55BLandmarksHaveWorldScaleAndElevation" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="25156945" result="Passed" start-time="2026-09-15 20:51:34Z" end-time="2026-09-15 20:51:35Z" duration="0.257678" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1091" name="ForestSprint55BNoVisibleArenaBoundaryDefinesWorld" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.ForestSprint55BNoVisibleArenaBoundaryDefinesWorld" methodname="ForestSprint55BNoVisibleArenaBoundaryDefinesWorld" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="146773063" result="Passed" start-time="2026-09-15 20:51:35Z" end-time="2026-09-15 20:51:35Z" duration="0.263146" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1089" name="ForestSprint55CTerrainLayersGrassAndBridgeExist" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.ForestSprint55CTerrainLayersGrassAndBridgeExist" methodname="ForestSprint55CTerrainLayersGrassAndBridgeExist" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="145096790" result="Passed" start-time="2026-09-15 20:51:35Z" end-time="2026-09-15 20:51:35Z" duration="0.264782" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1088" name="ForestUsesSprint55CProductionEnvironmentAndSolidStartPlatform" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.ForestUsesSprint55CProductionEnvironmentAndSolidStartPlatform" methodname="ForestUsesSprint55CProductionEnvironmentAndSolidStartPlatform" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="12079885" result="Passed" start-time="2026-09-15 20:51:35Z" end-time="2026-09-15 20:51:35Z" duration="0.274183" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1080" name="FoxAnimatorBindingAssetsExist" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FoxAnimatorBindingAssetsExist" methodname="FoxAnimatorBindingAssetsExist" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="1612352505" result="Passed" start-time="2026-09-15 20:51:35Z" end-time="2026-09-15 20:51:35Z" duration="0.000610" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1083" name="FoxAnimatorUsesGroundedLocomotionBlendTree" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FoxAnimatorUsesGroundedLocomotionBlendTree" methodname="FoxAnimatorUsesGroundedLocomotionBlendTree" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="429172197" result="Passed" start-time="2026-09-15 20:51:35Z" end-time="2026-09-15 20:51:35Z" duration="0.001659" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1081" name="FoxImportedLocomotionClipsLoop" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FoxImportedLocomotionClipsLoop" methodname="FoxImportedLocomotionClipsLoop" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="1953726034" result="Passed" start-time="2026-09-15 20:51:35Z" end-time="2026-09-15 20:51:35Z" duration="0.010959" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1082" name="FoxImportedLocomotionClipsMoveSkeleton" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FoxImportedLocomotionClipsMoveSkeleton" methodname="FoxImportedLocomotionClipsMoveSkeleton" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="268681794" result="Passed" start-time="2026-09-15 20:51:35Z" end-time="2026-09-15 20:51:36Z" duration="0.062925" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1084" name="FoxPrefabKeepsMovementRootSeparateFromGroundedVisual" fullname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests.FoxPrefabKeepsMovementRootSeparateFromGroundedVisual" methodname="FoxPrefabKeepsMovementRootSeparateFromGroundedVisual" classname="TilkiOyunu.Foundation.Tests.Sprint5FinalPresentationTests" runstate="Runnable" seed="347386492" result="Passed" start-time="2026-09-15 20:51:36Z" end-time="2026-09-15 20:51:36Z" duration="0.006173" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: C:/Users/mbkay/AppData/LocalLow/DefaultCompany/TilkiOyunu\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

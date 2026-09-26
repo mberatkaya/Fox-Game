@@ -10,6 +10,18 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private CanvasGroup panel;
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Text objectiveText;
+        private LightPathController lightPath;
+        private float nextRefresh;
+
+        private void Start() { lightPath = FindFirstObjectByType<LightPathController>(); Refresh(); }
+        private void Update()
+        {
+            if (Time.unscaledTime >= nextRefresh)
+            {
+                nextRefresh = Time.unscaledTime + .2f;
+                Refresh();
+            }
+        }
 
         private void OnEnable()
         {
@@ -65,7 +77,11 @@ namespace TilkiOyunu.Foundation
 
             if (!TryGetVisibleQuestState(out QuestState state))
             {
-                SetVisible(false);
+                var service = GameServices.Current.Quest;
+                SetVisible(!service.SaveData.finalCompleted);
+                if (titleText != null) titleText.text = service.IsFinalCampUnlocked ? "Son Bir Anı" : "Ormanın Hatırası";
+                if (objectiveText != null) objectiveText.text = service.IsFinalCampUnlocked
+                    ? "Final Kampı’na git. M · Harita" : "Rehber ile konuş. M · Harita";
                 return;
             }
 
@@ -159,7 +175,7 @@ namespace TilkiOyunu.Foundation
         {
             if (state.Status == QuestStatus.ReadyToTurnIn)
             {
-                return "NPC'ye geri dön";
+                return "NPC’ye geri dön. M · Harita";
             }
 
             QuestDefinition definition = GameServices.Current.Quest.FindQuest(state.QuestId);
@@ -168,13 +184,15 @@ namespace TilkiOyunu.Foundation
                 : $"İlerleme: {state.CurrentAmount} / {state.RequiredAmount}";
         }
 
-        private static string FormatTypedObjective(QuestDefinition definition, QuestState state)
+        private string FormatTypedObjective(QuestDefinition definition, QuestState state)
         {
             return definition.ObjectiveType switch
             {
-                QuestObjectiveType.CompleteLightPath => $"Işıkları takip et: {state.CurrentAmount} / {state.RequiredAmount}",
-                QuestObjectiveType.CompleteCardMatch => $"Eşleri bul: {state.CurrentAmount} / {state.RequiredAmount}",
-                _ => $"Anıları bul: {state.CurrentAmount} / {state.RequiredAmount}"
+                QuestObjectiveType.CompleteLightPath => lightPath != null && lightPath.State == LightPathRunState.Running
+                    ? $"Sıradaki ışığı takip et: {lightPath.CurrentIndex}/{lightPath.NodeCount}"
+                    : "Işık Korusu’na git. Hazır olduğunda F ile başlat.",
+                QuestObjectiveType.CompleteCardMatch => $"Kalp Bahçesi’ne git. Eşleşmeler: {state.CurrentAmount}/{state.RequiredAmount}",
+                _ => $"Waffle Malzemeleri: {state.CurrentAmount}/{state.RequiredAmount} · M Harita"
             };
         }
     }

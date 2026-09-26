@@ -1,0 +1,9 @@
+Assets\TextMesh Pro\Resources\Fonts & Materials\LiberationSans SDF - Fallback.asset: True
+Assets\_Game\Editor\Sprint55C2GuideNpcProductionBuilder.cs: True
+Assets\_Game\Editor\Sprint55EnvironmentDressingBuilder.cs: True
+Assets\_Game\Editor\Sprint55WorldLayoutBuilder.cs: True
+Assets\_Game\Animations\NPC\GuideNpc_RelaxedIdle.anim: True
+Assets\_Game\Art\NPC\GuideNpc_WarmAccent_URP.mat: True
+Assets\_Game\Prefabs\NPC\NPC_Guide_Visual.prefab: True
+Assets\_Game\Tests\EditMode\Sprint55C2ProductionPassTests.cs: True
+Assets\_Game\Tests\PlayMode\Sprint5ProductionSmokeTests.cs: True

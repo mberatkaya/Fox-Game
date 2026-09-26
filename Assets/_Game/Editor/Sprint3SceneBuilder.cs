@@ -202,7 +202,7 @@ namespace TilkiOyunu.Foundation.Editor
             GameObject area = EnsureGameObject("Light Path Area");
             LightPathController controller = EnsureComponent<LightPathController>(area);
             SetObject(controller, "quest", quest);
-            SetFloat(controller, "durationSeconds", 40f);
+            SetFloat(controller, "durationSeconds", 75f);
 
             BuildStartObject(area.transform, controller, glow);
 

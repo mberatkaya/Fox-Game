@@ -108,7 +108,11 @@ namespace TilkiOyunu.Foundation
                     continue;
                 }
 
-                float angle = Vector3.Angle(queryOrigin.forward, toTarget / distance);
+                // Facing is yaw on the ground plane. A tall NPC's body center must
+                // not fall outside the fox's view cone merely because it is above it.
+                Vector3 planarTarget = Vector3.ProjectOnPlane(toTarget, Vector3.up);
+                Vector3 planarForward = Vector3.ProjectOnPlane(queryOrigin.forward, Vector3.up);
+                float angle = Vector3.Angle(planarForward, planarTarget);
                 if (angle > maxViewAngle * 0.5f)
                 {
                     continue;

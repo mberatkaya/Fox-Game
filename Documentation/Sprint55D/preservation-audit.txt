@@ -1,0 +1,36 @@
+Existing serialized component changes:
+104 2 
+4 9081061 Camp Placeholder
+114 9081062 Camp Placeholder
+23 13531532 Camp Fire Base
+23 87571158 Sprint55C_MemoryVisual
+114 141555823 Music Loop
+82 141555824 Music Loop
+23 647497623 Node Glow
+1 724572435 
+23 756348844 Node Glow
+23 774774358 Sprint55C_MemoryVisual
+1 808100681 
+23 808100683 GB_Creek_TempWater
+33 808100684 GB_Creek_TempWater
+23 979961754 Node Glow
+4 1009297018 Campfire Loop
+  m_LocalPosition: {x: 0, y: 0, z: 0} -> {x: 1.3500004, y: 0.15999985, z: -0.3500061}
+82 1009297019 Campfire Loop
+114 1025797708 Forest Ambience Loop
+82 1025797709 Forest Ambience Loop
+1 1164227365 
+23 1164227367 GB_Lake_TempWater
+33 1164227368 GB_Lake_TempWater
+108 1527888432 Forest Sun
+4 1527888433 Forest Sun
+  m_LocalRotation: {x: 0.41921642, y: -0.26278195, z: 0.12816732, w: 0.85952103} -> {x: 0.39098036, y: -0.25180724, z: 0.112111814, w: 0.87815624}
+23 1538935618 Sprint55C_MemoryVisual
+23 1627700839 Sprint55C_MemoryVisual
+23 1668442944 Sprint55C_MemoryVisual
+108 1678807887 Warm Camp Light
+23 1960179351 Node Glow
+23 2104317236 Node Glow
+1660057539 9223372036854775807 
+Removed objects/components: 2; new: 10
+Changed by type: Counter({'23': 13, '1': 3, '114': 3, '4': 3, '82': 3, '108': 2, '33': 2, '104': 1, '1660057539': 1})

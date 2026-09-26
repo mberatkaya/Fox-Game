@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 01_AnilariTopla
   m_EditorClassIdentifier: 
   id: collect_memories
-  title: "Da\u011F\u0131lm\u0131\u015F An\u0131lar"
-  description: "Ormanda saklanan 5 k\xFC\xE7\xFCk an\u0131y\u0131 bul."
+  title: "Bir Waffle Anısı"
+  description: "Ormandaki beş waffle malzemesini bul ve Rehber’e dön."
   objectiveType: 0
   targetId: memory
   requiredAmount: 5

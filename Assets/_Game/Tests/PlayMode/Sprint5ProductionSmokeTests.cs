@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,11 +33,18 @@ namespace TilkiOyunu.Foundation.PlayModeTests
 
             GameObject player = GameObject.Find("PlayerFox");
             Assert.That(player, Is.Not.Null);
-            Assert.That(player.transform.Find("VisualRoot/QuaterniusFox/FoxModel"), Is.Not.Null);
+            Assert.That(player.transform.Find("VisualRoot/ToonFox"), Is.Not.Null);
+            Assert.That(player.transform.Find("VisualRoot/OpenGameArtFox"), Is.Null);
             Assert.That(player.GetComponentInChildren<FoxAnimationDriver>(true), Is.Not.Null);
             Assert.That(player.GetComponent<FootstepAudio>(), Is.Not.Null);
 
             Assert.That(GameObject.Find("Environment_Visuals"), Is.Not.Null);
+            Assert.That(GameObject.Find("World"), Is.Not.Null);
+            Assert.That(GameObject.Find("Sprint55B_PrimaryTerrain"), Is.Not.Null);
+            Assert.That(GameObject.Find("Start Platform"), Is.Not.Null);
+            Assert.That(GameObject.Find("Environment"), Is.Not.Null);
+            Assert.That(GameObject.Find("Sprint55C_Bridge_Walkway"), Is.Not.Null);
+            Assert.That(GameObject.Find("LM_FinalHill"), Is.Not.Null);
             Assert.That(GameObject.Find("Sprint 5 Scene Audio"), Is.Not.Null);
             Assert.That(Object.FindFirstObjectByType<SceneLoopAudio>(), Is.Not.Null);
             Assert.That(Object.FindFirstObjectByType<FinalSequenceController>(FindObjectsInactive.Include), Is.Not.Null);
@@ -74,17 +82,32 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(player.transform.Find("VisualRoot"), Is.Not.Null);
             Assert.That(player.transform.Find("VisualRoot").gameObject.activeInHierarchy, Is.True);
 
-            GameObject environmentVisuals = GameObject.Find("Environment_Visuals");
-            Assert.That(environmentVisuals, Is.Not.Null);
+            Terrain terrain = Object.FindFirstObjectByType<Terrain>();
+            Assert.That(terrain, Is.Not.Null);
+            TerrainCollider terrainCollider = terrain.GetComponent<TerrainCollider>();
+            Assert.That(terrainCollider, Is.Not.Null);
+            Assert.That(terrainCollider.enabled, Is.True);
+            Assert.That(terrainCollider.terrainData, Is.EqualTo(terrain.terrainData));
+            Assert.That(player.transform.position.y, Is.GreaterThanOrEqualTo(terrain.SampleHeight(player.transform.position) - 0.01f));
+
+            GameObject startPlatform = GameObject.Find("Start Platform");
+            Assert.That(startPlatform, Is.Not.Null);
+            Assert.That(startPlatform.GetComponent<BoxCollider>(), Is.Not.Null);
+
+            GameObject world = GameObject.Find("World");
+            GameObject environment = GameObject.Find("Environment");
+            Assert.That(world, Is.Not.Null);
+            Assert.That(environment, Is.Not.Null);
             Assert.That(HasRenderableInView(camera, player.transform.Find("VisualRoot")), Is.True);
-            Assert.That(HasRenderableInView(camera, environmentVisuals.transform), Is.True);
+            Assert.That(HasRenderableInView(camera, environment.transform), Is.True);
 
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<DialoguePanelUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<CardMatchingPanelUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<FinalMessagePanelUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<MemoryFeedbackUI>(FindObjectsInactive.Include));
             AssertHiddenCanvasGroup(Object.FindFirstObjectByType<LightPathHUD>(FindObjectsInactive.Include));
-            AssertHiddenCanvasGroup(Object.FindFirstObjectByType<QuestHUD>(FindObjectsInactive.Include));
+            var questHud = Object.FindFirstObjectByType<QuestHUD>(FindObjectsInactive.Include);
+            Assert.That(questHud.GetComponent<CanvasGroup>().alpha, Is.EqualTo(1f), "Fresh-save navigation must show the Guide destination.");
         }
 
         [UnityTest]
@@ -268,6 +291,138 @@ namespace TilkiOyunu.Foundation.PlayModeTests
         }
 
         [UnityTest]
+        public IEnumerator GuideStaysAboveTerrainAndTallerThanFoxDuringIdle()
+        {
+            yield return LoadBootstrapToForest();
+            GameObject npc = GameObject.Find("NPC_Guide");
+            Transform visual = npc.transform.Find("VisualRoot/NPC_Guide_Visual");
+            Transform body = visual.Find("AnimatedRoot/GuideCharacterRig/QuaterniusGuideBody");
+            Transform hair = visual.Find("AnimatedRoot/GuideCharacterRig/QuaterniusGuideHair");
+            GameObject player = GameObject.Find("PlayerFox");
+            Terrain terrain = Object.FindFirstObjectByType<Terrain>();
+            Animator animator = visual.GetComponent<Animator>();
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            player.GetComponent<FoxController>().enabled = false;
+            CharacterController capsule = player.GetComponent<CharacterController>();
+            capsule.enabled = false;
+            Vector3 besideGuide = npc.transform.position - npc.transform.right * 1.8f;
+            besideGuide.y = terrain.transform.position.y + terrain.SampleHeight(besideGuide) + 0.04f;
+            player.transform.SetPositionAndRotation(besideGuide, npc.transform.rotation);
+            capsule.enabled = true;
+            Bounds fox = SkinnedBounds(player.transform.Find("VisualRoot/ToonFox"));
+            float lowestFeet = float.PositiveInfinity;
+            float highestFeet = float.NegativeInfinity;
+
+            for (int sample = 0; sample < 8; sample++)
+            {
+                animator.Update(0.5f);
+                yield return null;
+                Bounds human = SkinnedBounds(body);
+                lowestFeet = Mathf.Min(lowestFeet, human.min.y);
+                highestFeet = Mathf.Max(highestFeet, human.min.y);
+                Bounds hairstyle = SkinnedBounds(hair);
+                float ground = terrain.transform.position.y + terrain.SampleHeight(npc.transform.position);
+                Assert.That(human.min.y - ground, Is.InRange(-0.02f, 0.12f), "Animated feet must stay on the terrain.");
+                Assert.That(human.size.y, Is.GreaterThan(fox.size.y * 3.1f), "Compare visible meshes, not imported culling bounds or props.");
+                Assert.That(hairstyle.max.y - human.max.y, Is.InRange(-0.1f, 0.25f), "Hair must remain attached to the head.");
+                AssertGuideAccessoryFit(visual);
+            }
+            Assert.That(highestFeet - lowestFeet, Is.GreaterThan(0.01f), "Idle must keep moving without sinking the body.");
+            Debug.Log($"WORLD_SCALE guideHeight={SkinnedBounds(body).size.y:F3} foxHeight={fox.size.y:F3}");
+            CaptureWorldScaleReview("NPC Scale");
+            CaptureWorldScaleReview("NPC Outfit");
+        }
+
+        private static void AssertGuideAccessoryFit(Transform visual)
+        {
+            Transform frame = visual.Find("AnimatedRoot");
+            var bones = new Dictionary<string, Transform>();
+            foreach (Transform child in visual.GetComponentsInChildren<Transform>()) bones[child.name] = child;
+            Transform staff = bones["GuideStaff"];
+            Assert.That(staff.parent, Is.EqualTo(bones["hand_r"]));
+            Assert.That(Vector3.Distance(staff.position, bones["GuideStaffGrip"].position), Is.LessThan(0.01f));
+            foreach (string finger in new[] { "index", "middle", "pinky" })
+            {
+                Vector3 tip = bones[$"{finger}_04_leaf_r"].position;
+                float radialDistance = Vector3.ProjectOnPlane(tip - staff.position, staff.up).magnitude;
+                Assert.That(radialDistance, Is.LessThan(0.15f), $"{finger} must curl around the staff instead of pointing away.");
+            }
+            Assert.That(frame.InverseTransformPoint(bones["hand_r"].position).x, Is.GreaterThan(0.55f), "Right arm must remain outside the torso.");
+            Assert.That(frame.InverseTransformPoint(bones["hand_l"].position).x, Is.LessThan(-0.5f), "Left arm must remain outside the torso.");
+            Assert.That(Vector3.Distance(bones["GuideShoulderFern_Left"].position, bones["upperarm_l"].position), Is.LessThan(0.1f));
+            Assert.That(Vector3.Distance(bones["GuideShoulderFern_Right"].position, bones["upperarm_r"].position), Is.LessThan(0.1f));
+        }
+
+        [UnityTest]
+        public IEnumerator FoxCanCrossRaisedBridgeInBothDirections()
+        {
+            yield return LoadBootstrapToForest();
+            Transform bridge = GameObject.Find("Small Bridge").transform;
+            GameObject player = GameObject.Find("PlayerFox");
+            FoxController controller = player.GetComponent<FoxController>();
+            controller.enabled = false;
+            CharacterController capsule = player.GetComponent<CharacterController>();
+            Terrain terrain = Object.FindFirstObjectByType<Terrain>();
+            Vector3 forward = Vector3.ProjectOnPlane(bridge.forward, Vector3.up).normalized;
+
+            foreach (float direction in new[] { 1f, -1f })
+            {
+                capsule.enabled = false;
+                Vector3 start = bridge.TransformPoint(new Vector3(0f, 0f, -direction * 18f));
+                start.y = terrain.transform.position.y + terrain.SampleHeight(start) + 0.12f;
+                player.transform.position = start;
+                capsule.enabled = true;
+                Physics.SyncTransforms();
+                for (int step = 0; step < 450; step++)
+                {
+                    Vector3 motion = forward * (direction * 0.09f) + Vector3.down * 0.1f;
+                    capsule.Move(InvokeResolveObstacleMotion(controller, motion));
+                    float progress = bridge.InverseTransformPoint(player.transform.position).z;
+                    if (Mathf.Abs(progress) < 12f)
+                    {
+                        float localHeight = bridge.InverseTransformPoint(player.transform.position).y;
+                        Assert.That(localHeight, Is.InRange(0.2f, 0.8f), "Fox must remain supported by the deck.");
+                    }
+                    if (step % 20 == 0) yield return null;
+                }
+                float end = bridge.InverseTransformPoint(player.transform.position).z * direction;
+                Assert.That(end, Is.GreaterThan(17f), $"Fox stalled at {player.transform.position} travelling {direction}.");
+            }
+            CaptureWorldScaleReview("Bridge Banks");
+        }
+
+        private static Bounds SkinnedBounds(Transform root)
+        {
+            Bounds bounds = default;
+            bool hasVertex = false;
+            Mesh mesh = new Mesh();
+            try
+            {
+                foreach (SkinnedMeshRenderer renderer in root.GetComponentsInChildren<SkinnedMeshRenderer>())
+                {
+                    renderer.BakeMesh(mesh, true);
+                    foreach (Vector3 vertex in mesh.vertices)
+                    {
+                        Vector3 world = renderer.transform.TransformPoint(vertex);
+                        if (!hasVertex) { bounds = new Bounds(world, Vector3.zero); hasVertex = true; }
+                        else bounds.Encapsulate(world);
+                    }
+                }
+                Assert.That(hasVertex, Is.True, root.name);
+                return bounds;
+            }
+            finally { Object.DestroyImmediate(mesh); }
+        }
+
+        private static void CaptureWorldScaleReview(string view)
+        {
+#if UNITY_EDITOR
+            if (System.Environment.GetEnvironmentVariable("TILKI_CAPTURE_WORLD_SCALE") == "1")
+                Assert.That(UnityEditor.EditorApplication.ExecuteMenuItem($"Tilki Oyunu/Sprint 5.5/Review/{view}"), Is.True);
+#endif
+        }
+
+        [UnityTest]
         public IEnumerator EnvironmentVisualLayerIsColliderFree()
         {
             yield return LoadBootstrapToForest();
@@ -275,6 +430,56 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             GameObject environmentVisuals = GameObject.Find("Environment_Visuals");
             Assert.That(environmentVisuals, Is.Not.Null);
             Assert.That(environmentVisuals.GetComponentsInChildren<Collider>(true), Is.Empty);
+        }
+
+        [UnityTest]
+        public IEnumerator RepeatedJumpPressesDuringTakeoffDoNotStackImpulse()
+        {
+            FoxController controller = CreateControllerForJumpTest();
+
+            SetGroundedForTest(controller, true);
+            SetPrivateField(controller, "verticalVelocity", -2f);
+            Assert.That(InvokeTryStartJump(controller, true), Is.True);
+            float firstJumpVelocity = controller.Velocity.y;
+            Assert.That(firstJumpVelocity, Is.GreaterThan(0.5f));
+
+            SetGroundedForTest(controller, true);
+            SetPrivateField(controller, "verticalVelocity", firstJumpVelocity - 0.1f);
+            Assert.That(InvokeTryStartJump(controller, true), Is.False);
+            Assert.That(controller.Velocity.y, Is.EqualTo(firstJumpVelocity - 0.1f).Within(0.001f));
+
+            SetGroundedForTest(controller, true);
+            SetPrivateField(controller, "verticalVelocity", 0f);
+            Assert.That(InvokeTryStartJump(controller, true), Is.False);
+            Assert.That(controller.Velocity.y, Is.EqualTo(0f).Within(0.001f));
+
+            InvokeRefreshJumpAvailabilityAfterMove(controller, CollisionFlags.Below);
+            SetGroundedForTest(controller, true);
+            Assert.That(InvokeTryStartJump(controller, true), Is.True);
+            Assert.That(controller.Velocity.y, Is.GreaterThan(0.5f));
+
+            yield return null;
+            Object.DestroyImmediate(controller.gameObject);
+        }
+
+        [UnityTest]
+        public IEnumerator FoxObstacleSweepStopsBeforeSolidObjects()
+        {
+            FoxController controller = CreateControllerForJumpTest();
+            GameObject obstacle = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            obstacle.name = "Fox Movement Blocker Test";
+            obstacle.transform.position = new Vector3(0f, 0.55f, 0.9f);
+            obstacle.transform.localScale = new Vector3(1f, 1.1f, 0.35f);
+            Physics.SyncTransforms();
+
+            Vector3 resolvedMotion = InvokeResolveObstacleMotion(controller, Vector3.forward * 2f);
+
+            Assert.That(resolvedMotion.z, Is.LessThan(0.55f));
+            Assert.That(resolvedMotion.z, Is.GreaterThanOrEqualTo(0f));
+
+            yield return null;
+            Object.DestroyImmediate(obstacle);
+            Object.DestroyImmediate(controller.gameObject);
         }
 
         private static IEnumerator LoadBootstrapToForest()
@@ -398,6 +603,59 @@ namespace TilkiOyunu.Foundation.PlayModeTests
             Assert.That(panel.alpha, Is.EqualTo(0f));
             Assert.That(panel.interactable, Is.False);
             Assert.That(panel.blocksRaycasts, Is.False);
+        }
+
+        private static FoxController CreateControllerForJumpTest()
+        {
+            GameObject player = new("Jump Test Fox");
+            player.SetActive(false);
+            player.transform.position = Vector3.zero;
+            CharacterController characterController = player.AddComponent<CharacterController>();
+            characterController.height = 1.1f;
+            characterController.radius = 0.36f;
+            characterController.center = new Vector3(0f, 0.55f, 0f);
+
+            Transform groundProbe = new GameObject("Ground Probe").transform;
+            groundProbe.SetParent(player.transform, false);
+            groundProbe.localPosition = new Vector3(0f, 0.08f, 0f);
+
+            FoxController controller = player.AddComponent<FoxController>();
+            SetPrivateField(controller, "groundProbe", groundProbe);
+            player.SetActive(true);
+            return controller;
+        }
+
+        private static bool InvokeTryStartJump(FoxController controller, bool pressedThisFrame)
+        {
+            MethodInfo method = typeof(FoxController).GetMethod("TryStartJump", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null);
+            return (bool)method.Invoke(controller, new object[] { pressedThisFrame });
+        }
+
+        private static void InvokeRefreshJumpAvailabilityAfterMove(FoxController controller, CollisionFlags collisionFlags)
+        {
+            MethodInfo method = typeof(FoxController).GetMethod("RefreshJumpAvailabilityAfterMove", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null);
+            method.Invoke(controller, new object[] { collisionFlags });
+        }
+
+        private static Vector3 InvokeResolveObstacleMotion(FoxController controller, Vector3 motion)
+        {
+            MethodInfo method = typeof(FoxController).GetMethod("ResolveObstacleMotion", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null);
+            return (Vector3)method.Invoke(controller, new object[] { motion });
+        }
+
+        private static void SetGroundedForTest(FoxController controller, bool isGrounded)
+        {
+            typeof(FoxController)
+                .GetField("<IsGrounded>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(controller, isGrounded);
+        }
+
+        private static void SetPrivateField(object target, string fieldName, object value)
+        {
+            target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(target, value);
         }
 
         private static bool HasRenderableInView(Camera camera, Transform root)

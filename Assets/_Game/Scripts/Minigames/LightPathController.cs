@@ -7,7 +7,7 @@ namespace TilkiOyunu.Foundation
     {
         [SerializeField] private QuestDefinition quest;
         [SerializeField] private LightPathNode[] nodes;
-        [SerializeField, Min(5f)] private float durationSeconds = 40f;
+        [SerializeField, Min(5f)] private float durationSeconds = 75f;
 
         private int currentIndex;
         private float remainingSeconds;
@@ -24,6 +24,8 @@ namespace TilkiOyunu.Foundation
         public int CurrentIndex => currentIndex;
         public int NodeCount => nodes != null ? nodes.Length : 0;
         public float RemainingSeconds => remainingSeconds;
+        public float DurationSeconds => durationSeconds;
+        public bool NavigationPaused { get; set; }
 
         public bool CanStartRun
         {
@@ -68,7 +70,7 @@ namespace TilkiOyunu.Foundation
 
         private void Update()
         {
-            if (state != LightPathRunState.Running)
+            if (state != LightPathRunState.Running || NavigationPaused)
             {
                 return;
             }
@@ -77,7 +79,7 @@ namespace TilkiOyunu.Foundation
             TimeChanged?.Invoke(Mathf.Max(0, Mathf.CeilToInt(remainingSeconds)));
             if (remainingSeconds <= 0f)
             {
-                FailRun("Yol kayboldu. Tekrar dene.");
+                FailRun("Süre doldu. Yeniden başlamak için Işık Korusu’na dön ve F’ye bas.");
             }
         }
 
@@ -113,7 +115,7 @@ namespace TilkiOyunu.Foundation
 
             if (node.SequenceIndex != currentIndex)
             {
-                FailRun("Yol kayboldu. Tekrar dene.");
+                FailRun("Işıkların sırası bozuldu. Başlangıca dön ve F ile tekrar dene.");
                 return false;
             }
 
