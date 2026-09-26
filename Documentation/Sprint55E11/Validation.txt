@@ -1,0 +1,6 @@
+EditMode: Passed; passed=80; failed=0; total=80; end=2026-09-21 22:29:20Z
+PlayMode: Passed; passed=24; failed=0; total=24; end=2026-09-21 22:31:41Z
+Sprint5Validation.ValidateFromCommandLine: PASS (see local SprintValidation.log)
+Unity: 6000.0.23f1-x86_64; URP: 17.0.3
+PlayMode rendered with TILKI_E11_SCREENSHOTS=1; screenshots are synthetic production-path evidence, not physical QA.
+Physical M from Bootstrap: unresolved. Gate: NO-GO. PR #7 not merged; Sprint 6 not started.

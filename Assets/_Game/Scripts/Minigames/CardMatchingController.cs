@@ -52,6 +52,7 @@ namespace TilkiOyunu.Foundation
 
         private void OnDisable()
         {
+            panel?.Close();
             CancelRun();
         }
 
@@ -206,12 +207,14 @@ namespace TilkiOyunu.Foundation
             }
 
             isResolvingMismatch = true;
+            NotifyAllCardsChanged();
             mismatchCoroutine = StartCoroutine(HideMismatchAfterDelay());
         }
 
         private IEnumerator HideMismatchAfterDelay()
         {
-            yield return new WaitForSeconds(mismatchDelaySeconds);
+            yield return new WaitForSecondsRealtime(mismatchDelaySeconds);
+            mismatchCoroutine = null;
             HideMismatchedSelection();
         }
 
@@ -219,21 +222,25 @@ namespace TilkiOyunu.Foundation
         {
             StopMismatchCoroutine();
 
-            if (firstSelection >= 0 && firstSelection < cards.Count && cards[firstSelection].State == CardMatchingCardState.Revealed)
-            {
-                cards[firstSelection].State = CardMatchingCardState.Hidden;
-                CardChanged?.Invoke(firstSelection, GetCard(firstSelection));
-            }
-
-            if (secondSelection >= 0 && secondSelection < cards.Count && cards[secondSelection].State == CardMatchingCardState.Revealed)
-            {
-                cards[secondSelection].State = CardMatchingCardState.Hidden;
-                CardChanged?.Invoke(secondSelection, GetCard(secondSelection));
-            }
-
+            // Commit the whole transition before notifying views. Views query CanReveal
+            // synchronously; publishing Hidden while resolving left every Button disabled.
+            int first = firstSelection;
+            int second = secondSelection;
             firstSelection = -1;
             secondSelection = -1;
             isResolvingMismatch = false;
+
+            if (first >= 0 && first < cards.Count && cards[first].State == CardMatchingCardState.Revealed)
+            {
+                cards[first].State = CardMatchingCardState.Hidden;
+            }
+
+            if (second >= 0 && second < cards.Count && cards[second].State == CardMatchingCardState.Revealed)
+            {
+                cards[second].State = CardMatchingCardState.Hidden;
+            }
+
+            NotifyAllCardsChanged();
         }
 
         private void CompleteRun()

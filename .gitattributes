@@ -3,6 +3,8 @@
 *.unity text eol=lf
 *.prefab text eol=lf
 *.asset text eol=lf
+# TerrainData uses Unity binary serialization even when other .asset files are YAML.
+Assets/_Game/Art/Environment/Sprint55B_WorldTerrain.asset binary
 *.mat text eol=lf
 *.meta text eol=lf
 *.asmdef text eol=lf

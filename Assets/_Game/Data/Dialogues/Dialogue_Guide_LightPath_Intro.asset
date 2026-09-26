@@ -15,6 +15,5 @@ MonoBehaviour:
   id: guide_light_path_intro
   speaker: Rehber
   lines:
-  - "G\xFCzel... hepsi yerini buldu."
-  - "Ama orman\u0131n biraz ilerisinde ba\u015Fka bir \u015Fey uyand\u0131."
-  - "I\u015F\u0131klar\u0131 takip et. Sana yolu g\xF6sterebilirler."
+  - "Işık Korusu’nu haritana işaretledim. Işıkları sırayla takip et; ulaştığın her ışık bir sonrakini belirginleştirecek."
+  - "Acele etme. Hazır olduğunda başlangıçta F’ye bas. O zaman 75 saniyen başlayacak."

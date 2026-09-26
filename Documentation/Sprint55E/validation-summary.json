@@ -1,0 +1,32 @@
+{
+  "beforeEditMode": {
+    "total": "71",
+    "passed": "71",
+    "failed": "0",
+    "result": "Passed"
+  },
+  "afterEditMode": {
+    "total": "76",
+    "passed": "76",
+    "failed": "0",
+    "result": "Passed"
+  },
+  "beforePlayMode": {
+    "total": "18",
+    "passed": "18",
+    "failed": "0",
+    "result": "Passed"
+  },
+  "afterPlayMode": {
+    "total": "19",
+    "passed": "19",
+    "failed": "0",
+    "result": "Passed"
+  },
+  "sprint5ValidationBefore": "PASS",
+  "sprint5ValidationAfter": "PASS",
+  "manualFreshSaveDuration": null,
+  "fullManualE2E": "NEEDS USER REVIEW",
+  "saveAfterEvidence": "No default save or backup remains, matching pre-review state",
+  "gate": "NO-GO"
+}

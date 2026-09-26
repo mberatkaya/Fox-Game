@@ -11,8 +11,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2888a799cf82927409cd7f4a2ea97f16, type: 3}
   m_Name: Dialogue_Guide_CardMatching_Completed
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: guide_card_matching_completed
   speaker: Rehber
   lines:
-  - "Bah\xE7e \u015Fimdilik sakin."
+  - "Bah\xE7e sakin. Son an\u0131 kampta bekliyor."

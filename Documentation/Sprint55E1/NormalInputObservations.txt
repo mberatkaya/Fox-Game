@@ -1,0 +1,2 @@
+Read-only observer. No movement, teleport, interaction, or quest completion is performed by this helper.
+0,00s · Spawn

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Failed(Child)" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1,1284134">
+  <test-suite type="TestSuite" id="1041" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1.128413" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1034" name="TilkiOyunu.Foundation.PlayModeTests.dll" fullname="C:/Users/mbkay/Repo/TilkiOyunu/Library/ScriptAssemblies/TilkiOyunu.Foundation.PlayModeTests.dll" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1.123747" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10748" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1035" name="TilkiOyunu" fullname="TilkiOyunu" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1.123010" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1036" name="Foundation" fullname="TilkiOyunu.Foundation" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1.122460" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="SetUpFixture" id="1001" name="PlayModeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.ProductionSaveProtection" classname="TilkiOyunu.Foundation.PlayModeTests.ProductionSaveProtection" runstate="Runnable" testcasecount="24" result="Failed" site="Child" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1.121383" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1011" name="Sprint55E11RuntimeTests" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" runstate="Runnable" testcasecount="3" result="Failed" site="Child" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1.111991" total="1" passed="0" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1014" name="BootstrapMapAndInteractionBindings" fullname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests.BootstrapMapAndInteractionBindings" methodname="BootstrapMapAndInteractionBindings" classname="TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests" runstate="Runnable" seed="1568689442" result="Failed" start-time="2026-09-21 22:22:11Z" end-time="2026-09-21 22:22:12Z" duration="1.102134" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: String containing "F"
+  But was:  "Interact"
+]]></message>
+                  <stack-trace><![CDATA[at TilkiOyunu.Foundation.PlayModeTests.Sprint55E11RuntimeTests+<Exercise>d__11.MoveNext () [0x008c6] in C:\Users\mbkay\Repo\TilkiOyunu\Assets\_Game\Tests\PlayMode\Sprint55E11RuntimeTests.cs:117
+at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\Library\PackageCache\com.unity.test-framework\UnityEngine.TestRunner\NUnitExtensions\Attributes\TestEnumerator.cs:44
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[BOOT] Game services initialized.
+Saving results to: C:/Users/mbkay/AppData/LocalLow/DefaultCompany/TilkiOyunu\TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

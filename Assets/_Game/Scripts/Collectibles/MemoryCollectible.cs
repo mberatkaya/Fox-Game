@@ -7,6 +7,7 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private MemoryDefinition memory;
         [SerializeField] private QuestDefinition quest;
         [SerializeField] private MemoryFeedbackUI feedbackUI;
+        [SerializeField] private MemoryAudioFeedback audioFeedback;
         [SerializeField] private Renderer[] renderers;
         [SerializeField] private Collider[] colliders;
         [SerializeField] private float rotationDegreesPerSecond = 45f;
@@ -23,6 +24,8 @@ namespace TilkiOyunu.Foundation
         private void Awake()
         {
             startLocalPosition = transform.localPosition;
+            if (memory != null && memory.Id.StartsWith("memory_"))
+                renderers = gameObject.AddComponent<WaffleIngredientVisual>().Build(this);
             CacheSceneReferences();
             RefreshCollectedState();
         }
@@ -63,7 +66,8 @@ namespace TilkiOyunu.Foundation
 
             if (GameServices.Current.Quest.RecordMemoryCollected(memory, quest))
             {
-                feedbackUI?.Show("Anı bulundu", memory.ShortText);
+                feedbackUI?.Show($"{memory.DisplayName} bulundu.", memory.ShortText);
+                audioFeedback?.PlayPickup();
                 SetCollected(true);
             }
         }

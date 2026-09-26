@@ -1,0 +1,2 @@
+Lake water positions identical: True; vertices=10
+Creek water positions identical: True; vertices=10

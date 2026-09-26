@@ -1,0 +1,13 @@
+UNCHANGED initial patch: a/Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset b/Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
+UNCHANGED initial patch: a/Assets/_Game/Animations/NPC/GuideNpc_RelaxedIdle.anim b/Assets/_Game/Animations/NPC/GuideNpc_RelaxedIdle.anim
+UNCHANGED initial patch: a/Assets/_Game/Art/NPC/GuideNpc_WarmAccent_URP.mat b/Assets/_Game/Art/NPC/GuideNpc_WarmAccent_URP.mat
+UNCHANGED initial patch: a/Assets/_Game/Editor/Sprint55C2GuideNpcProductionBuilder.cs b/Assets/_Game/Editor/Sprint55C2GuideNpcProductionBuilder.cs
+UNCHANGED initial patch: a/Assets/_Game/Editor/Sprint55EnvironmentDressingBuilder.cs b/Assets/_Game/Editor/Sprint55EnvironmentDressingBuilder.cs
+UNCHANGED initial patch: a/Assets/_Game/Editor/Sprint55WorldLayoutBuilder.cs b/Assets/_Game/Editor/Sprint55WorldLayoutBuilder.cs
+UNCHANGED initial patch: a/Assets/_Game/Prefabs/NPC/NPC_Guide_Visual.prefab b/Assets/_Game/Prefabs/NPC/NPC_Guide_Visual.prefab
+UNCHANGED initial patch: a/Assets/_Game/Tests/EditMode/Sprint55C2ProductionPassTests.cs b/Assets/_Game/Tests/EditMode/Sprint55C2ProductionPassTests.cs
+UNCHANGED initial patch: a/Assets/_Game/Tests/PlayMode/Sprint5ProductionSmokeTests.cs b/Assets/_Game/Tests/PlayMode/Sprint5ProductionSmokeTests.cs
+Forest delta versus initial working scene:
+33	33	{Documentation/Sprint55E/Baseline => Assets/_Game/Scenes/Gameplay}/Forest.unity
+
+After placement commit, nine non-scene user patches retain their original added/deleted lines. The remaining Forest user diff retains its changes; the reordered memory_05 dressing anchor now carries its intentionally updated position on both sides of that reorder. Only the 33 audited placement/rotation values differ from the initial working scene.

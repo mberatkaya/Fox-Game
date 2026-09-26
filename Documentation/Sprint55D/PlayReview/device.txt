@@ -1,0 +1,1 @@
+Editor Play Mode; NVIDIA GeForce RTX 4070 Laptop GPU; 13th Gen Intel(R) Core(TM) i7-13700H; 1600x900 HDR render target. Warmup 60 frames, 180 measured frames per view. Editor overhead included; no standalone player claim.

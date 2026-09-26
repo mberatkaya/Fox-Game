@@ -15,6 +15,5 @@ MonoBehaviour:
   id: guide_intro
   speaker: Rehber
   lines:
-  - "Buralarda birka\xE7 k\xFC\xE7\xFCk \u015Fey kaybolmu\u015F."
-  - "Belki de kaybolmad\u0131lar... sadece bulunmay\u0131 bekliyorlar."
-  - "Ormanda be\u015F k\xFC\xE7\xFCk an\u0131 var. Hepsini bulabilir misin?"
+  - "Burada bir anının kokusu kalmış... Un, süt, yumurta, tereyağı ve çilek."
+  - "Beş malzemeyi bulursan belki birlikte hatırlarız. Haritana işaretledim; M ile açabilirsin."

@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2888a799cf82927409cd7f4a2ea97f16, type: 3}
   m_Name: Dialogue_Guide_CardMatching_TurnIn
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   id: guide_card_matching_turn_in
   speaker: Rehber
   lines:
-  - "Hepsini e\u015Fle\u015Ftirdin."
-  - "Demek ki baz\u0131 par\xE7alar ger\xE7ekten birbirini buluyor."
+  - "Hepsi tamamland\u0131."
+  - "Kamp\u0131n s\u0131cak \u0131\u015F\u0131\u011F\u0131 art\u0131k seni \xE7a\u011F\u0131r\u0131yor."

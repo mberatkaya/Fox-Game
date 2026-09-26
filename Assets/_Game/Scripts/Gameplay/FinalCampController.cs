@@ -10,10 +10,12 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private Color unlockedColor = new(0.95f, 0.72f, 0.36f);
         [SerializeField] private float lockedLightIntensity = 0.15f;
         [SerializeField] private float unlockedLightIntensity = 1.6f;
-        [SerializeField] private string lockedInteractionLabel = "Henüz hazır değil";
-        [SerializeField] private string unlockedInteractionLabel = "Final hazır";
+        [SerializeField] private string lockedInteractionLabel = "Henüz zamanı değil";
+        [SerializeField] private string unlockedInteractionLabel = "Son anıyı aç";
+        [SerializeField] private FinalSequenceController finalSequence;
 
         private bool unlocked;
+        private MaterialPropertyBlock propertyBlock;
 
         public bool IsUnlocked => unlocked;
         public string InteractionLabel => unlocked ? unlockedInteractionLabel : lockedInteractionLabel;
@@ -51,7 +53,16 @@ namespace TilkiOyunu.Foundation
 
         public void Interact(InteractionContext context)
         {
-            AppLog.Info(LogCategory.Quest, unlocked ? "Final camp is unlocked for a future sprint." : "Final camp is still locked.");
+            if (!unlocked)
+            {
+                AppLog.Info(LogCategory.Quest, "Final camp is still locked.");
+                return;
+            }
+
+            if (finalSequence != null)
+            {
+                finalSequence.Begin();
+            }
         }
 
         private void HandleFinalCampUnlockChanged(bool isUnlocked)
@@ -80,9 +91,14 @@ namespace TilkiOyunu.Foundation
             for (int i = 0; i < renderers.Length; i++)
             {
                 Renderer campRenderer = renderers[i];
-                if (campRenderer != null && campRenderer.material != null)
+                if (campRenderer != null)
                 {
-                    campRenderer.material.color = color;
+                    propertyBlock ??= new MaterialPropertyBlock();
+                    campRenderer.GetPropertyBlock(propertyBlock);
+                    propertyBlock.SetColor("_BaseColor", color);
+                    propertyBlock.SetColor("_Color", color);
+                    propertyBlock.SetColor("_EmissionColor", color * intensity);
+                    campRenderer.SetPropertyBlock(propertyBlock);
                 }
             }
 
@@ -108,6 +124,11 @@ namespace TilkiOyunu.Foundation
             if (lights == null || lights.Length == 0)
             {
                 lights = GetComponentsInChildren<Light>();
+            }
+
+            if (finalSequence == null)
+            {
+                finalSequence = GetComponent<FinalSequenceController>();
             }
         }
     }

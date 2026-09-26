@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590d611e1459f67439df179f78d772bb, type: 3}
   m_Name: FinalMessage
   m_EditorClassIdentifier: 
-  title: Final Mesaji
-  body: Bu kucuk yolculuk, beraber biriktirilecek guzel anilar icin hazirlandi.
+  title: "Buraya kadar geldi\u011Fin i\xE7in..."
+  body: "Bu k\xFC\xE7\xFCk yolculuk, sakince g\xFCl\xFCmseyen an\u0131lar i\xE7in
+    haz\u0131rland\u0131. Her \u0131\u015F\u0131k, her kart ve her durak biraz daha
+    s\u0131cak bir yere \xE7\u0131ks\u0131n istedim."
   signature: Tilki

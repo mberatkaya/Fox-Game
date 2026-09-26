@@ -1,23 +1,198 @@
 # Asset Notes
 
-No third-party art, audio, fonts, or code assets have been added for Sprint 0.
+Date Downloaded: 2026-09-07
 
-The current prototype scene uses Unity primitive meshes and generated materials only. Any future external asset must be listed below before it is committed.
+## Unity Asset Store - Toon Fox
 
-## Template
+Asset Name: Toon Fox
+Author: Pxltiger
+Official Source: Unity Asset Store
+Source Page: https://assetstore.unity.com/packages/3d/characters/animals/toon-fox-183005
+Unity Asset Store Package ID: 183005
+Package Version: 1.0
+Original Unity Version: 2019.4.10
+License: Standard Unity Asset Store EULA
+Files Imported: `Assets/Fox/FBXs/Fox.fbx`, `Assets/Fox/Prefabs/Fox.prefab`, `Assets/Fox/Animations/*.fbx`, `Assets/Fox/Materials/M_Fox.mat`, `Assets/Fox/Textures/T_Fox_BC.png`, `T_Fox_Normal.png`, `T_Fox_AO.png`
+Usage: Player character visual and animations under `PlayerFox/VisualRoot/ToonFox`
+Modified: Package source files remain in their imported `Assets/Fox` structure. Closure clears two unused metallic/specular texture slots in the original `M_Fox.mat` that referenced a texture absent from the imported subset; the production URP override is unchanged. Game-specific wrapper assets are `Assets/_Game/Prefabs/Characters/ToonFoxVisual.prefab`, `Assets/_Game/Art/Characters/FoxAnimatorController.controller`, and `Assets/_Game/Art/Characters/ToonFox_URP.mat`.
+Attribution Requirements: Follow the Standard Unity Asset Store EULA.
+Notes: Production locomotion uses `Fox_Idle`, `Fox_Walk_InPlace`, and `Fox_Run_InPlace`. Air state uses the included `Fox_Jump_InAir` clip. Root motion is disabled on the PlayerFox production animator; movement remains owned by `FoxController` and `CharacterController`.
 
-### Asset Name
+## OpenGameArt - Fox (Not Used In Production)
 
-Source:
-Author:
-URL:
-License:
-Date Added:
-Usage:
-Modified:
+Asset Name: Fox
+Author: br-n518
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/fox-0
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Date Downloaded: 2026-09-08
+Files Imported: `Assets/ThirdParty/br-n518/Fox/fox.blend`, `Assets/ThirdParty/br-n518/Fox/Fox_br-n518.fbx`, `Assets/ThirdParty/br-n518/Fox/fox_diffuse.png`, `Assets/ThirdParty/br-n518/Fox/fox_normal.png`
+Usage: NOT USED IN PRODUCTION. Superseded by Pxltiger Toon Fox during Sprint 5.5-A.2.
+Modified: Previously exported `fox.blend` to `Fox_br-n518.fbx` with Blender 4.5.0 portable for Unity import; previous Unity material wrapper was `Assets/_Game/Art/Characters/OpenGameArtFox_URP.mat`.
+Attribution Requirements: None required by CC0
+Notes: Retained only as historical Sprint 5.5-A.1 fallback documentation unless the abandoned fallback files are removed.
 
-## Notes
+## Quaternius - Ultimate Animated Animal Pack / Fox (Superseded)
 
-- Do not use assets with unclear copyright or license terms.
-- Prefer official Unity Package Manager packages or clearly licensed CC0/royalty-free assets.
-- Keep third-party imports separate from first-party code and content under `ThirdParty` or a clearly named package/vendor folder.
+Asset Name: Ultimate Animated Animal Pack
+Author: Quaternius
+Official Source: Quaternius website
+Source Page: https://quaternius.com/packs/ultimateanimatedanimals.html
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License.txt`
+Files Imported: `Assets/ThirdParty/Quaternius/UltimateAnimatedAnimals/Fox/Fox.fbx`, `License.txt`
+Usage: Player fox visual and locomotion animation clips
+Modified: No source asset edits; Unity import metadata generated
+Notes: Superseded by the OpenGameArt br-n518 fox during Sprint 5.5-A.1, then by Pxltiger Toon Fox during Sprint 5.5-A.2 after the official Asset Store package was imported.
+
+## Quaternius - Ultimate Stylized Nature Pack
+
+Asset Name: Ultimate Stylized Nature Pack
+Author: Quaternius
+Official Source: Quaternius website
+Source Page: https://quaternius.com/packs/ultimatestylizednature.html
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License.txt`
+Files Imported: selected FBX files for BirchTree, MapleTree, NormalTree, PineTree, Bush, Grass, Flower clumps, Rock variants, plus selected texture PNGs
+Usage: Non-colliding Forest production visual layer under `Environment_Visuals`
+Modified: No source asset edits; Unity import metadata generated
+Notes: Only a small subset is imported to preserve readability and avoid repository bloat.
+
+## Quaternius - Stylized Nature MegaKit Standard
+
+Asset Name: Stylized Nature MegaKit Standard
+Author: Quaternius
+Official Source: Quaternius website
+Source Page: https://quaternius.com/packs/stylizednaturemegakit.html
+Download Page Used: https://opengameart.org/content/stylized-nature-megakit
+License: Creative Commons CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License_Standard.txt`
+Date Downloaded: 2026-09-11
+Files Imported: selected FBX files only under `Assets/ThirdParty/Quaternius/StylizedNatureMegaKit/`: `CommonTree_1`-`CommonTree_5`, `Pine_1`-`Pine_5`, `TwistedTree_1`-`TwistedTree_5`, `DeadTree_1`, `DeadTree_2`, `Bush_Common`, `Bush_Common_Flowers`, `Fern_1`, `Flower_3_Group`, `Flower_4_Group`, `Grass_Common_Short`, `Grass_Common_Tall`, `Grass_Wispy_Short`, `Grass_Wispy_Tall`, `Plant_1`, `Plant_1_Big`, `Plant_7`, `Plant_7_Big`, `Clover_1`, `Clover_2`, `Mushroom_Common`, `Mushroom_Laetiporus`, `Rock_Medium_1`-`Rock_Medium_3`, selected pebble and rock path FBX files, and `License_Standard.txt`.
+Usage: Primary Sprint 5.5-C production forest dressing: tree clusters, natural boundaries, shoreline rocks, creek reeds/plants, meadow flowers, Heart Garden flowers, Light Grove understory, and terrain grass detail prototypes.
+Modified: Source FBX files are unedited. Game-specific URP materials, terrain layers, deterministic placement, bridge visuals, and wrapper scene organization are project-owned under `Assets/_Game/Art/Environment/Sprint55C` and `World/Environment`.
+Notes: The official itch download flow rate-limited this environment, so the Standard zip was downloaded from OpenGameArt where the uploader is `quaternius` and the page links back to the official Quaternius source page. The raw zip was not committed; only the selected production subset was imported.
+
+## Quaternius - Universal Base Characters Standard
+
+Asset Name: Universal Base Characters Kit / Standard FREE version
+Author: Quaternius
+Official Source: Quaternius website
+Source Page: https://quaternius.com
+License: CC0 1.0 Universal / Public Domain Dedication
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License_Standard.txt`
+Date Imported: 2026-09-12
+Raw Source Location: `Universal Base Characters[Standard]/` kept outside `Assets` as a reference download.
+Files Imported: production subset under `Assets/ThirdParty/Quaternius/UniversalBaseCharacters/`: `BaseCharacters/Superhero_Female_FullBody.fbx`, `Hairstyles/Hair_Buns.fbx`, `Hairstyles/Eyebrows_Female.fbx`, selected eye/body/hair texture PNGs, and `License_Standard.txt`.
+Files Excluded: male full-body FBX, Godot/Unreal glTF/bin duplicates, Origin-at-0 and Unreal hairstyle duplicates, redundant texture copies, and preview imagery.
+Usage: Sprint 5.5-C.2 Guide NPC visual under `NPC_Guide/VisualRoot/NPC_Guide_Visual`. The existing scene `NPC_Guide` object remains the gameplay authority for dialogue trigger and interaction.
+Modified: Source FBX files are unedited. Unity import metadata sets the female full-body model to Humanoid and hair/eyebrows to Generic. Project-owned URP materials, animator, idle clip, production prefab, and scene wiring are under `Assets/_Game/Art/NPC`, `Assets/_Game/Animations/NPC`, and `Assets/_Game/Prefabs/NPC`. Sprint 5.5 follow-up scales the guide up for map readability and blends the Universal Base Character with already-imported Stylized Nature MegaKit fern/flower/clover accents, a staff, beacon, cloak, and visibility ring.
+Notes: The separate Quaternius Universal Animation Library was searched for locally during Sprint 5.5-C.2 but was not present in the repository or download folders, so no Universal Animation Library assets were imported. The guide uses a project-owned subtle idle animation until that library is available.
+
+Closure detail: the three `GuideNpc_Fitted*.asset` meshes are project-generated derivatives of the imported CC0 body/own cape and belt geometry. The fitted outfit, staff grip and shoulder accessories follow the body bones; the controller uses a three-second transform idle with the source humanoid animator disabled. The historical eyebrow model remains imported but is not used by the final guide prefab.
+
+## Tree Collection Pack 2017 (Historical Authoring Subset)
+
+Local Unity AssetOrigin metadata identifies Asset Store product ID `76974`, package version `3`, under `Assets/TreePackVol.1`. A 216-file subset was already tracked before closure and is still referenced by historical world builders and validation. Sprint 5.5-C removed `TreeCollectionForest` from the production Forest scene. The remaining untracked package content is not referenced by tracked serialized assets and is preserved locally, uncommitted. The local download includes `Doc/Readme.pdf`; no new license or author claim is inferred from the package name. No additional TreePack asset is introduced by closure.
+
+## Project-Owned Map, Objective and Atmosphere Assets
+
+Minimap/world-map UI, waffle objective presentation, bridge geometry, fitted guide clothing, terrain layers, URP material wrappers and atmosphere authoring live under `Assets/_Game`. They use the documented imported subsets where applicable; no additional Universal Animation Library or raw package import is part of closure.
+
+## Kenney - UI Pack
+
+Asset Name: UI Pack
+Author: Kenney
+Official Source: Kenney website
+Source Page: https://kenney.nl/assets/ui-pack
+License: Creative Commons CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License.txt`
+Files Imported: selected green/yellow button PNGs and `License.txt`
+Usage: Available for warm UI skin/decorative treatment
+Modified: No source asset edits
+Notes: The full 430-file pack is not committed.
+
+## Kenney - Interface Sounds
+
+Asset Name: Interface Sounds
+Author: Kenney
+Official Source: Kenney website
+Source Page: https://kenney.nl/assets/interface-sounds
+License: Creative Commons CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/ and included `License.txt`
+Files Imported: `click_001.ogg`, `open_001.ogg`, `close_001.ogg`, `License.txt`
+Usage: UI click/open/close and soft negative feedback
+Modified: No source asset edits
+
+## OpenGameArt - Sunset Walk / Ambient / Quiet / Sweet / Loop
+
+Asset Name: Sunset Walk / Ambient / Quiet / Sweet / Loop
+Author: KiluaBoy
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/sunset-walk-ambient-quiet-sweet-loop
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Files Imported: `Assets/ThirdParty/OpenGameArt/Music/SunsetWalk.ogg`
+Usage: Low-volume background music loop
+Modified: No source asset edits
+
+## OpenGameArt - Forest Ambience
+
+Asset Name: Forest Ambience
+Author: TinyWorlds
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/forest-ambience
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Files Imported: `Assets/ThirdParty/OpenGameArt/Ambience/Forest_Ambience.mp3`
+Usage: Low-volume forest ambience loop
+Modified: No source asset edits
+
+## OpenGameArt - Different steps on wood, stone, leaves, gravel and mud
+
+Asset Name: Different steps on wood, stone, leaves, gravel and mud
+Author: TinyWorlds
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/different-steps-on-wood-stone-leaves-gravel-and-mud
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Files Imported: `leaves01.ogg`, `leaves02.ogg`
+Usage: Fox footstep cadence SFX
+Modified: No source asset edits
+
+## OpenGameArt - Bell dings/chimes
+
+Asset Name: Bell dings/chimes
+Author: PWL
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/bell-dingschimes
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Files Imported: `bell_ding1.wav`, `bell_ding2.wav`, `bell_ding3.wav`
+Usage: Memory pickup, Light Path, card match, and final completion chimes
+Modified: No source asset edits
+
+## OpenGameArt - Playing Card Sounds
+
+Asset Name: Playing Card Sounds
+Author: BMacZero / Brian MacIntosh
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/playing-card-sounds
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Files Imported: `shuffle.wav`, `contact1.wav`, `contact2.wav`, `cut.wav`
+Usage: Card Matching open/reveal/contact feedback
+Modified: No source asset edits
+
+## OpenGameArt - Fireplace Sound loop
+
+Asset Name: Fireplace Sound loop
+Author: PagDev
+Official Source: OpenGameArt
+Source Page: https://opengameart.org/content/fireplace-sound-loop
+License: CC0
+License URL/reference: https://creativecommons.org/publicdomain/zero/1.0/
+Files Imported: `fire.wav`
+Usage: 3D final camp campfire loop
+Modified: No source asset edits

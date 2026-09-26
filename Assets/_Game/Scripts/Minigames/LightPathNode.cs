@@ -14,12 +14,14 @@ namespace TilkiOyunu.Foundation
         [SerializeField] private Color completedColor = new(0.45f, 0.9f, 0.66f);
         [SerializeField] private float inactiveLightIntensity = 0.1f;
         [SerializeField] private float availableLightIntensity = 2.4f;
-        [SerializeField] private float completedLightIntensity = 0.75f;
+        [SerializeField] private float completedLightIntensity = 0.25f;
         [SerializeField] private Vector3 inactiveScale = Vector3.one * 0.85f;
-        [SerializeField] private Vector3 availableScale = Vector3.one * 1.18f;
+        [SerializeField] private Vector3 availableScale = Vector3.one * 2f;
         [SerializeField] private Vector3 completedScale = Vector3.one;
 
         private LightPathVisualState visualState;
+        private MaterialPropertyBlock propertyBlock;
+        private readonly System.Collections.Generic.List<Material> ownedMaterials = new();
 
         public int SequenceIndex => sequenceIndex;
         public LightPathVisualState VisualState => visualState;
@@ -27,11 +29,28 @@ namespace TilkiOyunu.Foundation
         private void Awake()
         {
             CacheSceneReferences();
+            foreach (var renderer in renderers)
+            {
+                if (renderer == null || renderer.sharedMaterial == null) continue;
+                var material = new Material(renderer.sharedMaterial);
+                material.EnableKeyword("_EMISSION");
+                renderer.sharedMaterial = material;
+                ownedMaterials.Add(material);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var material in ownedMaterials)
+                if (material != null)
+                {
+                    if (Application.isPlaying) Destroy(material); else DestroyImmediate(material);
+                }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other != null && controller != null)
+            if (other != null && other.GetComponentInParent<FoxController>() != null && controller != null)
             {
                 controller.HandleNodeTriggered(this);
             }
@@ -59,8 +78,12 @@ namespace TilkiOyunu.Foundation
                 Renderer renderer = renderers[i];
                 if (renderer != null)
                 {
-                    renderer.material.color = color;
-                    renderer.material.SetColor("_EmissionColor", color * intensity);
+                    propertyBlock ??= new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(propertyBlock);
+                    propertyBlock.SetColor("_BaseColor", color);
+                    propertyBlock.SetColor("_Color", color);
+                    propertyBlock.SetColor("_EmissionColor", color * intensity);
+                    renderer.SetPropertyBlock(propertyBlock);
                 }
             }
 
